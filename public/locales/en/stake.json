@@ -1,0 +1,10 @@
+{
+    "page_title": "Stake {{currency}}",
+    "step0": "Connect wallet",
+    "step1": "Select bundle",
+    "step2": "Enter amount",
+    "step3": "Stake",
+    "step4": "Confirm allowance",
+    "step5": "Confirm payment"
+    
+}
