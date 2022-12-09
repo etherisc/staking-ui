@@ -1,0 +1,23 @@
+{
+    "todo-tree.highlights.enabled": false,
+    "peacock.remoteColor": "#365e4b",
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#497e65",
+        "activityBar.background": "#497e65",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#513a65",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#497e65",
+        "statusBar.background": "#365e4b",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#497e65",
+        "statusBarItem.remoteBackground": "#365e4b",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#365e4b",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#365e4b99",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+}

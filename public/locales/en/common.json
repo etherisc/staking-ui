@@ -1,0 +1,39 @@
+{
+    "apptitle": "Etherisc DIP Staking",
+    "apptitle_short": "DIP Staking",
+    "nav": {
+        "link": {
+            "apply": "Apply"
+        }
+    },
+    "action": {
+        "switch_network": "Switch to network '{{network}}'",
+        "login_walletconnect": "Login with WalletConnect",
+        "login_metamask": "Login with Metamask",
+        "login": "Login",
+        "disconnect": "Disconnect",
+        "close": "Close",
+        "hide": "Hide",
+        "address_copied": "Address copied to clipboard"
+    },
+    "warning": {
+        "unload_page": "The transaction is still pending. Please do not leave the page or close the browser window."
+    },
+    "error": {
+        "unexpected_network_title": "Unexpected network",
+        "unexpected_network": "Please connect your wallet to '{{network}}'",
+        "metamask_not_found": "Missing metamask plugin - get it from",
+        "wallet_connect_failed": "WalletConnect login failed or cancelled",
+        "currencyTextFieldMinValue": "{{fieldName}} must be at least {{currency}} {{amount}}",
+        "currencyTextFieldMaxValue": "{{fieldName}} must be at most {{currency}} {{amount}}",
+        "numericTextFieldMinValue": "{{fieldName}} must be at least {{value}} {{unit}}",
+        "numericTextFieldMaxValue": "{{fieldName}} must be at most {{value}} {{unit}}",
+        "valueRequired": "{{fieldName}} cannot be empty",
+        "notANumber": "{{fieldName}} must be a number",
+        "approval_failed": "Setting allowance permission in wallet app failed. Reason: {{error}}",
+        "transaction_failed": "The blockchain transaction failed. Reason: {{error}}",
+        "allowance_revoke_notice": "Due to the failed transaction, there might be a pending allowance on your wallet. For more information on this, please have a look"
+    },
+    "coins_sent": "Some coins have been sent to your wallet for testing purposes",
+    "wait_for_coins": "Please wait for the coints to be sent to your wallet. This might take some seconds. Do not leave the page of close the browser window"
+}
