@@ -17,16 +17,17 @@ export const etheriscTheme = createTheme({
         },
         primary: {
             // light: will be calculated from palette.primary.main,
-            main: '#2B66EE',
+            // main: '#41D895',
+            main: 'hsl(153, 56%, 55%)',
             // dark: will be calculated from palette.primary.main,
-            // contrastText: will be calculated to contrast with palette.primary.main
+            contrastText: "#fff"
         },
         secondary: {
             // light: will be calculated from palette.secondary.main,
-            main: "#9577F7",
+            main: "#F8B83A",
             // dark: will be calculated from palette.secondary.main,
             // contrastText: will be calculated to contrast with palette.secondary.main
-            contrastText: "#fff"
+            // contrastText: "#fff"
         },
     },
 });
