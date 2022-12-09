@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/typescript-node
 {
-	"name": "gif-staking-ui",
+	"name": "staking-ui",
 	"build": {
 		"dockerfile": "Dockerfile",
 		// Update 'VARIANT' to pick a Node version: 18, 16, 14.
@@ -53,6 +53,6 @@
 	},
 
 	"mounts": [
-		"source=gif-staking-ui-node_modules,target=/workspaces/gif-staking-ui/node_modules,type=volume"
+		"source=staking-ui-node_modules,target=/workspaces/staking-ui/node_modules,type=volume"
 	]
 }

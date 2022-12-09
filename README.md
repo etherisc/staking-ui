@@ -1,8 +1,8 @@
-![Build](https://github.com/etherisc/gif-staking-ui/actions/workflows/build.yml/badge.svg)
+![Build](https://github.com/etherisc/staking-ui/actions/workflows/build.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![](https://dcbadge.vercel.app/api/server/cVsgakVG4R?style=flat)](https://discord.gg/Qb6ZjgE8)
 
-# gif-staking-ui 
+# staking-ui 
 
 This repository contains the source code for web application for staking
 
