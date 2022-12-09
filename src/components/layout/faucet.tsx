@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/app_context";
 import { Button } from '@mui/material';
 import Typography from '@mui/material/Typography'
-// import { DepegProduct__factory } from "../../contracts/depeg-contracts";
 import { useSnackbar } from 'notistack';
 import { useTranslation } from "next-i18next";
 
@@ -10,7 +9,7 @@ export default function Faucet() {
     const appContext = useContext(AppContext);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { t } = useTranslation('common');
-    const currency = process.env.NEXT_PUBLIC_DEPEG_USD2;
+    const currency = process.env.NEXT_PUBLIC_DIP_SYMBOL;
 
     const [ address, setAddress ] = useState<string|undefined>(undefined);
 
@@ -35,14 +34,6 @@ export default function Faucet() {
         return (
             <></>
         );
-    }
-
-    async function getTokenAddress() {
-        const depegProductContractAddress = process.env.NEXT_PUBLIC_DEPEG_CONTRACT_ADDRESS ?? "0x00";
-        // TODO: enable this
-        // const depegProduct = DepegProduct__factory.connect(depegProductContractAddress, appContext.data.signer!);
-        // return await depegProduct.getToken();
-        return "0x00";
     }
 
     async function useFaucet() {

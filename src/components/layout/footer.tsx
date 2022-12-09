@@ -13,7 +13,7 @@ export default function Footer() {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                bgcolor: "#C5D0DE",
+                bgcolor: "hsl(222,74%,96%)",
             }}>
                 <Box sx={{ py: 1, display: { 'xs': 'none', 'md': 'flex' } }} flexWrap="wrap" justifyContent="right" >
                     <Faucet />

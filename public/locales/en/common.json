@@ -35,5 +35,5 @@
         "allowance_revoke_notice": "Due to the failed transaction, there might be a pending allowance on your wallet. For more information on this, please have a look"
     },
     "coins_sent": "Some coins have been sent to your wallet for testing purposes",
-    "wait_for_coins": "Please wait for the coints to be sent to your wallet. This might take some seconds. Do not leave the page of close the browser window"
+    "wait_for_coins": "Please wait for the coins to be sent to your wallet. This might take some seconds. Do not leave the page of close the browser window"
 }
