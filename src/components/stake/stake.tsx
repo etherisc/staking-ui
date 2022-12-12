@@ -1,10 +1,16 @@
 import { Stepper, Step, StepLabel } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import { useContext, useState, useEffect } from "react";
+import { StakingApi } from "../../backend/staking_api";
 import { AppContext } from "../../context/app_context";
 import { Heading1 } from "../heading";
+import Bundles from "./bundles";
 
-export default function Stake() {
+interface StakeProps {
+    stakingApi: StakingApi;
+}
+
+export default function Stake(props: StakeProps) {
     const appContext = useContext(AppContext);
     const { t } = useTranslation(['stake', 'common']);
 
@@ -45,6 +51,12 @@ export default function Stake() {
                 );
             })}
         </Stepper>
+
+        <br />
+
+        <Bundles 
+            stakingApi={props.stakingApi}
+            />
     </>)
 }
 

@@ -18,6 +18,7 @@
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.16",
     "@mui/x-data-grid": "^5.17.14",
+    "@reduxjs/toolkit": "^1.9.1",
     "@walletconnect/web3-provider": "^1.8.0",
     "abi-coder": "^4.1.1",
     "canvas-confetti": "^1.6.0",
@@ -32,17 +33,18 @@
     "react-blockies": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.0.0",
+    "react-redux": "^8.0.5",
     "typescript": "^4.9.3"
   },
   "devDependencies": {
-    "@types/node": "^18.11.10",
-    "@types/react": "^18.0.26",
-    "@types/react-blockies": "^1.4.1",
-    "@types/react-dom": "^18.0.9",
     "@etherisc/depeg-contracts": "0.0.2-f91c3f8",
     "@etherisc/gif-interface": "2.0.0-a8c9822",
     "@typechain/ethers-v5": "^10.1.1",
     "@types/canvas-confetti": "^1.6.0",
+    "@types/node": "^18.11.10",
+    "@types/react": "^18.0.26",
+    "@types/react-blockies": "^1.4.1",
+    "@types/react-dom": "^18.0.9",
     "typechain": "^8.1.1"
   }
 }

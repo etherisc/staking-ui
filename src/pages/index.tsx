@@ -6,18 +6,19 @@ import { useSnackbar } from "notistack";
 import { AppContext } from "../context/app_context";
 import { useContext, useMemo } from "react";
 import Stake from '../components/stake/stake';
+import { getStakingApi } from '../backend/staking_api';
 
 export default function ApplicationPage() {
   const { enqueueSnackbar } = useSnackbar();
   const {t} = useTranslation('common');
   const appContext = useContext(AppContext);
 
-  // const insurance = useMemo(() => getInsuranceApi(
-  //   enqueueSnackbar,
-  //   t,
-  //   appContext.data.signer,
-  //   appContext.data.provider,
-  // ), [enqueueSnackbar, appContext, t]);
+  const stakingApi = useMemo(() => getStakingApi(
+    enqueueSnackbar,
+    t,
+    appContext.data.signer,
+    appContext.data.provider,
+  ), [enqueueSnackbar, appContext, t]);
   
   return (
     <>
@@ -25,7 +26,7 @@ export default function ApplicationPage() {
           <title>{t('apptitle')}</title>
       </Head>
       
-      <Stake />
+      <Stake stakingApi={stakingApi} />
     </>
   )
 }

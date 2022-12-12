@@ -14,6 +14,8 @@ import { getAndUpdateWalletAccount } from '../utils/wallet';
 import { ThemeProvider } from '@mui/material/styles';
 import { etheriscTheme } from '../config/theme';
 import Layout from '../components/layout/layout';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 
 
 export function App(appProps: AppProps) {
@@ -59,7 +61,9 @@ export function App(appProps: AppProps) {
         <CssBaseline enableColorScheme />
         <AppContext.Provider value={{ data, dispatch}} >
           <SnackbarProvider maxSnack={3}>
+            <Provider store={store}>
               <Layout {...appProps} />
+            </Provider>
           </SnackbarProvider>
         </AppContext.Provider>
       </ThemeProvider>
