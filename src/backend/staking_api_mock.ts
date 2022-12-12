@@ -19,24 +19,24 @@ export default function stakingApiMock(
                     id: "0x1234567890-1",
                     instanceId: "0x1234567890",
                     bundleId: 1,
-                    stakedAmount: parseEther("1000").valueOf(),
-                    supportingAmount: parseEther("10000").valueOf(),
+                    stakedAmount: parseEther("1000").toString(),
+                    supportingAmount: parseEther("10000").toString(),
                     state: BundleState.ACTIVE
                 } as BundleInfo,
                 {
                     id: "0x1234567890-2",
                     instanceId: "0x1234567890",
                     bundleId: 2,
-                    stakedAmount: parseEther("3000").valueOf(),
-                    supportingAmount: parseEther("30000").valueOf(),
+                    stakedAmount: parseEther("3000").toString(),
+                    supportingAmount: parseEther("30000").toString(),
                     state: BundleState.ACTIVE
                 } as BundleInfo,
                 {
                     id: "0x2345678901-1",
                     instanceId: "0x2345678901",
                     bundleId: 1,
-                    stakedAmount: parseEther("15000").valueOf(),
-                    supportingAmount: parseEther("150000").valueOf(),
+                    stakedAmount: parseEther("15000").toString(),
+                    supportingAmount: parseEther("150000").toString(),
                     state: BundleState.ACTIVE
                 } as BundleInfo,
             ];

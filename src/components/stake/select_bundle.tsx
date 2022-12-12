@@ -1,8 +1,8 @@
-import { Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/system/Box";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
-import { GridColDef } from "@mui/x-data-grid/models";
+import { GridCallbackDetails, GridColDef, GridSelectionModel } from "@mui/x-data-grid/models";
 import { BigNumber } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
@@ -12,14 +12,14 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { AppContext } from "../../context/app_context";
 import { BundleRowView } from "../../model/bundle_row_view";
-import { add, finishLoading, reset, startLoading } from "../../redux/slices/staking";
+import { add, bundleSelected, finishLoading, reset, startLoading } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 
-interface BundlesProps {
+interface SelectBundleProps {
     stakingApi: StakingApi;
 }
 
-export default function Bundles(props: BundlesProps) {
+export default function SelectBundle(props: SelectBundleProps) {
     const { t } = useTranslation(['stake', 'common']);
     const appContext = useContext(AppContext);
     const currency = props.stakingApi.currency();
@@ -29,9 +29,10 @@ export default function Bundles(props: BundlesProps) {
     const dispatch = useDispatch();
 
     const [ pageSize, setPageSize ] = useState(5);
+    const [ selectedBundle, setSelectedBundle ] = useState<BundleInfo | undefined>(undefined);
 
-    const convertBundles = useCallback((policies: BundleInfo[]): BundleRowView[] => {
-        return policies.map((bundle: BundleInfo) => {
+    const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
+        return bundles.map((bundle: BundleInfo) => {
             return {
                 id: bundle.id,
                 instanceId: bundle.instanceId,
@@ -57,9 +58,15 @@ export default function Bundles(props: BundlesProps) {
                 }
             );
         } else {
-            
+            dispatch(reset());
         }
     }, [appContext?.data.signer, props.stakingApi, dispatch]);
+
+    function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
+        const bi = bundles.find((bundle) => bundle.id === selectionModel[0]);
+        console.log(bi);
+        setSelectedBundle(bi);
+    }
 
     const columns: GridColDef[] = [
         { field: 'instanceId', headerName: t('table.header.instanceId'), flex: 1 },
@@ -90,7 +97,16 @@ export default function Bundles(props: BundlesProps) {
                 pageSize={pageSize}
                 rowsPerPageOptions={[5, 10, 20, 50]}
                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+                onSelectionModelChange={rowSelected}
                 />
+
+            <Grid container justifyContent="flex-end" sx={{ my: 2 }}>
+                <Button 
+                    variant="contained"
+                    disabled={selectedBundle === undefined}
+                    onClick={() => dispatch(bundleSelected(selectedBundle!))}
+                    >{t('action.continue')}</Button>
+            </Grid>
         </>
     );
 }
