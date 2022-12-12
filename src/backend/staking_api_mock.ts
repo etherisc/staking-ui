@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { SnackbarMessage, OptionsObject, SnackbarKey } from "notistack";
 import { BundleInfo, BundleState } from "./bundle_info";
@@ -7,9 +8,10 @@ export default function stakingApiMock(
     enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject) => SnackbarKey) 
     : StakingApi {
     return {
-        currency: (): string => {
-            return "DIP";
-        },
+        currency: (): string => { return "DIP"; },
+        currencyDecimals: (): number => { return 18; },
+        minStakedAmount: (): BigNumber => { return parseEther("1000"); },
+        maxStakedAmount: (): BigNumber => { return parseEther("100000"); },
         retrieveBundles: async (
             bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
             loadingFinished: () => void,

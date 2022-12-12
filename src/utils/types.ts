@@ -1,1 +1,3 @@
-export type FormNumber = number | undefined;
+import { BigNumber } from "ethers";
+
+export type FormNumber = number | BigNumber | undefined;

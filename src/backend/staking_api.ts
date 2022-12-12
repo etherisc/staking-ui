@@ -1,4 +1,4 @@
-import { ethers, Signer } from "ethers";
+import { BigNumber, ethers, Signer } from "ethers";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import { BundleInfo } from "./bundle_info";
 import stakingApiMock from "./staking_api_mock";
@@ -6,6 +6,9 @@ import stakingApiMock from "./staking_api_mock";
 export interface StakingApi {
 
     currency(): string;
+    currencyDecimals(): number;
+    minStakedAmount(): BigNumber;
+    maxStakedAmount(): BigNumber;
     retrieveBundles: (
         bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
         loadingFinished: () => void,
