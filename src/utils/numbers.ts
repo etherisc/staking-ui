@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 import { FormNumber } from "./types";
 
 export const THOUSANDS_SEPARATOR = Intl.NumberFormat().format(11111).replace(/\p{Number}/gu, '');
@@ -10,6 +12,9 @@ export const USD2_DECIMALS = parseInt(process.env.NEXT_PUBLIC_DEPEG_USD1_DECIMAL
 export function formatCurrency(value: FormNumber, decimals: number, displayPrecision?: number): string {
     if (value === undefined) {
         return "";
+    }
+    if (value instanceof BigNumber) {
+        return formatEther(value);
     }
     return (value / Math.pow(10, decimals)).toLocaleString(undefined, { useGrouping: true, 
         minimumFractionDigits: displayPrecision || DISPLAY_PRECISION,
