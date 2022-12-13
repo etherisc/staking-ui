@@ -41,7 +41,7 @@ export const stakingSlice = createSlice({
         finishLoading: (state) => {
             state.isLoadingBundles = false;
         },
-        bundleSelected: (state, action: PayloadAction<BundleInfo>) => {
+        bundleSelected: (state, action: PayloadAction<BundleInfo|null>) => {
             state.step = 2;
             state.stakeingBundle = action.payload;
         }
