@@ -1,10 +1,28 @@
 {
-    "page_title": "Stake {{currency}}",
-    "step0": "Connect wallet",
-    "step1": "Select bundle",
-    "step2": "Enter amount",
-    "step3": "Stake",
-    "step4": "Confirm allowance",
-    "step5": "Confirm payment"
-    
+  "page_title": "Stake {{currency}}",
+  "step0": "Connect wallet",
+  "step1": "Select bundle",
+  "step2": "Enter amount",
+  "step3": "Stake",
+  "step4": "Confirm allowance",
+  "step5": "Confirm payment",
+  "action": {
+    "stake": "Stake"
+  },
+  "supportedAmount": "Supported Amount",
+  "stakedAmount": "Staked Amount",
+  "choose_bundle": "Please select to bundle to stake",
+  "table": {
+    "header": {
+      "instanceId": "Instance ID",
+      "bundleId": "Bundle ID",
+      "stakedAmount": "Staked Amount",
+      "supportingAmount": "Supporting Amount",
+      "state": "State"
+    }
+  },
+  "bundle_information": "Bundle Information",
+  "instance_id": "Instance ID",
+  "bundle_id": "Bundle ID",
+  "bundle_state": "State"
 }

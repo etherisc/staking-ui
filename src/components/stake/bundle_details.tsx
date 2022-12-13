@@ -33,7 +33,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
                 {t('bundle_state')}
             </Grid>
             <Grid item xs={6} md={2}>
-                {props.bundle.state}
+                {t(`bundle_state_${props.bundle.state}`, { ns: "common" })}
             </Grid>
         </Grid>
     </>);

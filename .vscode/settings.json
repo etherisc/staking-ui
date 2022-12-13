@@ -20,4 +20,8 @@
         "titleBar.inactiveBackground": "#365e4b99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
+    "i18n-ally.localesPaths": [
+        "public/locales"
+    ],
+    "i18n-ally.keystyle": "nested",
 }

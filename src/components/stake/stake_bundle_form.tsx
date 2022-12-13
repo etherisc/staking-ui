@@ -96,7 +96,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                     color="primary"
                     onClick={back}
                     >
-                    {t('action.back')}
+                    {t('action.back', { ns: "common" })}
                 </Button>
             </Grid>
             <Grid item xs={6}>

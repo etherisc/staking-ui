@@ -39,7 +39,7 @@ export default function SelectBundle(props: SelectBundleProps) {
                 bundleId: bundle.bundleId.toString(),
                 stakedAmount: `${currency} ${formatEther(BigNumber.from(bundle.stakedAmount))}`,
                 supportingAmount: `${currency} ${formatEther(BigNumber.from(bundle.supportingAmount))}`,
-                state: t('bundle_state_' + bundle.state, { ns: 'common'}),
+                state: t(`bundle_state_${bundle.state}`, { ns: 'common'}),
             } as BundleRowView;
         });
     }, [t, currency]);
@@ -105,7 +105,7 @@ export default function SelectBundle(props: SelectBundleProps) {
                     variant="contained"
                     disabled={selectedBundle === undefined}
                     onClick={() => dispatch(bundleSelected(selectedBundle!))}
-                    >{t('action.continue')}</Button>
+                    >{t('action.continue', { ns: "common" })}</Button>
             </Grid>
         </>
     );
