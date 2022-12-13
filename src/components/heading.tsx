@@ -16,6 +16,6 @@ export function Heading1(props: HeadingProps) {
 
 export function Heading2(props: HeadingProps) {    
     return (
-        <Typography variant="h6" mb={2}>{props.children}</Typography>
+        <Typography variant="h6">{props.children}</Typography>
     );
 }

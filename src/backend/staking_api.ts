@@ -13,7 +13,10 @@ export interface StakingApi {
         bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
         loadingFinished: () => void,
     ) => Promise<void>;
-
+    calculateSupportedAmount: (
+        amount: BigNumber,
+        bundle: BundleInfo,
+    ) => Promise<BigNumber>;
 }
 
 export function getStakingApi(

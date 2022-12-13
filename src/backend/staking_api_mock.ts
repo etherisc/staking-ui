@@ -46,6 +46,10 @@ export default function stakingApiMock(
             bundles.forEach(async (bundle) => bundleRetrieved(bundle));
             loadingFinished();
             return Promise.resolve();
-        }
+        },
+        calculateSupportedAmount(amount, bundle) {
+            console.log(amount);
+            return Promise.resolve(amount.mul(10));
+        },
     }
 }

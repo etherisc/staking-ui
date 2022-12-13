@@ -12,8 +12,11 @@ export default function BundleDetails(props: BundleDetailsProps) {
     const { t } = useTranslation(['stake', 'common']);
     
     return (<>
-        <Heading2>{t('bundle_information')}</Heading2>
-        <Grid container spacing={2}>
+        <Grid container maxWidth={{ 'xs': 'none', 'md': 'md'}} spacing={4} 
+            sx={{ p: 1, ml: { 'xs': 'none', 'md': 'auto'}, mr: { 'xs': 'none', 'md': 'auto'} }} >
+            <Grid item xs={12}>
+                <Heading2>{t('bundle_information')}</Heading2>
+            </Grid>
             <Grid item xs={6} md={2}>
                 {t('instance_id')}
             </Grid>

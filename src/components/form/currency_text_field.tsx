@@ -1,6 +1,7 @@
 import { InputProps } from "@mui/material/Input";
 import TextField from "@mui/material/TextField";
 import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { THOUSANDS_SEPARATOR } from "../../utils/numbers";
@@ -59,10 +60,10 @@ export default function CurrencyTextField(props: CurrencyTextfieldProps) {
         handleError(error);
     }
 
-    function parseDisplayValue(toParse: string) {
+    function parseDisplayValue(toParse: string): BigNumber | undefined {
         if (toParse !== undefined && toParse !== "") {
             console.log("THOUSANDS_SEPARATOR", THOUSANDS_SEPARATOR);
-            return parseFloat(toParse.replaceAll(THOUSANDS_SEPARATOR, '')) * Math.pow(10, currencyDecimals)
+            return parseEther(toParse.replaceAll(THOUSANDS_SEPARATOR, ''));
         } else {
             return undefined;
         }
@@ -98,12 +99,10 @@ export default function CurrencyTextField(props: CurrencyTextfieldProps) {
         if (Number.isNaN(valueToValidate)) {
             return t('error.notANumber', { fieldName: label });
         }
-        if ((valueToValidate instanceof BigNumber && valueToValidate.lt(minValue))
-            || (valueToValidate < minValue)) {
+        if (valueToValidate instanceof BigNumber && valueToValidate.lt(minValue)) {
             return t('error.currencyTextFieldMinValue', { fieldName: label, amount: formatCurrency(minValue, currencyDecimals), currency: currency });
         } 
-        if ((valueToValidate instanceof BigNumber && valueToValidate.gt(maxValue))
-            || ( valueToValidate > maxValue)) {
+        if (valueToValidate instanceof BigNumber && valueToValidate.gt(maxValue)) {
             return t('error.currencyTextFieldMaxValue', { fieldName: label, amount: formatCurrency(maxValue, currencyDecimals), currency: currency });
         }
         if (extraValidation !== undefined) {

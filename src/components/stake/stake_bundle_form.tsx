@@ -1,8 +1,10 @@
 import { Button, Grid, InputAdornment, TextField } from "@mui/material";
+import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import { formatCurrency } from "../../utils/numbers";
 import { FormNumber } from "../../utils/types";
 import CurrencyTextField from "../form/currency_text_field";
 import { INPUT_VARIANT } from "../form/numeric_text_field";
@@ -25,8 +27,17 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
 
     const [ supportedAmount, setSupportedAmount ] = useState("");
 
+    async function calculateSupportedAmount() {
+        if (stakedAmountValid && stakedAmount !== undefined) {
+            const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
+            setSupportedAmount(formatCurrency(supportedAmount, currencyDecimals));
+        } else {
+            setSupportedAmount('');
+        }
+    }
+
     return (<>
-        <Grid container maxWidth={{ 'xs': 'none', 'md': 'md'}} spacing={4} mt={{ 'xs': 0, 'md': 2 }} 
+        <Grid container maxWidth={{ 'xs': 'none', 'md': 'md'}} spacing={4}
             sx={{ p: 1, ml: { 'xs': 'none', 'md': 'auto'}, mr: { 'xs': 'none', 'md': 'auto'} }} >
             <Grid item xs={12}>
                 <CurrencyTextField
@@ -42,7 +53,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                     currency={currency}
                     currencyDecimals={currencyDecimals}
                     onChange={setStakedAmount}
-                    // TODO: onBlur={calculatePremium}
+                    onBlur={calculateSupportedAmount}
                     minValue={stakedAmountMin}
                     maxValue={stakedAmountMax}
                     onError={(errMsg) => setStakedAmountValid(errMsg === "")}
