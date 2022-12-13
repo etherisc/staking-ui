@@ -5,9 +5,9 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { FormNumber } from "../../utils/types";
 
 export interface NumericTextFieldProps {
-    value: FormNumber;
+    value: number|undefined;
     unit: string;
-    onChange: (value: FormNumber) => void;
+    onChange: (value: number|undefined) => void;
     onBlur?: () => void;
     disabled: boolean;
     readOnly?: boolean;
@@ -18,7 +18,7 @@ export interface NumericTextFieldProps {
     inputProps: InputProps;
     minValue: number;
     maxValue: number;
-    extraValidation?: (value: number) => string;
+    extraValidation?: (value: number|undefined) => string;
     onError?: (errorMsg: string) => void;
 }
 
