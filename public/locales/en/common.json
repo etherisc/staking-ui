@@ -46,7 +46,9 @@
     "header": {
       "instanceId": "Instance ID",
       "bundleId": "Bundle ID",
+      "myStakedAmount": "Staked Amount (Mine/Total)",
       "stakedAmount": "Staked Amount",
+      "mySupportingAmount": "Supporting Amount (Mine/Total)",
       "supportingAmount": "Supporting Amount",
       "state": "State"
     }

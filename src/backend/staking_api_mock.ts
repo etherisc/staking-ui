@@ -10,7 +10,9 @@ const BUNDLES = [
         id: "0x1234567890-1",
         instanceId: "0x1234567890",
         bundleId: 1,
+        myStakedAmount: parseEther("100").toString(),
         stakedAmount: parseEther("1000").toString(),
+        mySupportingAmount: parseEther("1000").toString(),
         supportingAmount: parseEther("10000").toString(),
         state: BundleState.ACTIVE
     } as BundleInfo,
@@ -18,7 +20,9 @@ const BUNDLES = [
         id: "0x1234567890-2",
         instanceId: "0x1234567890",
         bundleId: 2,
+        myStakedAmount: "0",
         stakedAmount: parseEther("3000").toString(),
+        mySupportingAmount: "0",
         supportingAmount: parseEther("30000").toString(),
         state: BundleState.ACTIVE
     } as BundleInfo,
@@ -26,7 +30,9 @@ const BUNDLES = [
         id: "0x2345678901-1",
         instanceId: "0x2345678901",
         bundleId: 1,
+        myStakedAmount: parseEther("2300").toString(),
         stakedAmount: parseEther("15000").toString(),
+        mySupportingAmount: parseEther("23000").toString(),
         supportingAmount: parseEther("150000").toString(),
         state: BundleState.ACTIVE
     } as BundleInfo,

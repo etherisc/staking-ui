@@ -14,6 +14,7 @@ interface BundleStakesProps {
     isBundlesLoading: boolean;
     onBundleSelected?: (bundle: BundleInfo) => void;
     disableSelection?: boolean;
+    showMyAmounts?: boolean;
 }
 
 export default function BundleStakes(props: BundleStakesProps) {
@@ -24,16 +25,23 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
         return bundles.map((bundle: BundleInfo) => {
+            let stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.stakedAmount))}`;
+            let supportingAmount = `${currency} ${formatEther(BigNumber.from(bundle.supportingAmount))}`;
+            if (props.showMyAmounts !== undefined && props.showMyAmounts) {
+                stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.myStakedAmount))} / ${stakedAmount}`;
+                supportingAmount = `${currency} ${formatEther(BigNumber.from(bundle.mySupportingAmount))} / ${supportingAmount}`;
+            }
+
             return {
                 id: bundle.id,
                 instanceId: bundle.instanceId,
                 bundleId: bundle.bundleId.toString(),
-                stakedAmount: `${currency} ${formatEther(BigNumber.from(bundle.stakedAmount))}`,
-                supportingAmount: `${currency} ${formatEther(BigNumber.from(bundle.supportingAmount))}`,
+                stakedAmount: stakedAmount,
+                supportingAmount: supportingAmount,
                 state: t(`bundle_state_${bundle.state}`, { ns: 'common'}),
             } as BundleRowView;
         });
-    }, [t, currency]);
+    }, [t, currency, props.showMyAmounts]);
 
 
     function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
@@ -48,11 +56,18 @@ export default function BundleStakes(props: BundleStakesProps) {
         }
     }
 
-    const columns: GridColDef[] = [
+    let stakedAmountHeader = t('table.header.stakedAmount');
+    let supportingAmountHeader = t('table.header.supportingAmount');
+    if (props.showMyAmounts !== undefined && props.showMyAmounts) {
+        stakedAmountHeader = t('table.header.myStakedAmount');
+        supportingAmountHeader = t('table.header.mySupportingAmount');
+    }
+
+    const columns: Array<GridColDef> = [
         { field: 'instanceId', headerName: t('table.header.instanceId'), flex: 1 },
         { field: 'bundleId', headerName: t('table.header.bundleId'), flex: 1 },
-        { field: 'stakedAmount', headerName: t('table.header.stakedAmount'), flex: 1 },
-        { field: 'supportingAmount', headerName: t('table.header.supportingAmount'), flex: 1 },
+        { field: 'stakedAmount', headerName: stakedAmountHeader, flex: 1 },
+        { field: 'supportingAmount', headerName: supportingAmountHeader, flex: 1 },
         { field: 'state', headerName: t('table.header.state'), flex: 1 },
     ];
 
