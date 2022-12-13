@@ -2,6 +2,7 @@ import { Stepper, Step, StepLabel, Button } from "@mui/material";
 import confetti from "canvas-confetti";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { SnackbarKey, useSnackbar } from "notistack";
 import { useContext, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,10 +27,11 @@ export default function Stake(props: StakeProps) {
     const appContext = useContext(AppContext);
     const { t } = useTranslation(['stake', 'common']);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+    const router = useRouter();
+    const dispatch = useDispatch();
+    
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
-    const dispatch = useDispatch();
 
     const currencyDecimals = parseInt(process.env.NEXT_PUBLIC_DIP_DECIMALS ?? '18');
 
@@ -42,6 +44,7 @@ export default function Stake(props: StakeProps) {
             dispatch(setStep(0));
         } else if (activeStep < 1 && appContext.data.signer !== undefined) {
             dispatch(setStep(1));
+        // TODO: reenable this
         // } else if (activeStep == 1 && readyToStake) {
         //     setActiveStep(2);
         // } else if (activeStep == 2 && !readyToBuy) { 
@@ -213,8 +216,7 @@ export default function Stake(props: StakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
-        // redirect to policy list
-        // TODO: router.push("/policies");
+        router.push("/stakes");
     }
 
     function enableUnloadWarning(enable: boolean) {

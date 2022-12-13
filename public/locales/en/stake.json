@@ -12,15 +12,6 @@
   "supportedAmount": "Supported Amount",
   "stakedAmount": "Staked Amount",
   "choose_bundle": "Please select to bundle to stake",
-  "table": {
-    "header": {
-      "instanceId": "Instance ID",
-      "bundleId": "Bundle ID",
-      "stakedAmount": "Staked Amount",
-      "supportingAmount": "Supporting Amount",
-      "state": "State"
-    }
-  },
   "bundle_information": "Bundle Information",
   "instance_id": "Instance ID",
   "bundle_id": "Bundle ID",

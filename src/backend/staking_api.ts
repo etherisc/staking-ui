@@ -30,6 +30,11 @@ export interface StakingApi {
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;
+    retrieveStakesForWallet: (
+        address: string,
+        bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
+        loadingFinished: () => void,
+    ) => Promise<void>;
 }
 
 export function getStakingApi(

@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import stakingReducer from './slices/staking';
+import stakesReducer from './slices/stakes';
 
 export const store = configureStore({
     reducer: {
         staking: stakingReducer,
+        stakes: stakesReducer,
     },
 })
 

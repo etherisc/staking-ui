@@ -8,7 +8,7 @@ import { useContext, useMemo } from "react";
 import Stake from '../components/stake/stake';
 import { getStakingApi } from '../backend/staking_api';
 
-export default function ApplicationPage() {
+export default function StakePage() {
   const { enqueueSnackbar } = useSnackbar();
   const {t} = useTranslation('common');
   const appContext = useContext(AppContext);

@@ -41,5 +41,14 @@
   "bundle_state_0": "Active",
   "bundle_state_1": "Locked",
   "bundle_state_2": "Closed",
-  "bundle_state_3": "Burned"
+  "bundle_state_3": "Burned",
+  "table": {
+    "header": {
+      "instanceId": "Instance ID",
+      "bundleId": "Bundle ID",
+      "stakedAmount": "Staked Amount",
+      "supportingAmount": "Supporting Amount",
+      "state": "State"
+    }
+  }
 }

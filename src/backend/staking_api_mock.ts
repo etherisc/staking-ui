@@ -5,6 +5,33 @@ import { delay } from "../utils/delay";
 import { BundleInfo, BundleState } from "./bundle_info";
 import { StakingApi } from "./staking_api";
 
+const BUNDLES = [
+    {
+        id: "0x1234567890-1",
+        instanceId: "0x1234567890",
+        bundleId: 1,
+        stakedAmount: parseEther("1000").toString(),
+        supportingAmount: parseEther("10000").toString(),
+        state: BundleState.ACTIVE
+    } as BundleInfo,
+    {
+        id: "0x1234567890-2",
+        instanceId: "0x1234567890",
+        bundleId: 2,
+        stakedAmount: parseEther("3000").toString(),
+        supportingAmount: parseEther("30000").toString(),
+        state: BundleState.ACTIVE
+    } as BundleInfo,
+    {
+        id: "0x2345678901-1",
+        instanceId: "0x2345678901",
+        bundleId: 1,
+        stakedAmount: parseEther("15000").toString(),
+        supportingAmount: parseEther("150000").toString(),
+        state: BundleState.ACTIVE
+    } as BundleInfo,
+];
+
 export default function stakingApiMock(
     enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject) => SnackbarKey) 
     : StakingApi {
@@ -17,34 +44,7 @@ export default function stakingApiMock(
             bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
             loadingFinished: () => void,
         ): Promise<void> => {
-            const bundles = [
-                {
-                    id: "0x1234567890-1",
-                    instanceId: "0x1234567890",
-                    bundleId: 1,
-                    stakedAmount: parseEther("1000").toString(),
-                    supportingAmount: parseEther("10000").toString(),
-                    state: BundleState.ACTIVE
-                } as BundleInfo,
-                {
-                    id: "0x1234567890-2",
-                    instanceId: "0x1234567890",
-                    bundleId: 2,
-                    stakedAmount: parseEther("3000").toString(),
-                    supportingAmount: parseEther("30000").toString(),
-                    state: BundleState.ACTIVE
-                } as BundleInfo,
-                {
-                    id: "0x2345678901-1",
-                    instanceId: "0x2345678901",
-                    bundleId: 1,
-                    stakedAmount: parseEther("15000").toString(),
-                    supportingAmount: parseEther("150000").toString(),
-                    state: BundleState.ACTIVE
-                } as BundleInfo,
-            ];
-
-            bundles.forEach(async (bundle) => bundleRetrieved(bundle));
+            BUNDLES.forEach(async (bundle) => bundleRetrieved(bundle));
             loadingFinished();
             return Promise.resolve();
         },
@@ -61,6 +61,11 @@ export default function stakingApiMock(
             enqueueSnackbar(`Stake mocked (${instanceId}, ${bundleId}, ${formatEther(stakedAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);
+        },
+        async retrieveStakesForWallet(address: string, bundleRetrieved: ((bundle: BundleInfo) => Promise<void>), loadingFinished: () => void) {
+            BUNDLES.forEach(async (bundle) => bundleRetrieved(bundle));
+            loadingFinished();
+            return Promise.resolve();
         }
     }
 }
