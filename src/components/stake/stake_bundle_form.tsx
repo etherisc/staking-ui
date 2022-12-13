@@ -14,11 +14,11 @@ import { INPUT_VARIANT } from "../form/numeric_text_field";
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
+    stake: (amount: BigNumber, bundle: BundleInfo) => void;
 }
 
 export default function StakeBundleForm(props: StakeBundleFormProps) {
     const { t } = useTranslation(['stake', 'common']);
-    const onSubmit = (data: any) => console.log(data);
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
@@ -106,6 +106,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                     variant="contained" 
                     color="primary"
                     disabled={!stakedAmountValid}
+                    onClick={() => props.stake(stakedAmount!, props.bundle)}
                     >
                     {t('action.stake')}
                 </Button>

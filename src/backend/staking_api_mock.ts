@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
-import { parseEther } from "ethers/lib/utils";
+import { formatEther, parseEther } from "ethers/lib/utils";
 import { SnackbarMessage, OptionsObject, SnackbarKey } from "notistack";
+import { delay } from "../utils/delay";
 import { BundleInfo, BundleState } from "./bundle_info";
 import { StakingApi } from "./staking_api";
 
@@ -51,5 +52,15 @@ export default function stakingApiMock(
             console.log(amount);
             return Promise.resolve(amount.mul(10));
         },
+        async createTreasuryApproval(walletAddress: string, premium: BigNumber) {
+            enqueueSnackbar(`Approval mocked (${walletAddress}, ${formatEther(premium)}`,  { autoHideDuration: 3000, variant: 'info' });
+            await delay(2000);
+            return Promise.resolve(true);
+        },
+        async stake(instanceId: string, bundleId: number, stakedAmount: BigNumber) {
+            enqueueSnackbar(`Stake mocked (${instanceId}, ${bundleId}, ${formatEther(stakedAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
+            await delay(2000);
+            return Promise.resolve(true);
+        }
     }
 }
