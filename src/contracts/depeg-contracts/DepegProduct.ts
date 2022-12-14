@@ -79,7 +79,9 @@ export interface DepegProductInterface extends utils.Interface {
     "getPayoutDataStructure()": FunctionFragment;
     "getPolicyFlow()": FunctionFragment;
     "getPolicyId(uint256)": FunctionFragment;
+    "getPriceDataProvider()": FunctionFragment;
     "getProcessId(address,uint256)": FunctionFragment;
+    "getProtectedToken()": FunctionFragment;
     "getRegistry()": FunctionFragment;
     "getRiskpoolId()": FunctionFragment;
     "getState()": FunctionFragment;
@@ -129,7 +131,9 @@ export interface DepegProductInterface extends utils.Interface {
       | "getPayoutDataStructure"
       | "getPolicyFlow"
       | "getPolicyId"
+      | "getPriceDataProvider"
       | "getProcessId"
+      | "getProtectedToken"
       | "getRegistry"
       | "getRiskpoolId"
       | "getState"
@@ -240,8 +244,16 @@ export interface DepegProductInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPriceDataProvider",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getProcessId",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getProtectedToken",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getRegistry",
@@ -389,7 +401,15 @@ export interface DepegProductInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getPriceDataProvider",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getProcessId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getProtectedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -838,11 +858,19 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string] & { processId: string }>;
 
+    getPriceDataProvider(
+      overrides?: CallOverrides
+    ): Promise<[string] & { priceDataProvider: string }>;
+
     getProcessId(
       policyHolder: PromiseOrValue<string>,
       idx: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string] & { processId: string }>;
+
+    getProtectedToken(
+      overrides?: CallOverrides
+    ): Promise<[string] & { protectedToken: string }>;
 
     getRegistry(overrides?: CallOverrides): Promise<[string]>;
 
@@ -998,11 +1026,15 @@ export interface DepegProduct extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getPriceDataProvider(overrides?: CallOverrides): Promise<string>;
+
   getProcessId(
     policyHolder: PromiseOrValue<string>,
     idx: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getProtectedToken(overrides?: CallOverrides): Promise<string>;
 
   getRegistry(overrides?: CallOverrides): Promise<string>;
 
@@ -1150,11 +1182,15 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getPriceDataProvider(overrides?: CallOverrides): Promise<string>;
+
     getProcessId(
       policyHolder: PromiseOrValue<string>,
       idx: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getProtectedToken(overrides?: CallOverrides): Promise<string>;
 
     getRegistry(overrides?: CallOverrides): Promise<string>;
 
@@ -1424,11 +1460,15 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPriceDataProvider(overrides?: CallOverrides): Promise<BigNumber>;
+
     getProcessId(
       policyHolder: PromiseOrValue<string>,
       idx: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getProtectedToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRegistry(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1591,11 +1631,17 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getPriceDataProvider(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getProcessId(
       policyHolder: PromiseOrValue<string>,
       idx: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getProtectedToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getRegistry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
