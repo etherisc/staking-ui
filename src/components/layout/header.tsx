@@ -35,18 +35,27 @@ export default function Header() {
         );
     }
 
+    let links = [];
+    let listitems = [];
 
-    // const drawer = (
-    //     <Box onClick={handleDrawerToggle} >
-    //         <Typography variant="h6" sx={{ my: 2, pl: 2 }}>
-    //             {t('apptitle_short')}
-    //         </Typography>
-    //         <Divider />
-    //         <List>
-    //             {listitems}
-    //         </List>
-    //     </Box>
-    // );
+    links.push(<HeaderLink text={t('nav.link.stakes')} href="/stakes" key="stakes" />);
+    listitems.push(getListItem(t('nav.link.stakes'), '/stakes'));
+
+    links.push(<HeaderLink text={t('nav.link.stake')} href="/" key="stake" />);
+    listitems.push(getListItem(t('nav.link.stake'), '/'));
+    
+
+    const drawer = (
+        <Box onClick={handleDrawerToggle} >
+            <Typography variant="h6" sx={{ my: 2, pl: 2 }}>
+                {t('apptitle_short')}
+            </Typography>
+            <Divider />
+            <List>
+                {listitems}
+            </List>
+        </Box>
+    );
 
     return (<>
         <Box>
@@ -73,8 +82,7 @@ export default function Header() {
                         
                         {/* links only shown on desktop */}
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 1 }}>
-                            {/* {links} */}
-                            &nbsp;
+                            {links}
                         </Box>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, ml: 1 }}>
@@ -88,7 +96,7 @@ export default function Header() {
                     </Toolbar>
                 </Container>
             </AppBar>
-            {/* <Box component="nav">
+            <Box component="nav">
                 <Drawer
                     variant="temporary"
                     open={mobileOpen}
@@ -103,7 +111,7 @@ export default function Header() {
                     >
                     {drawer}
                 </Drawer>
-            </Box> */}
+            </Box>
         </Box>
     </>);    
 
