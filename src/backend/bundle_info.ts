@@ -4,6 +4,7 @@ export type BundleInfo = {
     id: string;
     instanceId: string;
     bundleId: number;
+    token: string;
     myStakedAmount: BigNumber;
     stakedAmount: BigNumber;
     mySupportingAmount: BigNumber;

@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import { useTranslation } from "next-i18next";
 import { Grid } from "@mui/material";
 import { Heading2 } from "../heading";
+import { formatInstanceId } from "../../utils/format";
 
 interface BundleDetailsProps {
     bundle: BundleInfo;
@@ -21,7 +22,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
                 {t('instance_id')}
             </Grid>
             <Grid item xs={6} md={2}>
-                {props.bundle.instanceId}
+                {formatInstanceId(props.bundle.instanceId)}
             </Grid>
             <Grid item xs={6} md={2}>
                 {t('bundle_id')}

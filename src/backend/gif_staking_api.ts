@@ -30,6 +30,7 @@ export default class GifStakingApi {
                 id: `${instanceId}-${bundleId}`,
                 instanceId: instanceId,
                 bundleId: bundleId.toNumber(),
+                token: token,
                 myStakedAmount: BigNumber.from(0),
                 stakedAmount: stakedAmount,
                 mySupportingAmount: BigNumber.from(0),
@@ -39,6 +40,11 @@ export default class GifStakingApi {
             console.log("bundleInfo", bundleInfo);
             await bundleRetrieved(bundleInfo);
         }
+    }
+
+    async calculateSupportedAmount(dipAmount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
+        const instanceInfo = await this.gifStaking.getInstanceInfo(bundle.instanceId);
+        return await this.gifStaking.calculateTokenAmountFromStaking(dipAmount, instanceInfo[1], bundle.token);
     }
 
 }

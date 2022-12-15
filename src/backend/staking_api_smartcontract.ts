@@ -48,8 +48,7 @@ export class StakingApiSmartContract implements StakingApi {
     }
     
     async calculateSupportedAmount(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
-        // TODO: implement
-        return Promise.resolve(BigNumber.from(0));
+        return this.gifStakingApi.calculateSupportedAmount(amount, bundle);
     }
     
     async createTreasuryApproval(
