@@ -15,5 +15,11 @@
   "bundle_information": "Bundle Information",
   "instance_id": "Instance ID",
   "bundle_id": "Bundle ID",
-  "bundle_state": "State"
+  "bundle_state": "State",
+  "approval_info": "To stake, the Staking contract at {{address}} needs permission to transfer {{currency}} {{amount}} to the staking pool. Please confirm this allowance in your wallet app.",
+  "approval_wait": "Allowance creating, wait for onchain confirmation",
+  "approval_failed": "",
+  "stake_info": "Please confirm execution of the stake transaction on contract {{address}} in your wallet app",
+  "stake_wait": "Transaction created, waiting for onchain confirmation"
 }
+

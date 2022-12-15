@@ -2,6 +2,7 @@ import { BigNumber, ethers, Signer } from "ethers";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import { BundleInfo } from "./bundle_info";
 import stakingApiMock from "./staking_api_mock";
+import { StakingApiSmartContract } from "./staking_api_smartcontract";
 
 export interface StakingApi {
 
@@ -17,15 +18,14 @@ export interface StakingApi {
         amount: BigNumber,
         bundle: BundleInfo,
     ) => Promise<BigNumber>;
-    createTreasuryApproval: (
+    createApproval: (
         walletAddress: string, 
         amount: BigNumber,
         beforeApprovalCallback?: (address: string, currency: string, amount: BigNumber) => void,
         beforeWaitCallback?: (address: string, currency: string, amount: BigNumber) => void
     ) => Promise<boolean>;
     stake: (
-        instanceId: string, 
-        number: number, 
+        bundle: BundleInfo,
         stakedAmount: BigNumber,
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
@@ -50,14 +50,12 @@ export function getStakingApi(
         return stakingApiMock(enqueueSnackbar);
     } else {
         console.log("Using smart contract @", stakingContractAddress);
-        // let api: InsuranceApiSmartContract;
-        // if (signer === undefined || provider === undefined) {
-        //     api = new InsuranceApiSmartContract(new ethers.VoidSigner(depegProductContractAddress, provider), depegProductContractAddress);
-        // } else {
-        //     api = new InsuranceApiSmartContract(signer, depegProductContractAddress);
-        // }
-        // return api;
-        // TODO: implement
-        return stakingApiMock(enqueueSnackbar);
+        let api: StakingApi;
+        if (signer === undefined || provider === undefined) {
+            api = new StakingApiSmartContract(new ethers.VoidSigner(stakingContractAddress, provider), stakingContractAddress);
+        } else {
+            api = new StakingApiSmartContract(signer, stakingContractAddress);
+        }
+        return api;
     }
 }

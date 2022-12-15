@@ -20,9 +20,9 @@ const BUNDLES = [
         id: "0x1234567890-2",
         instanceId: "0x1234567890",
         bundleId: 2,
-        myStakedAmount: "0",
+        myStakedAmount: parseEther("0").toString(),
         stakedAmount: parseEther("3000").toString(),
-        mySupportingAmount: "0",
+        mySupportingAmount: parseEther("0").toString(),
         supportingAmount: parseEther("30000").toString(),
         state: BundleState.ACTIVE
     } as BundleInfo,
@@ -58,13 +58,13 @@ export default function stakingApiMock(
             console.log(amount);
             return Promise.resolve(amount.mul(10));
         },
-        async createTreasuryApproval(walletAddress: string, premium: BigNumber) {
+        async createApproval(walletAddress: string, premium: BigNumber) {
             enqueueSnackbar(`Approval mocked (${walletAddress}, ${formatEther(premium)}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);
         },
-        async stake(instanceId: string, bundleId: number, stakedAmount: BigNumber) {
-            enqueueSnackbar(`Stake mocked (${instanceId}, ${bundleId}, ${formatEther(stakedAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
+        async stake(bundle: BundleInfo, stakedAmount: BigNumber) {
+            enqueueSnackbar(`Stake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${formatEther(stakedAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);
         },

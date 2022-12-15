@@ -3,7 +3,8 @@
   "apptitle_short": "DIP Staking",
   "nav": {
     "link": {
-      "apply": "Apply"
+      "stakes": "My Stakes",
+      "stake": "Stake DIP"
     }
   },
   "action": {

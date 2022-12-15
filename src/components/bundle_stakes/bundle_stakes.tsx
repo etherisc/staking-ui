@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { BundleRowView } from "../../model/bundle_row_view";
+import { formatInstanceId } from "../../utils/format";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -26,15 +27,16 @@ export default function BundleStakes(props: BundleStakesProps) {
     const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
         return bundles.map((bundle: BundleInfo) => {
             let stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.stakedAmount))}`;
-            let supportingAmount = `${currency} ${formatEther(BigNumber.from(bundle.supportingAmount))}`;
+            let supportingAmount = `${formatEther(BigNumber.from(bundle.supportingAmount))}`;
             if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-                stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.myStakedAmount))} / ${stakedAmount}`;
-                supportingAmount = `${currency} ${formatEther(BigNumber.from(bundle.mySupportingAmount))} / ${supportingAmount}`;
+                // TODO: show bundle token symbol
+                stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.myStakedAmount))} / ${stakedAmount}`; 
+                supportingAmount = `${formatEther(BigNumber.from(bundle.mySupportingAmount))} / ${supportingAmount}`;
             }
 
             return {
                 id: bundle.id,
-                instanceId: bundle.instanceId,
+                instanceId: formatInstanceId(bundle.instanceId),
                 bundleId: bundle.bundleId.toString(),
                 stakedAmount: stakedAmount,
                 supportingAmount: supportingAmount,
