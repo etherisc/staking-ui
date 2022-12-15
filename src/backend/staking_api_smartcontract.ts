@@ -2,14 +2,16 @@ import { BigNumber, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { parse } from "path";
 import { BundleInfo } from "./bundle_info";
+import GifStakingApi from "./gif_staking_api";
 import { StakingApi } from "./staking_api";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
+    private gifStakingApi: GifStakingApi;
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
-        // TODO: staking api contract instance
+        this.gifStakingApi = new GifStakingApi(signer, stakingContractAddress);
     }
 
     currency(): string {
@@ -32,7 +34,9 @@ export class StakingApiSmartContract implements StakingApi {
         bundleRetrieved: (bundle: BundleInfo) => Promise<void>, 
         loadingFinished: () => void
     ): Promise<void> {
-        // TODO: implement
+        console.log("StakingApiSmartContract.retrieveBundles");
+        await this.gifStakingApi.getStakleableBundles(bundleRetrieved);
+        loadingFinished();
     }
 
     async retrieveStakesForWallet(

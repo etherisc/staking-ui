@@ -4,10 +4,10 @@ export type BundleInfo = {
     id: string;
     instanceId: string;
     bundleId: number;
-    myStakedAmount: string;
-    stakedAmount: string;
-    mySupportingAmount: string;
-    supportingAmount: string;
+    myStakedAmount: BigNumber;
+    stakedAmount: BigNumber;
+    mySupportingAmount: BigNumber;
+    supportingAmount: BigNumber;
     state: BundleState;
 }
 

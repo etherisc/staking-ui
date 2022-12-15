@@ -28,7 +28,8 @@ export default function BundleStakes(props: BundleStakesProps) {
             let stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.stakedAmount))}`;
             let supportingAmount = `${currency} ${formatEther(BigNumber.from(bundle.supportingAmount))}`;
             if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-                stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.myStakedAmount))} / ${stakedAmount}`;
+                // TODO: show bundle token symbol
+                stakedAmount = `${formatEther(BigNumber.from(bundle.myStakedAmount))} / ${stakedAmount}`; 
                 supportingAmount = `${currency} ${formatEther(BigNumber.from(bundle.mySupportingAmount))} / ${supportingAmount}`;
             }
 
