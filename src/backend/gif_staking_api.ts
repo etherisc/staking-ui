@@ -14,7 +14,8 @@ export default class GifStakingApi {
     }
 
     async getStakleableBundles(
-        bundleRetrieved: (bundle: BundleInfo) => Promise<void>
+        bundleRetrieved: (bundle: BundleInfo) => Promise<void>,
+        myWallet?: string
     ): Promise<void> {
         const bundleCount = (await this.gifStaking.bundles()).toNumber();
         console.log("bundleCount", bundleCount);
@@ -25,15 +26,23 @@ export default class GifStakingApi {
                 await this.gifStaking.getBundleInfo(instanceId, bundleId);
             console.log(instanceId, bundleId.toNumber(), token);
             const stakedAmount = await this.gifStaking.getBundleStakes(instanceId, bundleId);
+            let myStakedAmount = BigNumber.from(0);
             const supportedAmount = await this.gifStaking.getSupportedCapitalAmount(instanceId, bundleId, token);
+            let mySupportingAmount = BigNumber.from(0);
+
+            if (myWallet !== undefined) {
+                myStakedAmount = await this.gifStaking["stakes(bytes32,uint256,address)"](instanceId, bundleId, myWallet);
+                mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, instanceId, token);
+            }
+
             const bundleInfo = {
                 id: `${instanceId}-${bundleId}`,
                 instanceId: instanceId,
                 bundleId: bundleId.toNumber(),
                 token: token,
-                myStakedAmount: "0",
+                myStakedAmount: myStakedAmount.toString(),
                 stakedAmount: stakedAmount.toString(),
-                mySupportingAmount: "0",
+                mySupportingAmount: mySupportingAmount.toString(),
                 supportingAmount: supportedAmount.toString(),
                 state: state,
             } as BundleInfo;
@@ -42,9 +51,9 @@ export default class GifStakingApi {
         }
     }
 
-    async calculateSupportedAmount(dipAmount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
-        const instanceInfo = await this.gifStaking.getInstanceInfo(bundle.instanceId);
-        return await this.gifStaking.calculateTokenAmountFromStaking(dipAmount, instanceInfo[1], bundle.token);
+    async calculateSupportedAmount(dipAmount: BigNumber, instanceId: string, token: string): Promise<BigNumber> {
+        const instanceInfo = await this.gifStaking.getInstanceInfo(instanceId);
+        return await this.gifStaking.calculateTokenAmountFromStaking(dipAmount, instanceInfo[1], token);
     }
 
     async stake(
