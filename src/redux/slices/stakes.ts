@@ -17,7 +17,10 @@ export const stakesSlice = createSlice({
     initialState,
     reducers: {
         add: (state, action: PayloadAction<BundleInfo>) => {
-            state.bundles.push(action.payload);
+            const hasBundle = state.bundles.find((bundle) => bundle.id === action.payload.id) !== undefined;
+            if (!hasBundle) {
+                state.bundles.push(action.payload);
+            }
         },
         reset: (state) => {
             state.bundles = [];

@@ -67,7 +67,7 @@ export default function Stake(props: StakeProps) {
                 return;
             }
             dispatch(setStep(5));
-            const applicationSuccess = await doStake(bundle.instanceId, bundle.bundleId, amount);
+            const applicationSuccess = await doStake(stakeingBundle!, amount);
             if ( ! applicationSuccess) {
                 dispatch(setStep(3));
                 showAllowanceNotice();
@@ -83,7 +83,7 @@ export default function Stake(props: StakeProps) {
     async function doApproval(walletAddress: string, amount: BigNumber): Promise<Boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
-            return await props.stakingApi.createTreasuryApproval(
+            return await props.stakingApi.createApproval(
                 walletAddress, 
                 amount, 
                 (address, currency, amount) => {
@@ -132,12 +132,11 @@ export default function Stake(props: StakeProps) {
         }
     }
 
-    async function doStake(instanceId: string, bundleId: number, stakedAmount: BigNumber): Promise<boolean> {
+    async function doStake(bundle: BundleInfo, stakedAmount: BigNumber): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
             return await props.stakingApi.stake(
-                instanceId,
-                bundleId,
+                bundle,
                 stakedAmount,
                 (address: string) => {
                     snackbar = enqueueSnackbar(

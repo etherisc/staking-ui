@@ -18,15 +18,14 @@ export interface StakingApi {
         amount: BigNumber,
         bundle: BundleInfo,
     ) => Promise<BigNumber>;
-    createTreasuryApproval: (
+    createApproval: (
         walletAddress: string, 
         amount: BigNumber,
         beforeApprovalCallback?: (address: string, currency: string, amount: BigNumber) => void,
         beforeWaitCallback?: (address: string, currency: string, amount: BigNumber) => void
     ) => Promise<boolean>;
     stake: (
-        instanceId: string, 
-        number: number, 
+        bundle: BundleInfo,
         stakedAmount: BigNumber,
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void

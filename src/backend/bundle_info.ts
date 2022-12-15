@@ -5,10 +5,11 @@ export type BundleInfo = {
     instanceId: string;
     bundleId: number;
     token: string;
-    myStakedAmount: BigNumber;
-    stakedAmount: BigNumber;
-    mySupportingAmount: BigNumber;
-    supportingAmount: BigNumber;
+    // numbers are stored as strings to avoid serialization issue with BigNumber
+    myStakedAmount: string;
+    stakedAmount: string;
+    mySupportingAmount: string;
+    supportingAmount: string;
     state: BundleState;
 }
 

@@ -1,5 +1,6 @@
-import { BigNumber, Signer } from "ethers";
+import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { IERC20, IERC20__factory } from "../contracts/gif-interface";
+import { ApprovalFailedError } from "../utils/error";
 
 export function getErc20Token(address: string, signer: Signer): IERC20 {
     return IERC20__factory.connect(address, signer);
@@ -18,4 +19,34 @@ export async function transferAmount(walletAddress: string, amountToTransfer: Bi
     const tx = await token.transfer(walletAddress, amountToTransfer);
     const rcpt = await tx.wait();
     return rcpt.status === 1;
+}
+
+
+export async function createDipApproval(
+    recipient: string,
+    amount: BigNumber, 
+    signer: Signer, 
+    beforeApprovalCallback?: (address: string, currency: string, amount: BigNumber) => void,
+    beforeWaitCallback?: (address: string, currency: string, amount: BigNumber) => void
+): Promise<[ContractTransaction, ContractReceipt]> {
+    const dipAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS!;
+    console.log(`creating treasury approval for ${amount} on token ${dipAddress}`);
+    const usd1 = getErc20Token(dipAddress, signer);
+    if (beforeApprovalCallback !== undefined) {
+        beforeApprovalCallback(recipient, "", amount); // TODO: currency symbol
+    }
+    try {
+        const tx = await usd1.approve(recipient, amount);
+        console.log("tx done", tx)
+        if (beforeWaitCallback !== undefined) {
+            beforeWaitCallback(recipient, "", amount); // TODO: currency symbol
+        }
+        const receipt = await tx.wait();
+        console.log("wait done", receipt, tx)
+        return [tx, receipt];
+    } catch (e) {
+        console.log("caught error during approval: ", e);
+        // @ts-ignore e.code
+        throw new ApprovalFailedError(e.code, e);
+    }
 }

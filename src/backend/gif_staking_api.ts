@@ -1,4 +1,4 @@
-import { BigNumber, Signer } from "ethers";
+import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { GifStaking, GifStaking__factory } from "../contracts/depeg-contracts";
 import { BundleInfo } from "./bundle_info";
@@ -31,10 +31,10 @@ export default class GifStakingApi {
                 instanceId: instanceId,
                 bundleId: bundleId.toNumber(),
                 token: token,
-                myStakedAmount: BigNumber.from(0),
-                stakedAmount: stakedAmount,
-                mySupportingAmount: BigNumber.from(0),
-                supportingAmount: supportedAmount,
+                myStakedAmount: "0",
+                stakedAmount: stakedAmount.toString(),
+                mySupportingAmount: "0",
+                supportingAmount: supportedAmount.toString(),
                 state: state,
             } as BundleInfo;
             console.log("bundleInfo", bundleInfo);
@@ -45,6 +45,33 @@ export default class GifStakingApi {
     async calculateSupportedAmount(dipAmount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
         const instanceInfo = await this.gifStaking.getInstanceInfo(bundle.instanceId);
         return await this.gifStaking.calculateTokenAmountFromStaking(dipAmount, instanceInfo[1], bundle.token);
+    }
+
+    async stake(
+        bundle: BundleInfo,
+        stakedAmount: BigNumber, 
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<[ContractTransaction, ContractReceipt]> {
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.gifStaking.address);
+        }
+        try {
+            const tx = await this.gifStaking.stake(bundle.instanceId, bundle.bundleId, stakedAmount);
+
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.gifStaking.address);
+            }
+            const receipt = await tx.wait();
+            // console.log(receipt);
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while applying for policy: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
+
+
     }
 
 }

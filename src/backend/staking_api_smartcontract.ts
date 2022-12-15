@@ -2,15 +2,18 @@ import { BigNumber, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { parse } from "path";
 import { BundleInfo } from "./bundle_info";
+import { createDipApproval } from "./erc20";
 import GifStakingApi from "./gif_staking_api";
 import { StakingApi } from "./staking_api";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
+    private stakingContractAddress: string;
     private gifStakingApi: GifStakingApi;
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
+        this.stakingContractAddress = stakingContractAddress;
         this.gifStakingApi = new GifStakingApi(signer, stakingContractAddress);
     }
 
@@ -51,25 +54,33 @@ export class StakingApiSmartContract implements StakingApi {
         return this.gifStakingApi.calculateSupportedAmount(amount, bundle);
     }
     
-    async createTreasuryApproval(
+    async createApproval(
         walletAddress: string, 
         amount: BigNumber, 
         beforeApprovalCallback?: ((address: string, currency: string, amount: BigNumber) => void) | undefined, 
         beforeWaitCallback?: ((address: string, currency: string, amount: BigNumber) => void) | undefined
     ): Promise<boolean> {
-        // TODO: implement
-        return Promise.resolve(true);
+        const [tx, receipt] = await createDipApproval(
+            this.stakingContractAddress, 
+            amount, 
+            this.signer, 
+            beforeApprovalCallback, 
+            beforeWaitCallback);
+        return receipt.status === 1;
     }
 
     async stake(
-        instanceId: string, 
-        number: number, 
+        bundle: BundleInfo,
         stakedAmount: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<boolean> {
-        // TODO: implement
-        return Promise.resolve(true);
+        const [tx, receipt] = await this.gifStakingApi.stake(
+            bundle,
+            stakedAmount, 
+            beforeTrxCallback, 
+            beforeWaitCallback);
+        return receipt.status === 1;
     }
     
 }
