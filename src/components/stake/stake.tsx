@@ -47,13 +47,6 @@ export default function Stake(props: StakeProps) {
             dispatch(setStep(0));
         } else if (activeStep < 1 && appContext.data.signer !== undefined) {
             dispatch(setStep(1));
-        // TODO: reenable this
-        // } else if (activeStep == 1 && readyToStake) {
-        //     setActiveStep(2);
-        // } else if (activeStep == 2 && !readyToBuy) { 
-        //     setActiveStep(1);
-        // } else if (activeStep > 4) { // application completed
-        //     setFormDisabled(true);
         }
     }, [appContext?.data.signer, activeStep, dispatch]);
 
