@@ -44,6 +44,8 @@ export default function Header() {
     links.push(<HeaderLink text={t('nav.link.stake')} href="/" key="stake" />);
     listitems.push(getListItem(t('nav.link.stake'), '/'));
     
+    links.push(<HeaderLink text={t('nav.link.unstake')} href="/unstake" key="unstake" />);
+    listitems.push(getListItem(t('nav.link.unstake'), '/unstake'));
 
     const drawer = (
         <Box onClick={handleDrawerToggle} >

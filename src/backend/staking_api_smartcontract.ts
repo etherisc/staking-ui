@@ -84,5 +84,24 @@ export class StakingApiSmartContract implements StakingApi {
             beforeWaitCallback);
         return receipt.status === 1;
     }
+
+    async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
+        return this.gifStakingApi.stakedAmount(bundle, address);
+    }
+
+    async unstake(
+        bundle: BundleInfo,
+        max: boolean,
+        unstakeAmount: BigNumber, 
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<boolean> {
+        const [tx, receipt] = await this.gifStakingApi.unstake(
+            bundle,
+            max ? undefined : unstakeAmount, 
+            beforeTrxCallback, 
+            beforeWaitCallback);
+        return receipt.status === 1;
+    }
     
 }

@@ -78,8 +78,41 @@ export default class GifStakingApi {
             // @ts-ignore e.code
             throw new TransactionFailedError(e.code, e);
         }
+    }
 
+    async unstake(
+        bundle: BundleInfo,
+        stakedAmount?: BigNumber, 
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<[ContractTransaction, ContractReceipt]> {
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.gifStaking.address);
+        }
+        try {
+            let tx;
 
+            if (stakedAmount === undefined) {
+                tx = await this.gifStaking["withdraw(bytes32,uint256)"](bundle.instanceId, bundle.bundleId);
+            } else {
+                tx = await this.gifStaking["withdraw(bytes32,uint256,uint256)"](bundle.instanceId, bundle.bundleId, stakedAmount);
+            }
+
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.gifStaking.address);
+            }
+            const receipt = await tx.wait();
+            // console.log(receipt);
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while applying for policy: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
+    }
+
+    async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
+        return await this.gifStaking["stakes(bytes32,uint256,address)"](bundle.instanceId, bundle.bundleId, address);
     }
 
 }

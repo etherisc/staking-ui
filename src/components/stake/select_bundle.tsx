@@ -1,29 +1,23 @@
 import { Button, Grid, Typography } from "@mui/material";
-import LinearProgress from "@mui/material/LinearProgress";
-import Box from "@mui/system/Box";
-import { DataGrid } from "@mui/x-data-grid/DataGrid";
-import { GridCallbackDetails, GridColDef, GridSelectionModel } from "@mui/x-data-grid/models";
-import { BigNumber } from "ethers";
-import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { AppContext } from "../../context/app_context";
-import { BundleRowView } from "../../model/bundle_row_view";
 import { add, bundleSelected, finishLoading, reset, startLoading } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 
 interface SelectBundleProps {
     stakingApi: StakingApi;
+    title?: string;
+    onlyStakesFromWallet?: boolean;
 }
 
 export default function SelectBundle(props: SelectBundleProps) {
     const { t } = useTranslation(['stake', 'common']);
     const appContext = useContext(AppContext);
-    const currency = props.stakingApi.currency();
 
     const bundles = useSelector((state: RootState) => state.staking.bundles);
     const isLoadingBundles = useSelector((state: RootState) => state.staking.isLoadingBundles);
@@ -32,18 +26,37 @@ export default function SelectBundle(props: SelectBundleProps) {
     const [ selectedBundle, setSelectedBundle ] = useState<BundleInfo | undefined>(undefined);
 
     useEffect(() => {
+        async function getBundles() {
+            if (props.onlyStakesFromWallet !== undefined && props.onlyStakesFromWallet === true) {
+                props.stakingApi.retrieveStakesForWallet(
+                    await appContext.data.signer!.getAddress(),
+                    (bundle: BundleInfo) => {
+                        if (bundle.myStakedAmount != "0") {
+                            dispatch(add(bundle));
+                        }
+                        return Promise.resolve();
+                    },
+                    () => {
+                        dispatch(finishLoading());
+                    }
+                );
+            } else {
+                props.stakingApi.retrieveBundles(
+                    (bundle: BundleInfo) => {
+                        dispatch(add(bundle));
+                        return Promise.resolve();
+                    },
+                    () => {
+                        dispatch(finishLoading());
+                    }
+                );    
+            }
+        }
+
         if (appContext.data.signer) {
             dispatch(startLoading());
             dispatch(reset());
-            props.stakingApi.retrieveBundles(
-                (bundle: BundleInfo) => {
-                    dispatch(add(bundle));
-                    return Promise.resolve();
-                },
-                () => {
-                    dispatch(finishLoading());
-                }
-            );
+            getBundles();
         } else {
             dispatch(reset());
         }
@@ -51,7 +64,7 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     return (
         <>
-            <Typography variant="body1" sx={{ my: 2 }}>{t('choose_bundle')}</Typography>
+            <Typography variant="body1" sx={{ my: 2 }}>{props.title ?? t('choose_bundle')}</Typography>
 
             <BundleStakes 
                 stakingApi={props.stakingApi}

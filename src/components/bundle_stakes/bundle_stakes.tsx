@@ -26,28 +26,6 @@ export default function BundleStakes(props: BundleStakesProps) {
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
 
-    // const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
-    //     return bundles.map((bundle: BundleInfo) => {
-    //         let stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.stakedAmount), currencyDecimals)}`;
-    //         let supportingAmount = `${formatCurrency(BigNumber.from(bundle.supportingAmount), currencyDecimals)}`;
-    //         if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-    //             // TODO: show bundle token symbol
-    //             stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.myStakedAmount), currencyDecimals)} / ${stakedAmount}`; 
-    //             supportingAmount = `${formatCurrency(BigNumber.from(bundle.mySupportingAmount), currencyDecimals)} / ${supportingAmount}`;
-    //         }
-
-    //         return {
-    //             id: bundle.id,
-    //             instanceId: formatInstanceId(bundle.instanceId),
-    //             bundleId: bundle.bundleId.toString(),
-    //             stakedAmount: stakedAmount,
-    //             supportingAmount: supportingAmount,
-    //             state: t(`bundle_state_${bundle.state}`, { ns: 'common'}),
-    //         } as BundleRowView;
-    //     });
-    // }, [t, currency, currencyDecimals, props.showMyAmounts]);
-
-
     function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
         const bi = props.bundles.find((bundle) => bundle.id === selectionModel[0]);
         if (bi === undefined) {

@@ -10,7 +10,7 @@ interface BundleDetailsProps {
 }
 
 export default function BundleDetails(props: BundleDetailsProps) {
-    const { t } = useTranslation(['stake', 'common']);
+    const { t } = useTranslation(['common']);
     
     return (<>
         <Grid container maxWidth={{ 'xs': 'none', 'md': 'md'}} spacing={4} 

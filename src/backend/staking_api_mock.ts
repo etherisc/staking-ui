@@ -72,6 +72,14 @@ export default function stakingApiMock(
             BUNDLES.forEach(async (bundle) => bundleRetrieved(bundle));
             loadingFinished();
             return Promise.resolve();
-        }
+        },
+        stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
+            return Promise.resolve(parseEther("10000"));
+        },
+        async unstake(bundle: BundleInfo, max:boolean, unstakeAmount: BigNumber) {
+            enqueueSnackbar(`Unstake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${formatEther(unstakeAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
+            await delay(2000);
+            return Promise.resolve(true);
+        },
     }
 }

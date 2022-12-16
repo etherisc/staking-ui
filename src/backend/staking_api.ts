@@ -35,6 +35,17 @@ export interface StakingApi {
         bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
         loadingFinished: () => void,
     ) => Promise<void>;
+    stakedAmount: (
+        bundle: BundleInfo,
+        address: string,
+    ) => Promise<BigNumber>;
+    unstake: (
+        bundle: BundleInfo,
+        max: boolean,
+        unstakeAmount: BigNumber,
+        beforeTrxCallback?: (address: string) => void,
+        beforeWaitCallback?: (address: string) => void
+    ) => Promise<boolean>;
 }
 
 export function getStakingApi(
