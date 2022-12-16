@@ -1,8 +1,7 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
-import { parseEther } from "ethers/lib/utils";
 import { GifStaking, GifStaking__factory } from "../contracts/depeg-contracts";
 import { BundleInfo } from "./bundle_info";
-import { StakingApiSmartContract } from "./staking_api_smartcontract";
+import { TransactionFailedError } from "../utils/error";
 
 export default class GifStakingApi {
     private signer: Signer;

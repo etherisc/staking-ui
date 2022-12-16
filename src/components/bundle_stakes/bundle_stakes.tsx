@@ -1,5 +1,5 @@
 import { LinearProgress } from "@mui/material";
-import { DataGrid, GridCallbackDetails, GridColDef, GridSelectionModel } from "@mui/x-data-grid";
+import { DataGrid, GridCallbackDetails, GridColDef, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
@@ -26,26 +26,26 @@ export default function BundleStakes(props: BundleStakesProps) {
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
 
-    const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
-        return bundles.map((bundle: BundleInfo) => {
-            let stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.stakedAmount), currencyDecimals)}`;
-            let supportingAmount = `${formatCurrency(BigNumber.from(bundle.supportingAmount), currencyDecimals)}`;
-            if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-                // TODO: show bundle token symbol
-                stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.myStakedAmount), currencyDecimals)} / ${stakedAmount}`; 
-                supportingAmount = `${formatCurrency(BigNumber.from(bundle.mySupportingAmount), currencyDecimals)} / ${supportingAmount}`;
-            }
+    // const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
+    //     return bundles.map((bundle: BundleInfo) => {
+    //         let stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.stakedAmount), currencyDecimals)}`;
+    //         let supportingAmount = `${formatCurrency(BigNumber.from(bundle.supportingAmount), currencyDecimals)}`;
+    //         if (props.showMyAmounts !== undefined && props.showMyAmounts) {
+    //             // TODO: show bundle token symbol
+    //             stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.myStakedAmount), currencyDecimals)} / ${stakedAmount}`; 
+    //             supportingAmount = `${formatCurrency(BigNumber.from(bundle.mySupportingAmount), currencyDecimals)} / ${supportingAmount}`;
+    //         }
 
-            return {
-                id: bundle.id,
-                instanceId: formatInstanceId(bundle.instanceId),
-                bundleId: bundle.bundleId.toString(),
-                stakedAmount: stakedAmount,
-                supportingAmount: supportingAmount,
-                state: t(`bundle_state_${bundle.state}`, { ns: 'common'}),
-            } as BundleRowView;
-        });
-    }, [t, currency, currencyDecimals, props.showMyAmounts]);
+    //         return {
+    //             id: bundle.id,
+    //             instanceId: formatInstanceId(bundle.instanceId),
+    //             bundleId: bundle.bundleId.toString(),
+    //             stakedAmount: stakedAmount,
+    //             supportingAmount: supportingAmount,
+    //             state: t(`bundle_state_${bundle.state}`, { ns: 'common'}),
+    //         } as BundleRowView;
+    //     });
+    // }, [t, currency, currencyDecimals, props.showMyAmounts]);
 
 
     function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
@@ -67,12 +67,38 @@ export default function BundleStakes(props: BundleStakesProps) {
         supportingAmountHeader = t('table.header.mySupportingAmount');
     }
 
+    function formatAmount(value: BigNumber): string {
+        return `${currency} ${formatCurrency(value, currencyDecimals)}`;
+    }
+
+    function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber): string {
+        let r = `${currency} ${formatCurrency(totalValue, currencyDecimals)}`;
+        if (props.showMyAmounts !== undefined && props.showMyAmounts) {
+            r = `${currency} ${formatCurrency(myValue, currencyDecimals)} / ${r}`;
+        }
+        return r;
+    }
+
     const columns: Array<GridColDef> = [
-        { field: 'instanceId', headerName: t('table.header.instanceId'), flex: 1 },
-        { field: 'bundleId', headerName: t('table.header.bundleId'), flex: 1 },
-        { field: 'stakedAmount', headerName: stakedAmountHeader, flex: 1 },
-        { field: 'supportingAmount', headerName: supportingAmountHeader, flex: 1 },
-        { field: 'state', headerName: t('table.header.state'), flex: 1 },
+        { 
+            field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.5, 
+            valueFormatter: (params: GridValueFormatterParams<string>) => formatInstanceId(params.value) 
+        },
+        { field: 'bundleId', headerName: t('table.header.bundleId'), flex: 0.5 },
+        { 
+            field: 'stakedAmount', headerName: stakedAmountHeader, flex: 1,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.stakedAmount, params.row.myStakedAmount ],
+            valueFormatter: (params: GridValueFormatterParams<[string, string]>) => formatAmountMineTotal(BigNumber.from(params.value[1]), BigNumber.from(params.value[0]))
+        },
+        { 
+            field: 'supportingAmount', headerName: supportingAmountHeader, flex: 1,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.supportingAmount, params.row.mySupportingAmount ],
+            valueFormatter: (params: GridValueFormatterParams<string>) => formatAmountMineTotal(BigNumber.from(params.value[1]), BigNumber.from(params.value[0]))
+        },
+        { 
+            field: 'state', headerName: t('table.header.state'), flex: 0.5,
+            valueFormatter: (params: GridValueFormatterParams<string>) => t(`bundle_state_${params.value}`, { ns: 'common'})
+        },
     ];
 
     const loadingBar = props.isBundlesLoading ? <LinearProgress /> : null;
@@ -83,7 +109,7 @@ export default function BundleStakes(props: BundleStakesProps) {
 
             <DataGrid 
                 autoHeight
-                rows={convertBundles(props.bundles)} 
+                rows={props.bundles} 
                 columns={columns} 
                 getRowId={(row) => row.id}
                 initialState={{
