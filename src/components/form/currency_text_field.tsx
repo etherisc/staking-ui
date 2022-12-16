@@ -78,7 +78,7 @@ export default function CurrencyTextField(props: CurrencyTextfieldProps) {
         if (onBlur !== undefined) {
             onBlur();
         }
-    }, [onBlur, props.value, currencyDecimals]); // do not react to displayValue change on purpose
+    }, [props.value, currencyDecimals]); // do not react to displayValue change on purpose
 
     function handleError(error: string) {
         setError(error);

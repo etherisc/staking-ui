@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { AppContext } from "../../context/app_context";
-import { setStep } from "../../redux/slices/staking";
+import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { ApprovalFailedError, TransactionFailedError } from "../../utils/error";
 import { formatCurrency } from "../../utils/numbers";
@@ -37,6 +37,9 @@ export default function Stake(props: StakeProps) {
 
     const steps = ['step0', 'step1', 'step2', 'step3', 'step4', 'step5'];
     
+    useEffect(() => {
+        dispatch(resetForm());
+    }, []);
 
     // change steps according to application state
     useEffect(() => {

@@ -20,6 +20,9 @@ export const stakingSlice = createSlice({
     name: 'staking',
     initialState,
     reducers: {
+        resetForm: (state) => {
+            Object.assign(state, initialState);
+        },
         stepForward: (state) => {
             state.step += 1;
         },
@@ -47,12 +50,13 @@ export const stakingSlice = createSlice({
         bundleSelected: (state, action: PayloadAction<BundleInfo|null>) => {
             state.step = 2;
             state.stakeingBundle = action.payload;
-        }
+        },
     },
 })
 
 // Action creators are generated for each case reducer function
 export const { 
+    resetForm,
     setStep, 
     add, reset, startLoading, finishLoading,
     bundleSelected 

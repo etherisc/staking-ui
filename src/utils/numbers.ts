@@ -14,9 +14,15 @@ export function formatCurrency(value: FormNumber, decimals: number, displayPreci
         return "";
     }
     if (value instanceof BigNumber) {
-        return formatEther(value);
+        const ethers = formatEther(value);
+        const ethersNum = parseFloat(ethers);
+        return formatLocale(ethersNum, displayPrecision);
     }
-    return (value / Math.pow(10, decimals)).toLocaleString(undefined, { useGrouping: true, 
+    return formatLocale(value / Math.pow(10, decimals), displayPrecision);
+}
+
+function formatLocale(number: number, displayPrecision?: number): string {
+    return number.toLocaleString(undefined, { useGrouping: true, 
         minimumFractionDigits: displayPrecision || DISPLAY_PRECISION,
         maximumFractionDigits: displayPrecision || DISPLAY_PRECISION });
 }

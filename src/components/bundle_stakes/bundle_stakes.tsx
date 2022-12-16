@@ -8,6 +8,7 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { BundleRowView } from "../../model/bundle_row_view";
 import { formatInstanceId } from "../../utils/format";
+import { formatCurrency } from "../../utils/numbers";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -23,15 +24,16 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     const [ pageSize, setPageSize ] = useState(5);
     const currency = props.stakingApi.currency();
+    const currencyDecimals = props.stakingApi.currencyDecimals();
 
     const convertBundles = useCallback((bundles: BundleInfo[]): BundleRowView[] => {
         return bundles.map((bundle: BundleInfo) => {
-            let stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.stakedAmount))}`;
-            let supportingAmount = `${formatEther(BigNumber.from(bundle.supportingAmount))}`;
+            let stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.stakedAmount), currencyDecimals)}`;
+            let supportingAmount = `${formatCurrency(BigNumber.from(bundle.supportingAmount), currencyDecimals)}`;
             if (props.showMyAmounts !== undefined && props.showMyAmounts) {
                 // TODO: show bundle token symbol
-                stakedAmount = `${currency} ${formatEther(BigNumber.from(bundle.myStakedAmount))} / ${stakedAmount}`; 
-                supportingAmount = `${formatEther(BigNumber.from(bundle.mySupportingAmount))} / ${supportingAmount}`;
+                stakedAmount = `${currency} ${formatCurrency(BigNumber.from(bundle.myStakedAmount), currencyDecimals)} / ${stakedAmount}`; 
+                supportingAmount = `${formatCurrency(BigNumber.from(bundle.mySupportingAmount), currencyDecimals)} / ${supportingAmount}`;
             }
 
             return {
@@ -43,7 +45,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 state: t(`bundle_state_${bundle.state}`, { ns: 'common'}),
             } as BundleRowView;
         });
-    }, [t, currency, props.showMyAmounts]);
+    }, [t, currency, currencyDecimals, props.showMyAmounts]);
 
 
     function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {

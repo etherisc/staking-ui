@@ -1,7 +1,7 @@
-import { Button, Grid, InputAdornment, TextField } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
@@ -29,6 +29,13 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const [ stakedAmountMax ] = useState(props.stakingApi.maxStakedAmount());
 
     const [ supportedAmount, setSupportedAmount ] = useState("");
+    const [ calculationInProgress, setCalculationInProgress ] = useState(false);
+
+    // terms accepted and validation
+    const [ termsAccepted, setTermsAccepted ] = useState(false);
+    function handleTermsAcceptedChange(x: ChangeEvent<any>) {
+        setTermsAccepted((x.target as HTMLInputElement).checked);
+    }
 
     useEffect(() => {
         if (stakedAmountValid) {
@@ -40,8 +47,14 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
 
     async function calculateSupportedAmount() {
         if (stakedAmountValid && stakedAmount !== undefined) {
-            const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
-            setSupportedAmount(formatCurrency(supportedAmount, currencyDecimals));
+            setCalculationInProgress(true);
+            try {
+                console.log("Calculating supported amount for", stakedAmount);
+                const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
+                setCalculationInProgress(false);
+                setSupportedAmount(formatCurrency(supportedAmount, currencyDecimals));
+            } finally {
+            }
         } else {
             setSupportedAmount('');
         }
@@ -51,6 +64,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         dispatch(bundleSelected(null));
         dispatch(setStep(1));
     }
+
+    const loadingBar = calculationInProgress ? <LinearProgress /> : null;
 
     return (<>
         <Grid container maxWidth={{ 'xs': 'none', 'md': 'md'}} spacing={4}
@@ -87,9 +102,21 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                     }}
                     value={supportedAmount}
                     />
+                {loadingBar}
+            </Grid>
+            <Grid item xs={12}>
+                <FormControlLabel 
+                    control={
+                        <Checkbox 
+                            defaultChecked={false}
+                            value={termsAccepted}
+                            onChange={handleTermsAcceptedChange}
+                            />
+                    } 
+                    label={t('checkbox_t_and_c_label')} />
             </Grid>
             <Grid item xs={6}>
-            <Button 
+                <Button 
                     fullWidth
                     type="submit" 
                     variant="outlined" 
@@ -100,12 +127,12 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                 </Button>
             </Grid>
             <Grid item xs={6}>
-            <Button 
+                <Button 
                     fullWidth
                     type="submit" 
                     variant="contained" 
                     color="primary"
-                    disabled={!stakedAmountValid}
+                    disabled={!stakedAmountValid || !termsAccepted}
                     onClick={() => props.stake(stakedAmount!, props.bundle)}
                     >
                     {t('action.stake')}
