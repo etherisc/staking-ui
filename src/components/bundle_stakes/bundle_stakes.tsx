@@ -45,14 +45,10 @@ export default function BundleStakes(props: BundleStakesProps) {
         supportingAmountHeader = t('table.header.mySupportingAmount');
     }
 
-    function formatAmount(value: BigNumber): string {
-        return `${currency} ${formatCurrency(value, currencyDecimals)}`;
-    }
-
-    function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber): string {
-        let r = `${currency} ${formatCurrency(totalValue, currencyDecimals)}`;
+    function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
+        let r = `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
         if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-            r = `${currency} ${formatCurrency(myValue, currencyDecimals)} / ${r}`;
+            r = `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${r}`;
         }
         return r;
     }
@@ -66,12 +62,15 @@ export default function BundleStakes(props: BundleStakesProps) {
         { 
             field: 'stakedAmount', headerName: stakedAmountHeader, flex: 1,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.stakedAmount, params.row.myStakedAmount ],
-            valueFormatter: (params: GridValueFormatterParams<[string, string]>) => formatAmountMineTotal(BigNumber.from(params.value[1]), BigNumber.from(params.value[0]))
+            valueFormatter: (params: GridValueFormatterParams<[string, string, string, number]>) => 
+                formatAmountMineTotal(BigNumber.from(params.value[1]), BigNumber.from(params.value[0]), currency, currencyDecimals)
         },
         { 
             field: 'supportingAmount', headerName: supportingAmountHeader, flex: 1,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.supportingAmount, params.row.mySupportingAmount ],
-            valueFormatter: (params: GridValueFormatterParams<string>) => formatAmountMineTotal(BigNumber.from(params.value[1]), BigNumber.from(params.value[0]))
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
+                [ params.row.mySupportingAmount, params.row.supportingAmount, params.row.supportingToken, params.row.supportingTokenDecimals ],
+            valueFormatter: (params: GridValueFormatterParams<[string, string, string, number]>) => 
+                formatAmountMineTotal(BigNumber.from(params.value[0]), BigNumber.from(params.value[1]), params.value[2], params.value[3])
         },
         { 
             field: 'state', headerName: t('table.header.state'), flex: 0.5,

@@ -14,6 +14,8 @@ const BUNDLES = [
         stakedAmount: parseEther("1000").toString(),
         mySupportingAmount: parseEther("1000").toString(),
         supportingAmount: parseEther("10000").toString(),
+        supportingToken: "USDT",
+        supportingTokenDecimals: 6,
         state: BundleState.ACTIVE
     } as BundleInfo,
     {
@@ -24,6 +26,8 @@ const BUNDLES = [
         stakedAmount: parseEther("3000").toString(),
         mySupportingAmount: parseEther("0").toString(),
         supportingAmount: parseEther("30000").toString(),
+        supportingToken: "USDT",
+        supportingTokenDecimals: 6,
         state: BundleState.ACTIVE
     } as BundleInfo,
     {
@@ -34,6 +38,8 @@ const BUNDLES = [
         stakedAmount: parseEther("15000").toString(),
         mySupportingAmount: parseEther("23000").toString(),
         supportingAmount: parseEther("150000").toString(),
+        supportingToken: "USDT",
+        supportingTokenDecimals: 6,
         state: BundleState.ACTIVE
     } as BundleInfo,
 ];

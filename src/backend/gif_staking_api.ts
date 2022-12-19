@@ -6,10 +6,15 @@ import { TransactionFailedError } from "../utils/error";
 export default class GifStakingApi {
     private signer: Signer;
     private gifStaking: GifStaking;
+    private supportingToken: string;
+    private supportingTokenDecimals: number;
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
         this.gifStaking = GifStaking__factory.connect(stakingContractAddress, signer);
+
+        this.supportingToken = process.env.NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_SYMBOL || "USDT";
+        this.supportingTokenDecimals = parseInt(process.env.NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_DECIMALS || "6");
     }
 
     async getStakleableBundles(
@@ -43,6 +48,8 @@ export default class GifStakingApi {
                 stakedAmount: stakedAmount.toString(),
                 mySupportingAmount: mySupportingAmount.toString(),
                 supportingAmount: supportedAmount.toString(),
+                supportingToken: this.supportingToken,
+                supportingTokenDecimals: this.supportingTokenDecimals,
                 state: state,
             } as BundleInfo;
             console.log("bundleInfo", bundleInfo);

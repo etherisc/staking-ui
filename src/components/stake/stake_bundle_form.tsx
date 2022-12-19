@@ -52,7 +52,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                 console.log("Calculating supported amount for", stakedAmount);
                 const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
                 setCalculationInProgress(false);
-                setSupportedAmount(formatCurrency(supportedAmount, currencyDecimals));
+                setSupportedAmount(formatCurrency(supportedAmount, props.bundle.supportingTokenDecimals));
             } finally {
             }
         } else {
@@ -97,8 +97,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                     label={t('supportedAmount')}
                     InputProps={{
                         readOnly: true,
-                        // TODO: use supported amount currency
-                        // startAdornment: <InputAdornment position="start">{currency}</InputAdornment>,
+                        startAdornment: <InputAdornment position="start">{props.bundle.supportingToken}</InputAdornment>,
                     }}
                     value={supportedAmount}
                     />

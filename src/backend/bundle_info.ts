@@ -10,6 +10,8 @@ export type BundleInfo = {
     stakedAmount: string;
     mySupportingAmount: string;
     supportingAmount: string;
+    supportingToken: string;
+    supportingTokenDecimals: number;
     state: BundleState;
 }
 
