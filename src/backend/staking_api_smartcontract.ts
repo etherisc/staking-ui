@@ -3,18 +3,26 @@ import { parseEther } from "ethers/lib/utils";
 import { parse } from "path";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
-import GifStakingApi from "./gif_staking_api";
 import { StakingApi } from "./staking_api";
+import StakingContract from "./staking_contract";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
     private stakingContractAddress: string;
-    private gifStakingApi: GifStakingApi;
+    private gifStakingApi: StakingContract;
+    private gifStakingApiInitialized = false;
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
         this.stakingContractAddress = stakingContractAddress;
-        this.gifStakingApi = new GifStakingApi(signer, stakingContractAddress);
+        this.gifStakingApi = new StakingContract(signer, stakingContractAddress);
+    }
+
+    async getGifStakingApi(): Promise<StakingContract> {
+        if (! this.gifStakingApiInitialized) {
+            await this.gifStakingApi.initialize();
+        }
+        return this.gifStakingApi;
     }
 
     currency(): string {
@@ -38,7 +46,7 @@ export class StakingApiSmartContract implements StakingApi {
         loadingFinished: () => void
     ): Promise<void> {
         console.log("StakingApiSmartContract.retrieveBundles");
-        await this.gifStakingApi.getStakleableBundles(bundleRetrieved);
+        await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved);
         loadingFinished();
     }
 
@@ -48,12 +56,12 @@ export class StakingApiSmartContract implements StakingApi {
         loadingFinished: () => void
     ): Promise<void> {
         console.log("StakingApiSmartContract.retrieveStakesForWallet");
-        await this.gifStakingApi.getStakleableBundles(bundleRetrieved, walletAddress);
+        await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved, walletAddress);
         loadingFinished();
     }
     
     async calculateSupportedAmount(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
-        return this.gifStakingApi.calculateSupportedAmount(amount, bundle.instanceId, bundle.token);
+        return (await this.getGifStakingApi()).calculateSupportedAmount(amount, bundle.instanceId, bundle.token);
     }
     
     async createApproval(
@@ -77,7 +85,7 @@ export class StakingApiSmartContract implements StakingApi {
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<boolean> {
-        const [tx, receipt] = await this.gifStakingApi.stake(
+        const [tx, receipt] = await (await this.getGifStakingApi()).stake(
             bundle,
             stakedAmount, 
             beforeTrxCallback, 
@@ -86,7 +94,7 @@ export class StakingApiSmartContract implements StakingApi {
     }
 
     async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        return this.gifStakingApi.stakedAmount(bundle, address);
+        return (await this.getGifStakingApi()).stakedAmount(bundle, address);
     }
 
     async unstake(
@@ -96,7 +104,7 @@ export class StakingApiSmartContract implements StakingApi {
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<boolean> {
-        const [tx, receipt] = await this.gifStakingApi.unstake(
+        const [tx, receipt] = await (await this.getGifStakingApi()).unstake(
             bundle,
             max ? undefined : unstakeAmount, 
             beforeTrxCallback, 
