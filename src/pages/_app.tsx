@@ -9,20 +9,44 @@ import React, { useReducer } from 'react';
 import Head from 'next/head';
 import { initialAppData, removeSigner, AppContext, signerReducer } from '../context/app_context';
 import { SnackbarProvider } from 'notistack';
-import { appWithTranslation } from 'next-i18next';
+import { appWithTranslation, useTranslation } from 'next-i18next';
 import { getAndUpdateWalletAccount } from '../utils/wallet';
 import { ThemeProvider } from '@mui/material/styles';
 import { etheriscTheme } from '../config/theme';
 import Layout from '../components/layout/layout';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { RootState, store } from '../redux/store';
+import { faRightToBracket, faRightFromBracket, faCubesStacked } from "@fortawesome/free-solid-svg-icons";
 
 
 export function App(appProps: AppProps) {
-  const [ data, dispatch ] = useReducer(signerReducer, initialAppData());
+  return (
+    <React.Fragment>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <link rel="shortcut icon" href="/favicon.svg" />
+      </Head>
+      <ThemeProvider theme={etheriscTheme}>
+        <CssBaseline enableColorScheme />
+        <Provider store={store}>
+          <AppWithBlockchainConnection {...appProps} />
+        </Provider>
+      </ThemeProvider>
+    </React.Fragment>
+  );
+}
 
-  if (data.provider != undefined) {
-    data.provider.on('network', (newNetwork: any, oldNetwork: any) => {
+export default appWithTranslation(App);
+
+
+export function AppWithBlockchainConnection(appProps: AppProps) {
+  const { t } = useTranslation('common');
+  const [ data, dispatch ] = useReducer(signerReducer, initialAppData());
+  const reduxDispatch = useDispatch();
+  const provider = useSelector((state: RootState) => state.chain.provider);
+
+  if (provider != undefined) {
+    provider.on('network', (newNetwork: any, oldNetwork: any) => {
       console.log('network', newNetwork, oldNetwork);
       location.reload();
     });
@@ -33,9 +57,9 @@ export function App(appProps: AppProps) {
       window.ethereum.on('accountsChanged', function (accounts: string[]) {
         console.log('accountsChanged', accounts);
         if (accounts.length == 0) {
-          removeSigner(dispatch);
+          removeSigner(reduxDispatch);
         } else {
-          getAndUpdateWalletAccount(dispatch);
+          getAndUpdateWalletAccount(reduxDispatch);
         }
       });
       // @ts-ignore
@@ -51,24 +75,21 @@ export function App(appProps: AppProps) {
     }
   }
 
+  let items = [
+    [t('nav.link.stakes'), '/stakes', faCubesStacked],
+    [t('nav.link.stake'), '/', faRightToBracket],
+    [t('nav.link.unstake'), '/unstake', faRightFromBracket],
+  ];
+
+  appProps.pageProps.items = items;
+  appProps.pageProps.title = t('apptitle_short');
+
   return (
-    <React.Fragment>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <link rel="shortcut icon" href="/favicon.svg" />
-      </Head>
-      <ThemeProvider theme={etheriscTheme}>
-        <CssBaseline enableColorScheme />
-        <AppContext.Provider value={{ data, dispatch}} >
-          <SnackbarProvider maxSnack={3}>
-            <Provider store={store}>
-              <Layout {...appProps} />
-            </Provider>
-          </SnackbarProvider>
-        </AppContext.Provider>
-      </ThemeProvider>
-    </React.Fragment>
+    <AppContext.Provider value={{ data, dispatch}} >
+      <SnackbarProvider maxSnack={3}>
+        <Layout {...appProps} />
+      </SnackbarProvider>
+    </AppContext.Provider>
   );
 }
 
-export default appWithTranslation(App);

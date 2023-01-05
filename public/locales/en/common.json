@@ -10,16 +10,20 @@
   },
   "action": {
     "switch_network": "Switch to network '{{network}}'",
-    "login_walletconnect": "Login with WalletConnect",
-    "login_metamask": "Login with Metamask",
-    "login": "Login",
+    "login_walletconnect": "Connect with WalletConnect",
+    "login_walletconnect_short": "WalletConnect",
+    "login_metamask": "Connect with Metamask",
+    "login_metamask_short": "Metamask",
+    "login": "Connect",
     "disconnect": "Disconnect",
     "close": "Close",
     "hide": "Hide",
-    "address_copied": "Address copied to clipboard",
+    "address_copied": "Value copied to clipboard",
+    "dismiss" : "Dismiss",
     "back": "Back",
     "continue": "Continue"
   },
+  "login_select": "Please choose a wallet",
   "warning": {
     "unload_page": "The transaction is still pending. Please do not leave the page or close the browser window."
   },
@@ -37,6 +41,9 @@
     "approval_failed": "Setting allowance permission in wallet app failed. Reason: {{error}}",
     "transaction_failed": "The blockchain transaction failed. Reason: {{error}}",
     "allowance_revoke_notice": "Due to the failed transaction, there might be a pending allowance on your wallet. For more information on this, please have a look"
+  },
+  "help": {
+    "faucet_copy": "Copy {{currency}} address to clipboard"
   },
   "coins_sent": "Some coins have been sent to your wallet for testing purposes",
   "wait_for_coins": "Please wait for the coins to be sent to your wallet. This might take some seconds. Do not leave the page of close the browser window",

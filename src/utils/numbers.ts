@@ -1,7 +1,3 @@
-import { BigNumber } from "ethers";
-import { formatEther } from "ethers/lib/utils";
-import { FormNumber } from "./types";
-
 export const THOUSANDS_SEPARATOR = Intl.NumberFormat().format(11111).replace(/\p{Number}/gu, '');
 export const DECIMAL_SEPARATOR = Intl.NumberFormat().format(1.1).replace(/\p{Number}/gu, '');
 
@@ -9,20 +5,11 @@ export const DISPLAY_PRECISION = parseInt(process.env.NEXT_PUBLIC_DEPECT_TOKEN_D
 export const USD1_DECIMALS = parseInt(process.env.NEXT_PUBLIC_DEPEG_USD1_DECIMALS || '6');
 export const USD2_DECIMALS = parseInt(process.env.NEXT_PUBLIC_DEPEG_USD1_DECIMALS || '6');
 
-export function formatCurrency(value: FormNumber, decimals: number, displayPrecision?: number): string {
+export function formatCurrency(value: number | undefined, decimals: number, displayPrecision?: number): string {
     if (value === undefined) {
         return "";
     }
-    if (value instanceof BigNumber) {
-        const ethers = formatEther(value);
-        const ethersNum = parseFloat(ethers);
-        return formatLocale(ethersNum, displayPrecision);
-    }
-    return formatLocale(value / Math.pow(10, decimals), displayPrecision);
-}
-
-function formatLocale(number: number, displayPrecision?: number): string {
-    return number.toLocaleString(undefined, { useGrouping: true, 
+    return (value / Math.pow(10, decimals)).toLocaleString(undefined, { useGrouping: true, 
         minimumFractionDigits: displayPrecision || DISPLAY_PRECISION,
         maximumFractionDigits: displayPrecision || DISPLAY_PRECISION });
 }

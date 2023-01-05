@@ -1,39 +1,47 @@
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../context/app_context";
-import { Button } from '@mui/material';
+import { useEffect, useState } from "react";
 import Typography from '@mui/material/Typography'
 import { useSnackbar } from 'notistack';
 import { useTranslation } from "next-i18next";
+import { Button } from "@mui/material";
+import { faCopy } from '@fortawesome/free-regular-svg-icons';
+import { faFaucet, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DOT } from "../../utils/chars";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export default function Faucet() {
-    const appContext = useContext(AppContext);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { t } = useTranslation('common');
-    const currency = process.env.NEXT_PUBLIC_DIP_SYMBOL;
+    const currency = process.env.NEXT_PUBLIC_FAUCET_SYMBOL;
+    const coinAddress = process.env.NEXT_PUBLIC_FAUCET_COIN_ADDRESS;
+
+    const chainTokenSymbol = process.env.NEXT_PUBLIC_CHAIN_TOKEN_SYMBOL;
+    const chainTokenFaucetUrl = process.env.NEXT_PUBLIC_CHAIN_TOKEN_FAUCET_URL;
+
+    const signer = useSelector((state: RootState) => state.chain.signer);
 
     const [ address, setAddress ] = useState<string|undefined>(undefined);
 
     useEffect(() => {
         console.log("signer changed");
         async function updateData() {
-            const address = await appContext?.data.signer?.getAddress();
+            const address = await signer?.getAddress();
             setAddress(address!);
         }
-        if (appContext?.data.signer !== undefined) {
+        if (signer !== undefined) {
             updateData();
         } else {
             setAddress(undefined);
         }
-    }, [appContext?.data.signer]);
+    }, [signer]);
 
     if (process.env.NEXT_PUBLIC_SHOW_FAUCET !== 'true') {
         return (<></>);
     }
 
     if (address === undefined) {
-        return (
-            <></>
-        );
+        return (<></>);
     }
 
     async function useFaucet() {
@@ -46,11 +54,29 @@ export default function Faucet() {
         closeSnackbar(snackbarId);
         enqueueSnackbar(t('coins_sent'),  { autoHideDuration: 3000, variant: 'success' });
     }
+
+    async function copyAddressToClipboard() {
+        await navigator.clipboard.writeText(coinAddress!);
+        enqueueSnackbar(t('action.address_copied'),  { autoHideDuration: 2000, variant: 'info' });
+    }
     
     return (<>
-        <Button variant="text" sx={{ p: 0 }} onClick={useFaucet}>
-            <Typography variant="body2" sx={{ fontSize: '10px' }}>
-                    {currency} faucet
+        <Button variant="text" sx={{ p: 0 }} >
+            <Typography variant="body2" sx={{ fontSize: '10px' }} onClick={useFaucet}>
+                {currency} faucet
+                <FontAwesomeIcon icon={faFaucet} className="fa cursor-pointer" />
+            </Typography>
+            <Typography variant="body2" sx={{ fontSize: '10px' }} onClick={copyAddressToClipboard} title={t('help.faucet_copy', { currency: currency })}>
+                <FontAwesomeIcon icon={faCopy} className="fa cursor-pointer" />
+            </Typography>
+        </Button>
+        <Typography variant="body2" sx={{ fontSize: '10px' }} >
+            {DOT}
+        </Typography>
+        <Button variant="text" sx={{ p: 0, ml: 1 }} href={chainTokenFaucetUrl!} target="_blank" rel="noreferrer">
+            <Typography variant="body2" sx={{ fontSize: '10px' }} >
+                {chainTokenSymbol} faucet
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="fa cursor-pointer" />
             </Typography>
         </Button>
     </>);

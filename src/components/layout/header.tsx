@@ -12,9 +12,17 @@ import IconButton from '@mui/material/IconButton';
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
-import { Divider, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import FaucetListItem from './faucet_list_item';
 
-export default function Header() {
+interface HeaderProps {
+    items: Array<[string, string, IconDefinition]>;
+    title: string;
+}
+
+export default function Header(props: HeaderProps) {
     const { t } = useTranslation('common');
     const router = useRouter();
 
@@ -25,28 +33,36 @@ export default function Header() {
         setMobileOpen(!mobileOpen);
     };
 
-    function getListItem(text: string, href: string) {
+    function getListItem(text: string, href: string, icon?: any) {
+        let iconElement = (<></>);
+        if (icon) {
+            iconElement = (
+                <ListItemIcon>
+                    <FontAwesomeIcon icon={icon} />
+                </ListItemIcon>
+            );
+        }
+
         return (
             <ListItem key={text} disablePadding>
                 <ListItemButton href={href}>
+                    {iconElement}
                     <ListItemText primary={text} />
                 </ListItemButton>
             </ListItem>
         );
     }
 
-    let links = [];
+    let links: Array<any> = [];
     let listitems = [];
 
-    links.push(<HeaderLink text={t('nav.link.stakes')} href="/stakes" key="stakes" />);
-    listitems.push(getListItem(t('nav.link.stakes'), '/stakes'));
-
-    links.push(<HeaderLink text={t('nav.link.stake')} href="/" key="stake" />);
-    listitems.push(getListItem(t('nav.link.stake'), '/'));
+    props.items.forEach((item, i) => {
+        const [text, href, icon] = item;
+        links.push(<HeaderLink text={text} href={href} key={`k-${i}`} icon={icon} />);
+        listitems.push(getListItem(text, href, icon));
+    });
+    listitems.push(<FaucetListItem key="faucet" />);
     
-    links.push(<HeaderLink text={t('nav.link.unstake')} href="/unstake" key="unstake" />);
-    listitems.push(getListItem(t('nav.link.unstake'), '/unstake'));
-
     const drawer = (
         <Box onClick={handleDrawerToggle} >
             <Typography variant="h6" sx={{ my: 2, pl: 2 }}>
@@ -74,21 +90,20 @@ export default function Header() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Box sx={{ display: { xs: 'none', md: 'inherit'}}}>
+                        <Box sx={{ mt: 0.25, display: { xs: 'none', md: 'inherit'}}}>
                             <Image src="/etherisc_logo_white.svg" alt="Etherisc logo" width={100} height={22}  />
                         </Box>
                         <Box sx={{ display: { xs: 'inherit', md: 'none'}}}>
-                            <Image src="/etherisc_logo_bird_white.svg" alt="Etherisc logo" width={22} height={22} />
+                            <Image src="/etherisc_logo_bird_white.svg" alt="Etherisc logo" width={28} height={22} />
                         </Box>
-                        <HeaderLink text={t('apptitle_short')} href="/" variant="h6" sx={{ display: { xs: 'none', md: 'block'}}} />
-                        
+                        <HeaderLink text={props.title} href="/" variant="h6" sx={{ display: { xs: 'none', md: 'block'}}} />
+
                         {/* links only shown on desktop */}
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 1 }}>
                             {links}
                         </Box>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, ml: 1 }}>
-                            &nbsp;
                         </Box>
 
                         {/* links only shown on desktop */}
@@ -115,6 +130,6 @@ export default function Header() {
                 </Drawer>
             </Box>
         </Box>
-    </>);    
+    </>);
 
 }
