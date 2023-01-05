@@ -7,11 +7,17 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
 } from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -57,8 +63,13 @@ export declare namespace IStakingDataProvider {
   };
 }
 
-export interface IStakingDataProviderInterface extends utils.Interface {
+export interface StakingInterface extends utils.Interface {
   functions: {
+    "DIP_CONTRACT_ADDRESS()": FunctionFragment;
+    "DIP_DECIMALS()": FunctionFragment;
+    "MAINNET_ID()": FunctionFragment;
+    "REWARD_MAX_PERCENTAGE()": FunctionFragment;
+    "YEAR_DURATION()": FunctionFragment;
     "calculateCapitalSupport(address,uint256,uint256)": FunctionFragment;
     "calculateRequiredStaking(address,uint256,uint256)": FunctionFragment;
     "calculateRewards(uint256,uint256)": FunctionFragment;
@@ -77,11 +88,25 @@ export interface IStakingDataProviderInterface extends utils.Interface {
     "hasBundleStakeInfo(bytes32,uint256,address)": FunctionFragment;
     "hasDefinedStakingRate(address,uint256)": FunctionFragment;
     "oneYear()": FunctionFragment;
+    "owner()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "setDipContract(address)": FunctionFragment;
+    "setRewardRate(uint256)": FunctionFragment;
+    "setStakingRate(address,uint256,uint256)": FunctionFragment;
+    "stakeForBundle(bytes32,uint256,uint256)": FunctionFragment;
     "toRate(uint256,int8)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
+    "unstakeFromBundle(bytes32,uint256,uint256)": FunctionFragment;
+    "unstakeFromBundle(bytes32,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "DIP_CONTRACT_ADDRESS"
+      | "DIP_DECIMALS"
+      | "MAINNET_ID"
+      | "REWARD_MAX_PERCENTAGE"
+      | "YEAR_DURATION"
       | "calculateCapitalSupport"
       | "calculateRequiredStaking"
       | "calculateRewards"
@@ -100,9 +125,38 @@ export interface IStakingDataProviderInterface extends utils.Interface {
       | "hasBundleStakeInfo"
       | "hasDefinedStakingRate"
       | "oneYear"
+      | "owner"
+      | "renounceOwnership"
+      | "setDipContract"
+      | "setRewardRate"
+      | "setStakingRate"
+      | "stakeForBundle"
       | "toRate"
+      | "transferOwnership"
+      | "unstakeFromBundle(bytes32,uint256,uint256)"
+      | "unstakeFromBundle(bytes32,uint256)"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "DIP_CONTRACT_ADDRESS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DIP_DECIMALS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAINNET_ID",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "REWARD_MAX_PERCENTAGE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "YEAR_DURATION",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "calculateCapitalSupport",
     values: [
@@ -192,11 +246,73 @@ export interface IStakingDataProviderInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "oneYear", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setDipContract",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRewardRate",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setStakingRate",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stakeForBundle",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "toRate",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "unstakeFromBundle(bytes32,uint256,uint256)",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "unstakeFromBundle(bytes32,uint256)",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "DIP_CONTRACT_ADDRESS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DIP_DECIMALS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "MAINNET_ID", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "REWARD_MAX_PERCENTAGE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "YEAR_DURATION",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "calculateCapitalSupport",
     data: BytesLike
@@ -263,17 +379,133 @@ export interface IStakingDataProviderInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "oneYear", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setDipContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRewardRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setStakingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stakeForBundle",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "toRate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "unstakeFromBundle(bytes32,uint256,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "unstakeFromBundle(bytes32,uint256)",
+    data: BytesLike
+  ): Result;
 
-  events: {};
+  events: {
+    "LogStakingRewardRateSet(uint256,uint256)": EventFragment;
+    "LogStakingStakedForBundle(address,bytes32,uint256,uint256,uint256)": EventFragment;
+    "LogStakingStakingRateSet(address,uint256,uint256,uint256)": EventFragment;
+    "LogStakingUnstakedFromBundle(address,bytes32,uint256,uint256,uint256,bool)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "LogStakingRewardRateSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogStakingStakedForBundle"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogStakingStakingRateSet"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "LogStakingUnstakedFromBundle"
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
-export interface IStakingDataProvider extends BaseContract {
+export interface LogStakingRewardRateSetEventObject {
+  oldRewardRate: BigNumber;
+  newRewardRate: BigNumber;
+}
+export type LogStakingRewardRateSetEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  LogStakingRewardRateSetEventObject
+>;
+
+export type LogStakingRewardRateSetEventFilter =
+  TypedEventFilter<LogStakingRewardRateSetEvent>;
+
+export interface LogStakingStakedForBundleEventObject {
+  user: string;
+  instanceId: string;
+  bundleId: BigNumber;
+  amount: BigNumber;
+  rewards: BigNumber;
+}
+export type LogStakingStakedForBundleEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber, BigNumber],
+  LogStakingStakedForBundleEventObject
+>;
+
+export type LogStakingStakedForBundleEventFilter =
+  TypedEventFilter<LogStakingStakedForBundleEvent>;
+
+export interface LogStakingStakingRateSetEventObject {
+  token: string;
+  chainId: BigNumber;
+  oldStakingRate: BigNumber;
+  newStakingRate: BigNumber;
+}
+export type LogStakingStakingRateSetEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber],
+  LogStakingStakingRateSetEventObject
+>;
+
+export type LogStakingStakingRateSetEventFilter =
+  TypedEventFilter<LogStakingStakingRateSetEvent>;
+
+export interface LogStakingUnstakedFromBundleEventObject {
+  user: string;
+  instanceId: string;
+  bundleId: BigNumber;
+  amount: BigNumber;
+  rewards: BigNumber;
+  all: boolean;
+}
+export type LogStakingUnstakedFromBundleEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber, BigNumber, boolean],
+  LogStakingUnstakedFromBundleEventObject
+>;
+
+export type LogStakingUnstakedFromBundleEventFilter =
+  TypedEventFilter<LogStakingUnstakedFromBundleEvent>;
+
+export interface OwnershipTransferredEventObject {
+  previousOwner: string;
+  newOwner: string;
+}
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  OwnershipTransferredEventObject
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
+
+export interface Staking extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IStakingDataProviderInterface;
+  interface: StakingInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -295,6 +527,16 @@ export interface IStakingDataProvider extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    DIP_CONTRACT_ADDRESS(overrides?: CallOverrides): Promise<[string]>;
+
+    DIP_DECIMALS(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    MAINNET_ID(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    REWARD_MAX_PERCENTAGE(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    YEAR_DURATION(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     calculateCapitalSupport(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
@@ -305,7 +547,7 @@ export interface IStakingDataProvider extends BaseContract {
     calculateRequiredStaking(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
+      targetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { dipAmount: BigNumber }>;
 
@@ -318,7 +560,7 @@ export interface IStakingDataProvider extends BaseContract {
     calculateRewardsIncrement(
       stakeInfo: IStakingDataProvider.BundleStakeInfoStruct,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { incrementAmount: BigNumber }>;
+    ): Promise<[BigNumber] & { rewardsAmount: BigNumber }>;
 
     fromRate(
       rate: PromiseOrValue<BigNumberish>,
@@ -401,12 +643,70 @@ export interface IStakingDataProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { yearInSeconds: BigNumber }>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setDipContract(
+      dipTokenAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setRewardRate(
+      newRewardRate: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      newStakingRate: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    stakeForBundle(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     toRate(
       value: PromiseOrValue<BigNumberish>,
       exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { rate: BigNumber }>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "unstakeFromBundle(bytes32,uint256,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "unstakeFromBundle(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
+
+  DIP_CONTRACT_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+  DIP_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+  MAINNET_ID(overrides?: CallOverrides): Promise<BigNumber>;
+
+  REWARD_MAX_PERCENTAGE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  YEAR_DURATION(overrides?: CallOverrides): Promise<BigNumber>;
 
   calculateCapitalSupport(
     token: PromiseOrValue<string>,
@@ -418,7 +718,7 @@ export interface IStakingDataProvider extends BaseContract {
   calculateRequiredStaking(
     token: PromiseOrValue<string>,
     chainId: PromiseOrValue<BigNumberish>,
-    tokenAmount: PromiseOrValue<BigNumberish>,
+    targetAmount: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -498,13 +798,71 @@ export interface IStakingDataProvider extends BaseContract {
 
   oneYear(overrides?: CallOverrides): Promise<BigNumber>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setDipContract(
+    dipTokenAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setRewardRate(
+    newRewardRate: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setStakingRate(
+    token: PromiseOrValue<string>,
+    chainId: PromiseOrValue<BigNumberish>,
+    newStakingRate: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  stakeForBundle(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   toRate(
     value: PromiseOrValue<BigNumberish>,
     exp: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  transferOwnership(
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "unstakeFromBundle(bytes32,uint256,uint256)"(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "unstakeFromBundle(bytes32,uint256)"(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    DIP_CONTRACT_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+    DIP_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAINNET_ID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    REWARD_MAX_PERCENTAGE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    YEAR_DURATION(overrides?: CallOverrides): Promise<BigNumber>;
+
     calculateCapitalSupport(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
@@ -515,7 +873,7 @@ export interface IStakingDataProvider extends BaseContract {
     calculateRequiredStaking(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
+      targetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -597,16 +955,135 @@ export interface IStakingDataProvider extends BaseContract {
 
     oneYear(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setDipContract(
+      dipTokenAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setRewardRate(
+      newRewardRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      newStakingRate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    stakeForBundle(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     toRate(
       value: PromiseOrValue<BigNumberish>,
       exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "unstakeFromBundle(bytes32,uint256,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "unstakeFromBundle(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "LogStakingRewardRateSet(uint256,uint256)"(
+      oldRewardRate?: null,
+      newRewardRate?: null
+    ): LogStakingRewardRateSetEventFilter;
+    LogStakingRewardRateSet(
+      oldRewardRate?: null,
+      newRewardRate?: null
+    ): LogStakingRewardRateSetEventFilter;
+
+    "LogStakingStakedForBundle(address,bytes32,uint256,uint256,uint256)"(
+      user?: null,
+      instanceId?: null,
+      bundleId?: null,
+      amount?: null,
+      rewards?: null
+    ): LogStakingStakedForBundleEventFilter;
+    LogStakingStakedForBundle(
+      user?: null,
+      instanceId?: null,
+      bundleId?: null,
+      amount?: null,
+      rewards?: null
+    ): LogStakingStakedForBundleEventFilter;
+
+    "LogStakingStakingRateSet(address,uint256,uint256,uint256)"(
+      token?: null,
+      chainId?: null,
+      oldStakingRate?: null,
+      newStakingRate?: null
+    ): LogStakingStakingRateSetEventFilter;
+    LogStakingStakingRateSet(
+      token?: null,
+      chainId?: null,
+      oldStakingRate?: null,
+      newStakingRate?: null
+    ): LogStakingStakingRateSetEventFilter;
+
+    "LogStakingUnstakedFromBundle(address,bytes32,uint256,uint256,uint256,bool)"(
+      user?: null,
+      instanceId?: null,
+      bundleId?: null,
+      amount?: null,
+      rewards?: null,
+      all?: null
+    ): LogStakingUnstakedFromBundleEventFilter;
+    LogStakingUnstakedFromBundle(
+      user?: null,
+      instanceId?: null,
+      bundleId?: null,
+      amount?: null,
+      rewards?: null,
+      all?: null
+    ): LogStakingUnstakedFromBundleEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
+    ): OwnershipTransferredEventFilter;
+  };
 
   estimateGas: {
+    DIP_CONTRACT_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    DIP_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAINNET_ID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    REWARD_MAX_PERCENTAGE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    YEAR_DURATION(overrides?: CallOverrides): Promise<BigNumber>;
+
     calculateCapitalSupport(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
@@ -617,7 +1094,7 @@ export interface IStakingDataProvider extends BaseContract {
     calculateRequiredStaking(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
+      targetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -697,14 +1174,76 @@ export interface IStakingDataProvider extends BaseContract {
 
     oneYear(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setDipContract(
+      dipTokenAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setRewardRate(
+      newRewardRate: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      newStakingRate: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    stakeForBundle(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     toRate(
       value: PromiseOrValue<BigNumberish>,
       exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "unstakeFromBundle(bytes32,uint256,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "unstakeFromBundle(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    DIP_CONTRACT_ADDRESS(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    DIP_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    MAINNET_ID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    REWARD_MAX_PERCENTAGE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    YEAR_DURATION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     calculateCapitalSupport(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
@@ -715,7 +1254,7 @@ export interface IStakingDataProvider extends BaseContract {
     calculateRequiredStaking(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
+      targetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -797,10 +1336,58 @@ export interface IStakingDataProvider extends BaseContract {
 
     oneYear(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setDipContract(
+      dipTokenAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setRewardRate(
+      newRewardRate: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      newStakingRate: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    stakeForBundle(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     toRate(
       value: PromiseOrValue<BigNumberish>,
       exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "unstakeFromBundle(bytes32,uint256,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "unstakeFromBundle(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

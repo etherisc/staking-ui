@@ -27,6 +27,36 @@ import type {
   PromiseOrValue,
 } from "./common";
 
+export declare namespace IPriceDataProvider {
+  export type PriceInfoStruct = {
+    id: PromiseOrValue<BigNumberish>;
+    price: PromiseOrValue<BigNumberish>;
+    compliance: PromiseOrValue<BigNumberish>;
+    stability: PromiseOrValue<BigNumberish>;
+    triggeredAt: PromiseOrValue<BigNumberish>;
+    depeggedAt: PromiseOrValue<BigNumberish>;
+    createdAt: PromiseOrValue<BigNumberish>;
+  };
+
+  export type PriceInfoStructOutput = [
+    BigNumber,
+    BigNumber,
+    number,
+    number,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    id: BigNumber;
+    price: BigNumber;
+    compliance: number;
+    stability: number;
+    triggeredAt: BigNumber;
+    depeggedAt: BigNumber;
+    createdAt: BigNumber;
+  };
+}
+
 export declare namespace ITreasury {
   export type FeeSpecificationStruct = {
     componentId: PromiseOrValue<BigNumberish>;
@@ -57,6 +87,8 @@ export declare namespace ITreasury {
 export interface DepegProductInterface extends utils.Interface {
   functions: {
     "DEFAULT_DATA_STRUCTURE()": FunctionFragment;
+    "GANACHE()": FunctionFragment;
+    "MAINNET()": FunctionFragment;
     "NAME()": FunctionFragment;
     "POLICY_FLOW()": FunctionFragment;
     "VERSION()": FunctionFragment;
@@ -71,9 +103,12 @@ export interface DepegProductInterface extends utils.Interface {
     "getApplicationDataStructure()": FunctionFragment;
     "getApplicationId(uint256)": FunctionFragment;
     "getClaimDataStructure()": FunctionFragment;
+    "getDepegPriceInfo()": FunctionFragment;
+    "getDepegState()": FunctionFragment;
     "getFeeFractionFullUnit()": FunctionFragment;
     "getFeeSpecification()": FunctionFragment;
     "getId()": FunctionFragment;
+    "getLatestPriceInfo()": FunctionFragment;
     "getName()": FunctionFragment;
     "getOwner()": FunctionFragment;
     "getPayoutDataStructure()": FunctionFragment;
@@ -87,6 +122,7 @@ export interface DepegProductInterface extends utils.Interface {
     "getState()": FunctionFragment;
     "getToken()": FunctionFragment;
     "getType()": FunctionFragment;
+    "hasNewPriceInfo()": FunctionFragment;
     "isOracle()": FunctionFragment;
     "isProduct()": FunctionFragment;
     "isRiskpool()": FunctionFragment;
@@ -96,19 +132,23 @@ export interface DepegProductInterface extends utils.Interface {
     "processIds(address)": FunctionFragment;
     "processPolicy(bytes32)": FunctionFragment;
     "proposalCallback()": FunctionFragment;
+    "reactivateProduct()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "requestPayout(bytes32)": FunctionFragment;
     "resumeCallback()": FunctionFragment;
     "riskPoolCapacityCallback(uint256)": FunctionFragment;
     "setId(uint256)": FunctionFragment;
     "suspendCallback()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "triggerOracle()": FunctionFragment;
     "unpauseCallback()": FunctionFragment;
+    "updatePriceInfo()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "DEFAULT_DATA_STRUCTURE"
+      | "GANACHE"
+      | "MAINNET"
       | "NAME"
       | "POLICY_FLOW"
       | "VERSION"
@@ -123,9 +163,12 @@ export interface DepegProductInterface extends utils.Interface {
       | "getApplicationDataStructure"
       | "getApplicationId"
       | "getClaimDataStructure"
+      | "getDepegPriceInfo"
+      | "getDepegState"
       | "getFeeFractionFullUnit"
       | "getFeeSpecification"
       | "getId"
+      | "getLatestPriceInfo"
       | "getName"
       | "getOwner"
       | "getPayoutDataStructure"
@@ -139,6 +182,7 @@ export interface DepegProductInterface extends utils.Interface {
       | "getState"
       | "getToken"
       | "getType"
+      | "hasNewPriceInfo"
       | "isOracle"
       | "isProduct"
       | "isRiskpool"
@@ -148,20 +192,24 @@ export interface DepegProductInterface extends utils.Interface {
       | "processIds"
       | "processPolicy"
       | "proposalCallback"
+      | "reactivateProduct"
       | "renounceOwnership"
+      | "requestPayout"
       | "resumeCallback"
       | "riskPoolCapacityCallback"
       | "setId"
       | "suspendCallback"
       | "transferOwnership"
-      | "triggerOracle"
       | "unpauseCallback"
+      | "updatePriceInfo"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "DEFAULT_DATA_STRUCTURE",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "GANACHE", values?: undefined): string;
+  encodeFunctionData(functionFragment: "MAINNET", values?: undefined): string;
   encodeFunctionData(functionFragment: "NAME", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "POLICY_FLOW",
@@ -221,6 +269,14 @@ export interface DepegProductInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getDepegPriceInfo",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepegState",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getFeeFractionFullUnit",
     values?: undefined
   ): string;
@@ -229,6 +285,10 @@ export interface DepegProductInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getId", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getLatestPriceInfo",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getName", values?: undefined): string;
   encodeFunctionData(functionFragment: "getOwner", values?: undefined): string;
   encodeFunctionData(
@@ -266,6 +326,10 @@ export interface DepegProductInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "getState", values?: undefined): string;
   encodeFunctionData(functionFragment: "getToken", values?: undefined): string;
   encodeFunctionData(functionFragment: "getType", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "hasNewPriceInfo",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "isOracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "isProduct", values?: undefined): string;
   encodeFunctionData(
@@ -291,8 +355,16 @@ export interface DepegProductInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "reactivateProduct",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "requestPayout",
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "resumeCallback",
@@ -315,11 +387,11 @@ export interface DepegProductInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "triggerOracle",
+    functionFragment: "unpauseCallback",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "unpauseCallback",
+    functionFragment: "updatePriceInfo",
     values?: undefined
   ): string;
 
@@ -327,6 +399,8 @@ export interface DepegProductInterface extends utils.Interface {
     functionFragment: "DEFAULT_DATA_STRUCTURE",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "GANACHE", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "MAINNET", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "NAME", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "POLICY_FLOW",
@@ -378,6 +452,14 @@ export interface DepegProductInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getDepegPriceInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepegState",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getFeeFractionFullUnit",
     data: BytesLike
   ): Result;
@@ -386,6 +468,10 @@ export interface DepegProductInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getId", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getLatestPriceInfo",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getName", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOwner", data: BytesLike): Result;
   decodeFunctionResult(
@@ -423,6 +509,10 @@ export interface DepegProductInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "getState", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getType", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "hasNewPriceInfo",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isOracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isProduct", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isRiskpool", data: BytesLike): Result;
@@ -442,7 +532,15 @@ export interface DepegProductInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "reactivateProduct",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "requestPayout",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -463,11 +561,11 @@ export interface DepegProductInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "triggerOracle",
+    functionFragment: "unpauseCallback",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "unpauseCallback",
+    functionFragment: "updatePriceInfo",
     data: BytesLike
   ): Result;
 
@@ -483,9 +581,13 @@ export interface DepegProductInterface extends utils.Interface {
     "LogComponentSuspended(uint256)": EventFragment;
     "LogComponentUnpaused(uint256)": EventFragment;
     "LogDepegApplicationCreated(bytes32,address,uint256,uint256,uint256)": EventFragment;
-    "LogDepegOracleTriggered(uint256)": EventFragment;
     "LogDepegPolicyCreated(bytes32,address,uint256,uint256)": EventFragment;
     "LogDepegPolicyProcessed(bytes32)": EventFragment;
+    "LogDepegPriceInfoUpdated(uint256,uint256,uint256,uint256,uint256)": EventFragment;
+    "LogDepegProductDeactivated(uint256,uint256)": EventFragment;
+    "LogDepegProductPaused(uint256,uint256)": EventFragment;
+    "LogDepegProductReactivated(uint256)": EventFragment;
+    "LogDepegProductUnpaused(uint256,uint256)": EventFragment;
     "LogProductApproved(uint256)": EventFragment;
     "LogProductCreated(address)": EventFragment;
     "LogProductDeclined(uint256)": EventFragment;
@@ -504,9 +606,13 @@ export interface DepegProductInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "LogComponentSuspended"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogComponentUnpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogDepegApplicationCreated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LogDepegOracleTriggered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogDepegPolicyCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogDepegPolicyProcessed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogDepegPriceInfoUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogDepegProductDeactivated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogDepegProductPaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogDepegProductReactivated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogDepegProductUnpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogProductApproved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogProductCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogProductDeclined"): EventFragment;
@@ -647,17 +753,6 @@ export type LogDepegApplicationCreatedEvent = TypedEvent<
 export type LogDepegApplicationCreatedEventFilter =
   TypedEventFilter<LogDepegApplicationCreatedEvent>;
 
-export interface LogDepegOracleTriggeredEventObject {
-  exchangeRate: BigNumber;
-}
-export type LogDepegOracleTriggeredEvent = TypedEvent<
-  [BigNumber],
-  LogDepegOracleTriggeredEventObject
->;
-
-export type LogDepegOracleTriggeredEventFilter =
-  TypedEventFilter<LogDepegOracleTriggeredEvent>;
-
 export interface LogDepegPolicyCreatedEventObject {
   policyId: string;
   policyHolder: string;
@@ -682,6 +777,68 @@ export type LogDepegPolicyProcessedEvent = TypedEvent<
 
 export type LogDepegPolicyProcessedEventFilter =
   TypedEventFilter<LogDepegPolicyProcessedEvent>;
+
+export interface LogDepegPriceInfoUpdatedEventObject {
+  priceId: BigNumber;
+  price: BigNumber;
+  triggeredAt: BigNumber;
+  depeggedAt: BigNumber;
+  createdAt: BigNumber;
+}
+export type LogDepegPriceInfoUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
+  LogDepegPriceInfoUpdatedEventObject
+>;
+
+export type LogDepegPriceInfoUpdatedEventFilter =
+  TypedEventFilter<LogDepegPriceInfoUpdatedEvent>;
+
+export interface LogDepegProductDeactivatedEventObject {
+  priceId: BigNumber;
+  deactivatedAt: BigNumber;
+}
+export type LogDepegProductDeactivatedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  LogDepegProductDeactivatedEventObject
+>;
+
+export type LogDepegProductDeactivatedEventFilter =
+  TypedEventFilter<LogDepegProductDeactivatedEvent>;
+
+export interface LogDepegProductPausedEventObject {
+  priceId: BigNumber;
+  pausedAt: BigNumber;
+}
+export type LogDepegProductPausedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  LogDepegProductPausedEventObject
+>;
+
+export type LogDepegProductPausedEventFilter =
+  TypedEventFilter<LogDepegProductPausedEvent>;
+
+export interface LogDepegProductReactivatedEventObject {
+  reactivatedAt: BigNumber;
+}
+export type LogDepegProductReactivatedEvent = TypedEvent<
+  [BigNumber],
+  LogDepegProductReactivatedEventObject
+>;
+
+export type LogDepegProductReactivatedEventFilter =
+  TypedEventFilter<LogDepegProductReactivatedEvent>;
+
+export interface LogDepegProductUnpausedEventObject {
+  priceId: BigNumber;
+  unpausedAt: BigNumber;
+}
+export type LogDepegProductUnpausedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  LogDepegProductUnpausedEventObject
+>;
+
+export type LogDepegProductUnpausedEventFilter =
+  TypedEventFilter<LogDepegProductUnpausedEvent>;
 
 export interface LogProductApprovedEventObject {
   componentId: BigNumber;
@@ -768,6 +925,10 @@ export interface DepegProduct extends BaseContract {
   functions: {
     DEFAULT_DATA_STRUCTURE(overrides?: CallOverrides): Promise<[string]>;
 
+    GANACHE(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    MAINNET(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     NAME(overrides?: CallOverrides): Promise<[string]>;
 
     POLICY_FLOW(overrides?: CallOverrides): Promise<[string]>;
@@ -829,6 +990,18 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string] & { dataStructure: string }>;
 
+    getDepegPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [IPriceDataProvider.PriceInfoStructOutput] & {
+        priceInfo: IPriceDataProvider.PriceInfoStructOutput;
+      }
+    >;
+
+    getDepegState(
+      overrides?: CallOverrides
+    ): Promise<[number] & { state: number }>;
+
     getFeeFractionFullUnit(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { fractionFullUnit: BigNumber }>;
@@ -842,6 +1015,14 @@ export interface DepegProduct extends BaseContract {
     >;
 
     getId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getLatestPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [IPriceDataProvider.PriceInfoStructOutput] & {
+        priceInfo: IPriceDataProvider.PriceInfoStructOutput;
+      }
+    >;
 
     getName(overrides?: CallOverrides): Promise<[string]>;
 
@@ -882,6 +1063,16 @@ export interface DepegProduct extends BaseContract {
 
     getType(overrides?: CallOverrides): Promise<[number]>;
 
+    hasNewPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, BigNumber, BigNumber] & {
+        newInfoAvailable: boolean;
+        priceId: BigNumber;
+        timeSinceLastUpdate: BigNumber;
+      }
+    >;
+
     isOracle(overrides?: CallOverrides): Promise<[boolean]>;
 
     isProduct(overrides?: CallOverrides): Promise<[boolean]>;
@@ -912,7 +1103,16 @@ export interface DepegProduct extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    reactivateProduct(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    requestPayout(
+      processId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -939,16 +1139,20 @@ export interface DepegProduct extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    triggerOracle(
+    unpauseCallback(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    unpauseCallback(
+    updatePriceInfo(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   DEFAULT_DATA_STRUCTURE(overrides?: CallOverrides): Promise<string>;
+
+  GANACHE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  MAINNET(overrides?: CallOverrides): Promise<BigNumber>;
 
   NAME(overrides?: CallOverrides): Promise<string>;
 
@@ -1005,6 +1209,12 @@ export interface DepegProduct extends BaseContract {
 
   getClaimDataStructure(overrides?: CallOverrides): Promise<string>;
 
+  getDepegPriceInfo(
+    overrides?: CallOverrides
+  ): Promise<IPriceDataProvider.PriceInfoStructOutput>;
+
+  getDepegState(overrides?: CallOverrides): Promise<number>;
+
   getFeeFractionFullUnit(overrides?: CallOverrides): Promise<BigNumber>;
 
   getFeeSpecification(
@@ -1012,6 +1222,10 @@ export interface DepegProduct extends BaseContract {
   ): Promise<ITreasury.FeeSpecificationStructOutput>;
 
   getId(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getLatestPriceInfo(
+    overrides?: CallOverrides
+  ): Promise<IPriceDataProvider.PriceInfoStructOutput>;
 
   getName(overrides?: CallOverrides): Promise<string>;
 
@@ -1046,6 +1260,16 @@ export interface DepegProduct extends BaseContract {
 
   getType(overrides?: CallOverrides): Promise<number>;
 
+  hasNewPriceInfo(
+    overrides?: CallOverrides
+  ): Promise<
+    [boolean, BigNumber, BigNumber] & {
+      newInfoAvailable: boolean;
+      priceId: BigNumber;
+      timeSinceLastUpdate: BigNumber;
+    }
+  >;
+
   isOracle(overrides?: CallOverrides): Promise<boolean>;
 
   isProduct(overrides?: CallOverrides): Promise<boolean>;
@@ -1074,7 +1298,16 @@ export interface DepegProduct extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  reactivateProduct(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  requestPayout(
+    processId: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1101,16 +1334,20 @@ export interface DepegProduct extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  triggerOracle(
+  unpauseCallback(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  unpauseCallback(
+  updatePriceInfo(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     DEFAULT_DATA_STRUCTURE(overrides?: CallOverrides): Promise<string>;
+
+    GANACHE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAINNET(overrides?: CallOverrides): Promise<BigNumber>;
 
     NAME(overrides?: CallOverrides): Promise<string>;
 
@@ -1161,6 +1398,12 @@ export interface DepegProduct extends BaseContract {
 
     getClaimDataStructure(overrides?: CallOverrides): Promise<string>;
 
+    getDepegPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<IPriceDataProvider.PriceInfoStructOutput>;
+
+    getDepegState(overrides?: CallOverrides): Promise<number>;
+
     getFeeFractionFullUnit(overrides?: CallOverrides): Promise<BigNumber>;
 
     getFeeSpecification(
@@ -1168,6 +1411,10 @@ export interface DepegProduct extends BaseContract {
     ): Promise<ITreasury.FeeSpecificationStructOutput>;
 
     getId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getLatestPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<IPriceDataProvider.PriceInfoStructOutput>;
 
     getName(overrides?: CallOverrides): Promise<string>;
 
@@ -1202,6 +1449,16 @@ export interface DepegProduct extends BaseContract {
 
     getType(overrides?: CallOverrides): Promise<number>;
 
+    hasNewPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, BigNumber, BigNumber] & {
+        newInfoAvailable: boolean;
+        priceId: BigNumber;
+        timeSinceLastUpdate: BigNumber;
+      }
+    >;
+
     isOracle(overrides?: CallOverrides): Promise<boolean>;
 
     isProduct(overrides?: CallOverrides): Promise<boolean>;
@@ -1226,7 +1483,20 @@ export interface DepegProduct extends BaseContract {
 
     proposalCallback(overrides?: CallOverrides): Promise<void>;
 
+    reactivateProduct(overrides?: CallOverrides): Promise<void>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    requestPayout(
+      processId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        claimId: BigNumber;
+        payoutId: BigNumber;
+        payoutAmount: BigNumber;
+      }
+    >;
 
     resumeCallback(overrides?: CallOverrides): Promise<void>;
 
@@ -1247,9 +1517,11 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    triggerOracle(overrides?: CallOverrides): Promise<void>;
-
     unpauseCallback(overrides?: CallOverrides): Promise<void>;
+
+    updatePriceInfo(
+      overrides?: CallOverrides
+    ): Promise<IPriceDataProvider.PriceInfoStructOutput>;
   };
 
   filters: {
@@ -1328,13 +1600,6 @@ export interface DepegProduct extends BaseContract {
       sumInsuredAmount?: null
     ): LogDepegApplicationCreatedEventFilter;
 
-    "LogDepegOracleTriggered(uint256)"(
-      exchangeRate?: null
-    ): LogDepegOracleTriggeredEventFilter;
-    LogDepegOracleTriggered(
-      exchangeRate?: null
-    ): LogDepegOracleTriggeredEventFilter;
-
     "LogDepegPolicyCreated(bytes32,address,uint256,uint256)"(
       policyId?: null,
       policyHolder?: null,
@@ -1354,6 +1619,55 @@ export interface DepegProduct extends BaseContract {
     LogDepegPolicyProcessed(
       policyId?: null
     ): LogDepegPolicyProcessedEventFilter;
+
+    "LogDepegPriceInfoUpdated(uint256,uint256,uint256,uint256,uint256)"(
+      priceId?: null,
+      price?: null,
+      triggeredAt?: null,
+      depeggedAt?: null,
+      createdAt?: null
+    ): LogDepegPriceInfoUpdatedEventFilter;
+    LogDepegPriceInfoUpdated(
+      priceId?: null,
+      price?: null,
+      triggeredAt?: null,
+      depeggedAt?: null,
+      createdAt?: null
+    ): LogDepegPriceInfoUpdatedEventFilter;
+
+    "LogDepegProductDeactivated(uint256,uint256)"(
+      priceId?: null,
+      deactivatedAt?: null
+    ): LogDepegProductDeactivatedEventFilter;
+    LogDepegProductDeactivated(
+      priceId?: null,
+      deactivatedAt?: null
+    ): LogDepegProductDeactivatedEventFilter;
+
+    "LogDepegProductPaused(uint256,uint256)"(
+      priceId?: null,
+      pausedAt?: null
+    ): LogDepegProductPausedEventFilter;
+    LogDepegProductPaused(
+      priceId?: null,
+      pausedAt?: null
+    ): LogDepegProductPausedEventFilter;
+
+    "LogDepegProductReactivated(uint256)"(
+      reactivatedAt?: null
+    ): LogDepegProductReactivatedEventFilter;
+    LogDepegProductReactivated(
+      reactivatedAt?: null
+    ): LogDepegProductReactivatedEventFilter;
+
+    "LogDepegProductUnpaused(uint256,uint256)"(
+      priceId?: null,
+      unpausedAt?: null
+    ): LogDepegProductUnpausedEventFilter;
+    LogDepegProductUnpaused(
+      priceId?: null,
+      unpausedAt?: null
+    ): LogDepegProductUnpausedEventFilter;
 
     "LogProductApproved(uint256)"(
       componentId?: null
@@ -1387,6 +1701,10 @@ export interface DepegProduct extends BaseContract {
 
   estimateGas: {
     DEFAULT_DATA_STRUCTURE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    GANACHE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAINNET(overrides?: CallOverrides): Promise<BigNumber>;
 
     NAME(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1441,11 +1759,17 @@ export interface DepegProduct extends BaseContract {
 
     getClaimDataStructure(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getDepegPriceInfo(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getDepegState(overrides?: CallOverrides): Promise<BigNumber>;
+
     getFeeFractionFullUnit(overrides?: CallOverrides): Promise<BigNumber>;
 
     getFeeSpecification(overrides?: CallOverrides): Promise<BigNumber>;
 
     getId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getLatestPriceInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
     getName(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1480,6 +1804,8 @@ export interface DepegProduct extends BaseContract {
 
     getType(overrides?: CallOverrides): Promise<BigNumber>;
 
+    hasNewPriceInfo(overrides?: CallOverrides): Promise<BigNumber>;
+
     isOracle(overrides?: CallOverrides): Promise<BigNumber>;
 
     isProduct(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1508,7 +1834,16 @@ export interface DepegProduct extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    reactivateProduct(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    requestPayout(
+      processId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1535,11 +1870,11 @@ export interface DepegProduct extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    triggerOracle(
+    unpauseCallback(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    unpauseCallback(
+    updatePriceInfo(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1548,6 +1883,10 @@ export interface DepegProduct extends BaseContract {
     DEFAULT_DATA_STRUCTURE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    GANACHE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    MAINNET(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     NAME(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1606,6 +1945,10 @@ export interface DepegProduct extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getDepegPriceInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getDepegState(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getFeeFractionFullUnit(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1615,6 +1958,10 @@ export interface DepegProduct extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getLatestPriceInfo(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1653,6 +2000,8 @@ export interface DepegProduct extends BaseContract {
 
     getType(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    hasNewPriceInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     isOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isProduct(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1681,7 +2030,16 @@ export interface DepegProduct extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    reactivateProduct(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    requestPayout(
+      processId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1708,11 +2066,11 @@ export interface DepegProduct extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    triggerOracle(
+    unpauseCallback(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    unpauseCallback(
+    updatePriceInfo(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
