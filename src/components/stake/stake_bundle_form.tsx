@@ -52,7 +52,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                 console.log("Calculating supported amount for", stakedAmount);
                 const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
                 setCalculationInProgress(false);
-                setSupportedAmount(formatCurrency(supportedAmount, props.bundle.supportingTokenDecimals));
+                // FIXME: setSupportedAmount(formatCurrency(supportedAmount, props.bundle.supportingTokenDecimals));
+                setSupportedAmount(formatCurrency(supportedAmount.toNumber(), props.bundle.supportingTokenDecimals));
             } finally {
             }
         } else {

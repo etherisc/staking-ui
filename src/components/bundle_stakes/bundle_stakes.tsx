@@ -46,9 +46,11 @@ export default function BundleStakes(props: BundleStakesProps) {
     }
 
     function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
-        let r = `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
+        // FIXME: let r = `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
+        let r = `${tokenSymbol}`;
         if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-            r = `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${r}`;
+            // FIXME: r = `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${r}`;
+            r = `${tokenSymbol}`;
         }
         return r;
     }

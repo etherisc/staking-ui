@@ -30,7 +30,8 @@ export interface CurrencyTextfieldProps {
 
 export default function CurrencyTextField(props: CurrencyTextfieldProps) {
     const { t } = useTranslation('common');
-    const [ displayValue, setDisplayValue ] = useState<string>(formatCurrency(props.value, props.currencyDecimals));
+    // FIXME: const [ displayValue, setDisplayValue ] = useState<string>(formatCurrency(props.value, props.currencyDecimals));
+    const [ displayValue, setDisplayValue ] = useState<string>(formatCurrency(props.value?.toNumber(), props.currencyDecimals));
     const [ error, setError ] = useState("");
     
     const value = props.value;
@@ -72,7 +73,8 @@ export default function CurrencyTextField(props: CurrencyTextfieldProps) {
     // call onBlur AFTER value update has been propagated
     useEffect(() => {
         // console.log("useEffect", "onBlur", props.value, displayValue);
-        setDisplayValue(formatCurrency(props.value, currencyDecimals));
+        //FIXME:  setDisplayValue(formatCurrency(props.value, currencyDecimals));
+        setDisplayValue(formatCurrency(props.value?.toNumber(), currencyDecimals));
         // call onBlue when value due to user input (the displayValue matches with the incoming value)
         // otherwise update the displayValue to match the incoming value (update from outside of component)
         if (onBlur !== undefined) {
@@ -100,10 +102,12 @@ export default function CurrencyTextField(props: CurrencyTextfieldProps) {
             return t('error.notANumber', { fieldName: label });
         }
         if (valueToValidate instanceof BigNumber && valueToValidate.lt(minValue)) {
-            return t('error.currencyTextFieldMinValue', { fieldName: label, amount: formatCurrency(minValue, currencyDecimals), currency: currency });
+            // FIXME: return t('error.currencyTextFieldMinValue', { fieldName: label, amount: formatCurrency(minValue, currencyDecimals), currency: currency });
+            return t('error.currencyTextFieldMinValue', { fieldName: label, amount: formatCurrency(minValue.toNumber(), currencyDecimals), currency: currency });
         } 
         if (valueToValidate instanceof BigNumber && valueToValidate.gt(maxValue)) {
-            return t('error.currencyTextFieldMaxValue', { fieldName: label, amount: formatCurrency(maxValue, currencyDecimals), currency: currency });
+            // FIXME: return t('error.currencyTextFieldMaxValue', { fieldName: label, amount: formatCurrency(maxValue, currencyDecimals), currency: currency });
+            return t('error.currencyTextFieldMaxValue', { fieldName: label, amount: formatCurrency(maxValue.toNumber(), currencyDecimals), currency: currency });
         }
         if (extraValidation !== undefined) {
             const errorMsg = extraValidation(valueToValidate);
