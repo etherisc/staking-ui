@@ -1,10 +1,9 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { AppContext } from "../../context/app_context";
 import { add, bundleSelected, finishLoading, reset, startLoading } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
@@ -17,8 +16,9 @@ interface SelectBundleProps {
 
 export default function SelectBundle(props: SelectBundleProps) {
     const { t } = useTranslation(['stake', 'common']);
-    const appContext = useContext(AppContext);
 
+    const signer = useSelector((state: RootState) => state.chain.signer);
+    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const bundles = useSelector((state: RootState) => state.staking.bundles);
     const isLoadingBundles = useSelector((state: RootState) => state.staking.isLoadingBundles);
     const dispatch = useDispatch();
@@ -29,7 +29,7 @@ export default function SelectBundle(props: SelectBundleProps) {
         async function getBundles() {
             if (props.onlyStakesFromWallet !== undefined && props.onlyStakesFromWallet === true) {
                 props.stakingApi.retrieveStakesForWallet(
-                    await appContext.data.signer!.getAddress(),
+                    await signer!.getAddress(),
                     (bundle: BundleInfo) => {
                         if (bundle.myStakedAmount != "0") {
                             dispatch(add(bundle));
@@ -53,14 +53,14 @@ export default function SelectBundle(props: SelectBundleProps) {
             }
         }
 
-        if (appContext.data.signer) {
+        if (isConnected) {
             dispatch(startLoading());
             dispatch(reset());
             getBundles();
         } else {
             dispatch(reset());
         }
-    }, [appContext?.data.signer, props.stakingApi, dispatch]);
+    }, [signer, isConnected, props.stakingApi, dispatch]);
 
     return (
         <>

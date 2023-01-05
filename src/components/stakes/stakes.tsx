@@ -1,10 +1,9 @@
 import { Signer } from "ethers";
 import { useTranslation } from "next-i18next";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { AppContext } from "../../context/app_context";
 import { add, finishLoading, reset, startLoading } from "../../redux/slices/stakes";
 import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
@@ -16,8 +15,8 @@ export interface StakingProps {
 
 export default function Stakes(props: StakingProps) {
     const { t } = useTranslation(['stakes', 'common']);
-    const appContext = useContext(AppContext);
-
+    const signer = useSelector((state: RootState) => state.chain.signer);
+    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const bundles = useSelector((state: RootState) => state.stakes.bundles);
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
@@ -39,12 +38,12 @@ export default function Stakes(props: StakingProps) {
             );
         }
 
-        if (appContext.data.signer !== undefined) {
-            retrieveStakes(appContext.data.signer);
+        if (isConnected) {
+            retrieveStakes(signer!);
         } else {
             dispatch(reset());
         }
-    }, [appContext?.data.signer, props.stakingApi, dispatch]);
+    }, [signer, isConnected, props.stakingApi, dispatch]);
 
 
 
