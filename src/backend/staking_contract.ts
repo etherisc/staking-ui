@@ -1,23 +1,19 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { BundleInfo } from "./bundle_info";
 import { TransactionFailedError } from "../utils/error";
-import { IBundleDataProvider, IBundleDataProvider__factory, IStaking, IStakingDataProvider, IStakingDataProvider__factory, IStaking__factory } from "../contracts/depeg-contracts";
+import { IBundleDataProvider, IBundleDataProvider__factory, IERC20Metadata__factory, IStaking, IStakingDataProvider, IStakingDataProvider__factory, IStaking__factory } from "../contracts/depeg-contracts";
 
 export default class StakingContract {
     private signer: Signer;
     private stakingDataProvider: IStakingDataProvider;
     private staking: IStaking;
     private bundleDataProvider?: IBundleDataProvider;
-    private supportingToken: string;
-    private supportingTokenDecimals: number;
-
+    private knownTokens: Map<string, [string, number]> = new Map();
+    
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
         this.stakingDataProvider = IStakingDataProvider__factory.connect(stakingContractAddress, signer);
         this.staking = IStaking__factory.connect(stakingContractAddress, signer);
-
-        this.supportingToken = process.env.NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_SYMBOL || "USDT";
-        this.supportingTokenDecimals = parseInt(process.env.NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_DECIMALS || "6");
     }
 
     async initialize(): Promise<void> {
@@ -37,6 +33,16 @@ export default class StakingContract {
             instanceInfos.push({id, name, chainid: chainid.toNumber(), registry});
         }
         return instanceInfos;
+    }
+
+    async getToken(tokenAddress: string): Promise<[string, number]> {
+        if (this.knownTokens.has(tokenAddress)) {
+            return this.knownTokens.get(tokenAddress)!;
+        }
+        const token = IERC20Metadata__factory.connect(tokenAddress, this.signer);
+        const [name, decimals] = await Promise.all([token.symbol(), token.decimals()]);
+        this.knownTokens.set(tokenAddress, [name, decimals]);
+        return [name, decimals];
     }
 
     async getBundleIds(instanceId: string): Promise<Array<BigNumber>> {
@@ -71,6 +77,8 @@ export default class StakingContract {
             mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, chainId, token);
         }
 
+        const [tokenSymbol, tokenDecimals] = await this.getToken(token);
+
         const bundleInfo = {
             id: `${instanceId}-${bundleId}`,
             chainId: chainId,
@@ -82,9 +90,8 @@ export default class StakingContract {
             stakedAmount: stakedAmount.toString(),
             mySupportingAmount: mySupportingAmount.toString(),
             supportingAmount: supportedAmount.toString(),
-            // TODO: get token from contract
-            supportingToken: this.supportingToken,
-            supportingTokenDecimals: this.supportingTokenDecimals,
+            supportingToken: tokenSymbol,
+            supportingTokenDecimals: tokenDecimals,
             state: state,
         } as BundleInfo;
         return bundleInfo;
