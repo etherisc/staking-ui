@@ -2,7 +2,6 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { BundleInfo } from "./bundle_info";
 import { TransactionFailedError } from "../utils/error";
 import { IBundleDataProvider, IBundleDataProvider__factory, IStaking, IStakingDataProvider, IStakingDataProvider__factory, IStaking__factory } from "../contracts/depeg-contracts";
-import { formatBytes32String } from "ethers/lib/utils";
 
 export default class StakingContract {
     private signer: Signer;
@@ -140,7 +139,7 @@ export default class StakingContract {
             // console.log(receipt);
             return [tx, receipt];
         } catch (e) {
-            console.log("caught error while applying for policy: ", e);
+            console.log("caught error while staking: ", e);
             // @ts-ignore e.code
             throw new TransactionFailedError(e.code, e);
         }
@@ -152,37 +151,34 @@ export default class StakingContract {
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<[ContractTransaction, ContractReceipt]> {
-        // FIXME: this
-        // if (beforeTrxCallback !== undefined) {
-        //     beforeTrxCallback(this.gifStaking.address);
-        // }
-        // try {
-        //     let tx;
+        console.log("unstake", bundle, stakedAmount?.toString());
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.staking.address);
+        }
+        try {
+            let tx;
 
-        //     if (stakedAmount === undefined) {
-        //         tx = await this.gifStaking["withdraw(bytes32,uint256)"](bundle.instanceId, bundle.bundleId);
-        //     } else {
-        //         tx = await this.gifStaking["withdraw(bytes32,uint256,uint256)"](bundle.instanceId, bundle.bundleId, stakedAmount);
-        //     }
+            if (stakedAmount === undefined) {
+                tx = await this.staking["unstakeFromBundle(bytes32,uint256)"](bundle.instanceId, bundle.bundleId);
+            } else {
+                tx = await this.staking["unstakeFromBundle(bytes32,uint256,uint256)"](bundle.instanceId, bundle.bundleId, stakedAmount);
+            }
 
-        //     if (beforeWaitCallback !== undefined) {
-        //         beforeWaitCallback(this.gifStaking.address);
-        //     }
-        //     const receipt = await tx.wait();
-        //     // console.log(receipt);
-        //     return [tx, receipt];
-        // } catch (e) {
-        //     console.log("caught error while applying for policy: ", e);
-        //     // @ts-ignore e.code
-        //     throw new TransactionFailedError(e.code, e);
-        // }
-        return Promise.resolve([{} as ContractTransaction, {} as ContractReceipt]);
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.staking.address);
+            }
+            const receipt = await tx.wait();
+            // console.log(receipt);
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while unstaking: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
     }
 
     async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        // FIXME: this
-        // return await this.gifStaking["stakes(bytes32,uint256,address)"](bundle.instanceId, bundle.bundleId, address);
-        return Promise.resolve(BigNumber.from(0));
+        return await this.stakingDataProvider["getBundleStakes(bytes32,uint256,address)"](bundle.instanceId, bundle.bundleId, address);
     }
 
 }
