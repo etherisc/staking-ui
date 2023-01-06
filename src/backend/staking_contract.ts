@@ -1,12 +1,13 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { BundleInfo } from "./bundle_info";
 import { TransactionFailedError } from "../utils/error";
-import { IBundleDataProvider, IBundleDataProvider__factory, IStakingDataProvider, IStakingDataProvider__factory } from "../contracts/depeg-contracts";
+import { IBundleDataProvider, IBundleDataProvider__factory, IStaking, IStakingDataProvider, IStakingDataProvider__factory, IStaking__factory } from "../contracts/depeg-contracts";
 import { formatBytes32String } from "ethers/lib/utils";
 
 export default class StakingContract {
     private signer: Signer;
     private stakingDataProvider: IStakingDataProvider;
+    private staking: IStaking;
     private bundleDataProvider?: IBundleDataProvider;
     private supportingToken: string;
     private supportingTokenDecimals: number;
@@ -14,6 +15,7 @@ export default class StakingContract {
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
         this.stakingDataProvider = IStakingDataProvider__factory.connect(stakingContractAddress, signer);
+        this.staking = IStaking__factory.connect(stakingContractAddress, signer);
 
         this.supportingToken = process.env.NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_SYMBOL || "USDT";
         this.supportingTokenDecimals = parseInt(process.env.NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_DECIMALS || "6");
@@ -125,25 +127,23 @@ export default class StakingContract {
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<[ContractTransaction, ContractReceipt]> {
-        // FIXME: this
-        // if (beforeTrxCallback !== undefined) {
-        //     beforeTrxCallback(this.gifStaking.address);
-        // }
-        // try {
-        //     const tx = await this.gifStaking.stake(bundle.instanceId, bundle.bundleId, stakedAmount);
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.stakingDataProvider.address);
+        }
+        try {
+            const tx = await this.staking.stakeForBundle(bundle.instanceId, bundle.bundleId, stakedAmount);
 
-        //     if (beforeWaitCallback !== undefined) {
-        //         beforeWaitCallback(this.gifStaking.address);
-        //     }
-        //     const receipt = await tx.wait();
-        //     // console.log(receipt);
-        //     return [tx, receipt];
-        // } catch (e) {
-        //     console.log("caught error while applying for policy: ", e);
-        //     // @ts-ignore e.code
-        //     throw new TransactionFailedError(e.code, e);
-        // }
-        return Promise.resolve([{} as ContractTransaction, {} as ContractReceipt]);
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.staking.address);
+            }
+            const receipt = await tx.wait();
+            // console.log(receipt);
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while applying for policy: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
     }
 
     async unstake(

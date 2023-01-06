@@ -84,8 +84,7 @@ export default function Stake(props: StakeProps) {
                 amount, 
                 (address, currency, amount) => {
                     snackbar = enqueueSnackbar(
-                        // FIXME: t('approval_info', { address, currency, amount: formatCurrency(amount, currencyDecimals) }),
-                        t('approval_info', { address, currency, amount: 0 }),
+                        t('approval_info', { address, currency, amount: formatCurrency(amount, currencyDecimals) }),
                         { variant: "warning", persist: true }
                     );
                 },
