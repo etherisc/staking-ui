@@ -45,7 +45,7 @@ export class StakingApiSmartContract implements StakingApi {
         bundleRetrieved: (bundle: BundleInfo) => Promise<void>, 
         loadingFinished: () => void
     ): Promise<void> {
-        console.log("StakingApiSmartContract.retrieveBundles");
+        // console.log("StakingApiSmartContract.retrieveBundles");
         await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved);
         loadingFinished();
     }
@@ -61,7 +61,7 @@ export class StakingApiSmartContract implements StakingApi {
     }
     
     async calculateSupportedAmount(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
-        return (await this.getGifStakingApi()).calculateSupportedAmount(amount, bundle.instanceId, bundle.token);
+        return (await this.getGifStakingApi()).calculateSupportedAmount(amount, bundle.chainId, bundle.token);
     }
     
     async createApproval(

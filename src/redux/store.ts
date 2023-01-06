@@ -2,8 +2,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import stakingReducer from './slices/staking';
 import stakesReducer from './slices/stakes';
 import chainReducer from './slices/chain';
+import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
-export const store = configureStore({
+export const store: ToolkitStore = configureStore({
     reducer: {
         chain: chainReducer,
         staking: stakingReducer,

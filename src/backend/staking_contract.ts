@@ -2,6 +2,7 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { BundleInfo } from "./bundle_info";
 import { TransactionFailedError } from "../utils/error";
 import { IBundleDataProvider, IBundleDataProvider__factory, IStakingDataProvider, IStakingDataProvider__factory } from "../contracts/depeg-contracts";
+import { formatBytes32String } from "ethers/lib/utils";
 
 export default class StakingContract {
     private signer: Signer;
@@ -23,52 +24,99 @@ export default class StakingContract {
         this.bundleDataProvider = IBundleDataProvider__factory.connect(bundleRegistryAddress, this.signer);
     }
 
+    async getAllInstanceInfos() {
+        const instanceInfos = [];
+        const numInstances = await (this.bundleDataProvider!).instances();
+        // console.log("numInstances", numInstances);
+        // loop over instances and get instance id
+        for (let i = 0; i < numInstances.toNumber(); i++) {
+            const instanceId = await (this.bundleDataProvider!).getInstanceId(i);
+            const instanceInfo = await (this.bundleDataProvider!).getInstanceInfo(instanceId);
+            const[id, _1, name, chainid, registry, _2, _3] = instanceInfo;
+            instanceInfos.push({id, name, chainid: chainid.toNumber(), registry});
+        }
+        return instanceInfos;
+    }
+
+    async getBundleIds(instanceId: string): Promise<Array<BigNumber>> {
+        const bundlesIds = [];
+        // console.log("instance", instanceId);
+        const components = await this.bundleDataProvider!.components(instanceId);
+        for (let componentIdx = 0; componentIdx < components.toNumber(); componentIdx++) {
+            const componentId = await this.bundleDataProvider!.getComponentId(instanceId, componentIdx);
+            // normally we would check component type for riskpool, but we only have riskpool atm so this step can be skipped for now
+            const numBundles = await (this.bundleDataProvider!).bundles(instanceId, componentId);
+            // console.log("component", componentId, "bundles", numBundles);
+
+            for (let bundleIdx = 0; bundleIdx < numBundles.toNumber(); bundleIdx++) {
+                const bundleId = await (this.bundleDataProvider!).getBundleId(instanceId, componentId, bundleIdx);
+                bundlesIds.push(bundleId);
+            }
+        }
+        return bundlesIds;
+    }
+
+    async getBundleInfo(instanceId: string, instanceName: string, chainId: number, bundleId: BigNumber, myWallet: string | undefined): Promise<BundleInfo> {
+        const [_key, _riskpoolId, token, state, _name, _expiryAt, _closedAt, _createdAt, _updatedAt] = 
+                    await (this.bundleDataProvider!).getBundleInfo(instanceId, bundleId);
+
+        const stakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256)"](instanceId, bundleId);
+        let myStakedAmount = BigNumber.from(0);
+        const supportedAmount = await this.calculateSupportedAmount(stakedAmount, chainId, token);
+        let mySupportingAmount = BigNumber.from(0);
+
+        if (myWallet !== undefined) {
+            myStakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256,address)"](instanceId, bundleId, myWallet);
+            mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, chainId, token);
+        }
+
+        const bundleInfo = {
+            id: `${instanceId}-${bundleId}`,
+            chainId: chainId,
+            instanceId: instanceId,
+            instanceName: instanceName,
+            bundleId: bundleId.toNumber(),
+            token: token,
+            myStakedAmount: myStakedAmount.toString(),
+            stakedAmount: stakedAmount.toString(),
+            mySupportingAmount: mySupportingAmount.toString(),
+            supportingAmount: supportedAmount.toString(),
+            // TODO: get token from contract
+            supportingToken: this.supportingToken,
+            supportingTokenDecimals: this.supportingTokenDecimals,
+            state: state,
+        } as BundleInfo;
+        return bundleInfo;
+    }
+
     async getStakleableBundles(
         bundleRetrieved: (bundle: BundleInfo) => Promise<void>,
         myWallet?: string
     ): Promise<void> {
-        // FIXME: this
-        // const bundleCount = (await this.gifStaking.bundles()).toNumber();
-        // console.log("bundleCount", bundleCount);
+        const instanceInfos = await this.getAllInstanceInfos();
 
-        // for (let i = 0; i < bundleCount; i++) {
-        //     const [ instanceId, bundleId ] = await this.gifStaking.getBundleKey(i);
-        //     const [ key, chainId, token, state, closedSince, createdAt, updatedAt ] = 
-        //         await this.gifStaking.getBundleInfo(instanceId, bundleId);
-        //     console.log(instanceId, bundleId.toNumber(), token);
-        //     const stakedAmount = await this.gifStaking.getBundleStakes(instanceId, bundleId);
-        //     let myStakedAmount = BigNumber.from(0);
-        //     const supportedAmount = await this.gifStaking.getSupportedCapitalAmount(instanceId, bundleId, token);
-        //     let mySupportingAmount = BigNumber.from(0);
+        // loop over instances and get bundles
+        for (const instanceInfo of instanceInfos) {
+            const instanceId = instanceInfo.id;
+            const bundleIds = await this.getBundleIds(instanceId);
 
-        //     if (myWallet !== undefined) {
-        //         myStakedAmount = await this.gifStaking["stakes(bytes32,uint256,address)"](instanceId, bundleId, myWallet);
-        //         mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, instanceId, token);
-        //     }
-
-        //     const bundleInfo = {
-        //         id: `${instanceId}-${bundleId}`,
-        //         instanceId: instanceId,
-        //         bundleId: bundleId.toNumber(),
-        //         token: token,
-        //         myStakedAmount: myStakedAmount.toString(),
-        //         stakedAmount: stakedAmount.toString(),
-        //         mySupportingAmount: mySupportingAmount.toString(),
-        //         supportingAmount: supportedAmount.toString(),
-        //         supportingToken: this.supportingToken,
-        //         supportingTokenDecimals: this.supportingTokenDecimals,
-        //         state: state,
-        //     } as BundleInfo;
-        //     console.log("bundleInfo", bundleInfo);
-        //     await bundleRetrieved(bundleInfo);
-        // }
+            for (const bundleId of bundleIds) {
+                const bundleInfo = await this.getBundleInfo(instanceId, instanceInfo.name, instanceInfo.chainid, bundleId, myWallet);
+                console.log("bundleInfo", bundleInfo);
+                await bundleRetrieved(bundleInfo);
+            }
+        }
     }
 
-    async calculateSupportedAmount(dipAmount: BigNumber, instanceId: string, token: string): Promise<BigNumber> {
-        // FIXME: this
-        // const instanceInfo = await this.gifStaking.getInstanceInfo(instanceId);
-        // return await this.gifStaking.calculateTokenAmountFromStaking(dipAmount, instanceInfo[1], token);
-        return Promise.resolve(BigNumber.from(0));
+    async calculateSupportedAmount(
+        dipAmount: BigNumber, 
+        chainId: number, 
+        token: string
+    ): Promise<BigNumber> {
+        // console.log("calculateSupportedAmount", dipAmount.toString(), chainId, instanceId, token);
+        const s = await this.stakingDataProvider.calculateCapitalSupport(token, chainId, dipAmount);
+        // console.log("calculateSupportedAmount", s.toString());
+        return s;
     }
 
     async stake(
