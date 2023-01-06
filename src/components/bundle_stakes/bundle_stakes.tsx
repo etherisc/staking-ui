@@ -46,6 +46,7 @@ export default function BundleStakes(props: BundleStakesProps) {
     }
 
     function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
+        // console.log('formatAmountMineTotal', myValue, totalValue, tokenSymbol, tokenDecimals);
         let r = `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
         if (props.showMyAmounts !== undefined && props.showMyAmounts) {
             r = `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${r}`;
@@ -53,6 +54,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         return r;
     }
 
+    // TODO: display some more values from the bundle
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.5, 
@@ -69,8 +71,10 @@ export default function BundleStakes(props: BundleStakesProps) {
             field: 'supportingAmount', headerName: supportingAmountHeader, flex: 1,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
                 [ params.row.mySupportingAmount, params.row.supportingAmount, params.row.supportingToken, params.row.supportingTokenDecimals ],
-            valueFormatter: (params: GridValueFormatterParams<[string, string, string, number]>) => 
-                formatAmountMineTotal(BigNumber.from(params.value[0]), BigNumber.from(params.value[1]), params.value[2], params.value[3])
+            valueFormatter: (params: GridValueFormatterParams<[string, string, string, number]>) => {
+                // console.log("supportingAmount valueFormatter", params.value[0], ",", params.value[1], params.value[2], params.value[3]);
+                return formatAmountMineTotal(BigNumber.from(params.value[0]), BigNumber.from(params.value[1]), params.value[2], params.value[3]);
+            }
         },
         { 
             field: 'state', headerName: t('table.header.state'), flex: 0.5,

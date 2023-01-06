@@ -4,11 +4,10 @@ import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { SnackbarKey, useSnackbar } from "notistack";
-import { useContext, useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { AppContext } from "../../context/app_context";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { ApprovalFailedError, TransactionFailedError } from "../../utils/error";
@@ -24,12 +23,13 @@ interface StakeProps {
 export const REVOKE_INFO_URL = "https://metamask.zendesk.com/hc/en-us/articles/4446106184731-How-to-revoke-smart-contract-allowances-token-approvals";
 
 export default function Stake(props: StakeProps) {
-    const appContext = useContext(AppContext);
     const { t } = useTranslation(['stake', 'common']);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const router = useRouter();
     const dispatch = useDispatch();
-    
+
+    const signer = useSelector((state: RootState) => state.chain.signer);
+    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
 
@@ -43,17 +43,17 @@ export default function Stake(props: StakeProps) {
 
     // change steps according to application state
     useEffect(() => {
-        if (appContext?.data.signer === undefined) {
+        if (! isConnected) {
             dispatch(setStep(0));
-        } else if (activeStep < 1 && appContext.data.signer !== undefined) {
+        } else if (activeStep < 1 && isConnected) {
             dispatch(setStep(1));
         }
-    }, [appContext?.data.signer, activeStep, dispatch]);
+    }, [isConnected, activeStep, dispatch]);
 
     async function stake(amount: BigNumber, bundle: BundleInfo) {
         try {
             enableUnloadWarning(true);
-            const walletAddress = await appContext.data.signer?.getAddress() ?? '';
+            const walletAddress = await signer!.getAddress() ?? '';
 
             dispatch(setStep(4));
             const approvalSuccess = await doApproval(walletAddress, amount);

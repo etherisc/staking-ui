@@ -13,6 +13,304 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    name: "calculateCapitalSupport",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "tokenAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenAmount",
+        type: "uint256",
+      },
+    ],
+    name: "calculateRequiredStaking",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "duration",
+        type: "uint256",
+      },
+    ],
+    name: "calculateRewards",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "rewardAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "user",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "bytes32",
+                name: "instanceId",
+                type: "bytes32",
+              },
+              {
+                internalType: "uint256",
+                name: "bundleId",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct IBundleDataProvider.BundleKey",
+            name: "key",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "balance",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "createdAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IStakingDataProvider.BundleStakeInfo",
+        name: "stakeInfo",
+        type: "tuple",
+      },
+    ],
+    name: "calculateRewardsIncrement",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "incrementAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "rate",
+        type: "uint256",
+      },
+    ],
+    name: "fromRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "divisor",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+    ],
+    name: "getBundleCapitalSupport",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "capitalAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getBundleRegistry",
+    outputs: [
+      {
+        internalType: "contract BundleRegistry",
+        name: "bundleRegistry",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "getBundleStakeInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "user",
+            type: "address",
+          },
+          {
+            components: [
+              {
+                internalType: "bytes32",
+                name: "instanceId",
+                type: "bytes32",
+              },
+              {
+                internalType: "uint256",
+                name: "bundleId",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct IBundleDataProvider.BundleKey",
+            name: "key",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "balance",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "createdAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IStakingDataProvider.BundleStakeInfo",
+        name: "info",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "getBundleStakes",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes32",
         name: "instanceId",
         type: "bytes32",
@@ -27,7 +325,89 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "stakedDipAmount",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getRewardRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "rate",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+    ],
+    name: "getStakingRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "rate",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getStakingWallet",
+    outputs: [
+      {
+        internalType: "address",
+        name: "stakingWallet",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTotalStakes",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+    ],
+    name: "getTotalStakes",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "dipAmount",
         type: "uint256",
       },
     ],
@@ -48,15 +428,76 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "token",
+        name: "user",
         type: "address",
       },
     ],
-    name: "getSupportedCapitalAmount",
+    name: "hasBundleStakeInfo",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "hasInfo",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+    ],
+    name: "hasDefinedStakingRate",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "hasRate",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "oneYear",
     outputs: [
       {
         internalType: "uint256",
-        name: "supportedCapitalAmount",
+        name: "yearInSeconds",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+      {
+        internalType: "int8",
+        name: "exp",
+        type: "int8",
+      },
+    ],
+    name: "toRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "rate",
         type: "uint256",
       },
     ],

@@ -16,8 +16,8 @@ export default async function handler(
     const address = req.query.address as string;
 
     console.log("faucet called for", address);
-    const currency = process.env.NEXT_PUBLIC_DIP_SYMBOL;
-    const currencyDecimals = parseInt(process.env.NEXT_PUBLIC_DIP_DECIMALS ?? '18');
+    
+    const currency = process.env.NEXT_PUBLIC_FAUCET_SYMBOL;
     const provider = new StaticJsonRpcProvider(process.env.NEXT_PUBLIC_CHAIN_RPC_URL);
     const coinSourceSigner: Signer = ethers.Wallet.fromMnemonic(process.env.NEXT_FAUCET_MNEMONIC ?? "").connect(provider);
 

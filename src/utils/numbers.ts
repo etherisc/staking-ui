@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { formatEther } from "ethers/lib/utils";
+import { formatUnits } from "ethers/lib/utils";
 import { FormNumber } from "./types";
 
 export const THOUSANDS_SEPARATOR = Intl.NumberFormat().format(11111).replace(/\p{Number}/gu, '');
@@ -14,7 +14,8 @@ export function formatCurrency(value: FormNumber, decimals: number, displayPreci
         return "";
     }
     if (value instanceof BigNumber) {
-        const ethers = formatEther(value);
+        const ethers = formatUnits(value, decimals);
+        // console.log("ethers", ethers);
         const ethersNum = parseFloat(ethers);
         return formatLocale(ethersNum, displayPrecision);
     }

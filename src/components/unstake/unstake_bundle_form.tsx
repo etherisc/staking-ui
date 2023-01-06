@@ -1,12 +1,12 @@
 import { Button, Checkbox, FormControlLabel, Grid, InputAdornment } from "@mui/material";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { AppContext } from "../../context/app_context";
 import { bundleSelected, setStep } from "../../redux/slices/staking";
+import { RootState } from "../../redux/store";
 import { FormNumber } from "../../utils/types";
 import CurrencyTextField from "../form/currency_text_field";
 
@@ -17,11 +17,11 @@ interface UnstakeBundleFormProps {
 }
 
 export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
-    const appContext = useContext(AppContext);
     const { t } = useTranslation(['unstake', 'common']);
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
+    const signer = useSelector((state: RootState) => state.chain.signer);
 
     const [ unstakedAmount, setUnstakedAmount ] = useState(undefined as FormNumber);
     const [ unstakedAmountValid, setUnstakedAmountValid ] = useState(false);
@@ -45,7 +45,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
     // get max unstakeable amount
     useEffect(() => {
         async function getMaxUnstakeAmount() {
-            const address = await appContext.data.signer!.getAddress();
+            const address = await signer!.getAddress();
             const maxAmount = await props.stakingApi.stakedAmount(props.bundle, address);
             setUnstakedAmountMax(maxAmount);
         }

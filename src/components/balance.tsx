@@ -5,6 +5,7 @@ import { formatEthersNumber } from "../utils/bignumber";
 export interface BalanceProps {
     signer: Signer;
     currency: string;
+    usdAggregatorAddress?: string;
 }
 
 export default function Balance(props: BalanceProps) {
@@ -15,12 +16,11 @@ export default function Balance(props: BalanceProps) {
         async function updateData() {
             const balance = await props.signer.getBalance();
             setBalance(balance);
-
         }
         updateData();
     }, [props]);
 
+    
     let balanceString = `${props.currency} ${formatEthersNumber(balance, 4)}`;
-
     return (<span>{balanceString}</span>);
 }

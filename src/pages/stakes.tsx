@@ -3,23 +3,25 @@ import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import { i18n } from "next-i18next";
 import { useSnackbar } from "notistack";
-import { AppContext } from "../context/app_context";
-import { useContext, useMemo } from "react";
-import Stake from '../components/stake/stake';
+import { useMemo } from "react";
 import { getStakingApi } from '../backend/staking_api';
 import Stakes from '../components/stakes/stakes';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 export default function StakesPage() {
     const { enqueueSnackbar } = useSnackbar();
     const {t} = useTranslation('common');
-    const appContext = useContext(AppContext);
+    const signer = useSelector((state: RootState) => state.chain.signer);
+    const provider = useSelector((state: RootState) => state.chain.provider);
+
 
     const stakingApi = useMemo(() => getStakingApi(
         enqueueSnackbar,
         t,
-        appContext.data.signer,
-        appContext.data.provider,
-    ), [enqueueSnackbar, appContext, t]);
+        signer,
+        provider,
+    ), [enqueueSnackbar, signer, provider, t]);
     
     return (
         <>

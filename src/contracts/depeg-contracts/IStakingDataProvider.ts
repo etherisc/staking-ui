@@ -21,37 +21,249 @@ import type {
   PromiseOrValue,
 } from "./common";
 
+export declare namespace IBundleDataProvider {
+  export type BundleKeyStruct = {
+    instanceId: PromiseOrValue<BytesLike>;
+    bundleId: PromiseOrValue<BigNumberish>;
+  };
+
+  export type BundleKeyStructOutput = [string, BigNumber] & {
+    instanceId: string;
+    bundleId: BigNumber;
+  };
+}
+
+export declare namespace IStakingDataProvider {
+  export type BundleStakeInfoStruct = {
+    user: PromiseOrValue<string>;
+    key: IBundleDataProvider.BundleKeyStruct;
+    balance: PromiseOrValue<BigNumberish>;
+    createdAt: PromiseOrValue<BigNumberish>;
+    updatedAt: PromiseOrValue<BigNumberish>;
+  };
+
+  export type BundleStakeInfoStructOutput = [
+    string,
+    IBundleDataProvider.BundleKeyStructOutput,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    user: string;
+    key: IBundleDataProvider.BundleKeyStructOutput;
+    balance: BigNumber;
+    createdAt: BigNumber;
+    updatedAt: BigNumber;
+  };
+}
+
 export interface IStakingDataProviderInterface extends utils.Interface {
   functions: {
+    "calculateCapitalSupport(address,uint256,uint256)": FunctionFragment;
+    "calculateRequiredStaking(address,uint256,uint256)": FunctionFragment;
+    "calculateRewards(uint256,uint256)": FunctionFragment;
+    "calculateRewardsIncrement((address,(bytes32,uint256),uint256,uint256,uint256))": FunctionFragment;
+    "fromRate(uint256)": FunctionFragment;
+    "getBundleCapitalSupport(bytes32,uint256)": FunctionFragment;
+    "getBundleRegistry()": FunctionFragment;
+    "getBundleStakeInfo(bytes32,uint256,address)": FunctionFragment;
+    "getBundleStakes(bytes32,uint256,address)": FunctionFragment;
     "getBundleStakes(bytes32,uint256)": FunctionFragment;
-    "getSupportedCapitalAmount(bytes32,uint256,address)": FunctionFragment;
+    "getRewardRate()": FunctionFragment;
+    "getStakingRate(address,uint256)": FunctionFragment;
+    "getStakingWallet()": FunctionFragment;
+    "getTotalStakes()": FunctionFragment;
+    "getTotalStakes(bytes32)": FunctionFragment;
+    "hasBundleStakeInfo(bytes32,uint256,address)": FunctionFragment;
+    "hasDefinedStakingRate(address,uint256)": FunctionFragment;
+    "oneYear()": FunctionFragment;
+    "toRate(uint256,int8)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "getBundleStakes" | "getSupportedCapitalAmount"
+    nameOrSignatureOrTopic:
+      | "calculateCapitalSupport"
+      | "calculateRequiredStaking"
+      | "calculateRewards"
+      | "calculateRewardsIncrement"
+      | "fromRate"
+      | "getBundleCapitalSupport"
+      | "getBundleRegistry"
+      | "getBundleStakeInfo"
+      | "getBundleStakes(bytes32,uint256,address)"
+      | "getBundleStakes(bytes32,uint256)"
+      | "getRewardRate"
+      | "getStakingRate"
+      | "getStakingWallet"
+      | "getTotalStakes()"
+      | "getTotalStakes(bytes32)"
+      | "hasBundleStakeInfo"
+      | "hasDefinedStakingRate"
+      | "oneYear"
+      | "toRate"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "getBundleStakes",
+    functionFragment: "calculateCapitalSupport",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateRequiredStaking",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateRewards",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateRewardsIncrement",
+    values: [IStakingDataProvider.BundleStakeInfoStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fromRate",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBundleCapitalSupport",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getSupportedCapitalAmount",
+    functionFragment: "getBundleRegistry",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBundleStakeInfo",
     values: [
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getBundleStakes(bytes32,uint256,address)",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBundleStakes(bytes32,uint256)",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRewardRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getStakingRate",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getStakingWallet",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalStakes()",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalStakes(bytes32)",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasBundleStakeInfo",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasDefinedStakingRate",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(functionFragment: "oneYear", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "toRate",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
 
   decodeFunctionResult(
-    functionFragment: "getBundleStakes",
+    functionFragment: "calculateCapitalSupport",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getSupportedCapitalAmount",
+    functionFragment: "calculateRequiredStaking",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateRewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateRewardsIncrement",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "fromRate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getBundleCapitalSupport",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBundleRegistry",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBundleStakeInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBundleStakes(bytes32,uint256,address)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBundleStakes(bytes32,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRewardRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getStakingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getStakingWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalStakes()",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalStakes(bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "hasBundleStakeInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "hasDefinedStakingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "oneYear", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "toRate", data: BytesLike): Result;
 
   events: {};
 }
@@ -83,44 +295,311 @@ export interface IStakingDataProvider extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    getBundleStakes(
-      instanceId: PromiseOrValue<BytesLike>,
-      bundleId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { stakedDipAmount: BigNumber }>;
-
-    getSupportedCapitalAmount(
-      instanceId: PromiseOrValue<BytesLike>,
-      bundleId: PromiseOrValue<BigNumberish>,
+    calculateCapitalSupport(
       token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      dipAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { supportedCapitalAmount: BigNumber }>;
+    ): Promise<[BigNumber] & { tokenAmount: BigNumber }>;
+
+    calculateRequiredStaking(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { dipAmount: BigNumber }>;
+
+    calculateRewards(
+      amount: PromiseOrValue<BigNumberish>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { rewardAmount: BigNumber }>;
+
+    calculateRewardsIncrement(
+      stakeInfo: IStakingDataProvider.BundleStakeInfoStruct,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { incrementAmount: BigNumber }>;
+
+    fromRate(
+      rate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { value: BigNumber; divisor: BigNumber }
+    >;
+
+    getBundleCapitalSupport(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { capitalAmount: BigNumber }>;
+
+    getBundleRegistry(
+      overrides?: CallOverrides
+    ): Promise<[string] & { bundleRegistry: string }>;
+
+    getBundleStakeInfo(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [IStakingDataProvider.BundleStakeInfoStructOutput] & {
+        info: IStakingDataProvider.BundleStakeInfoStructOutput;
+      }
+    >;
+
+    "getBundleStakes(bytes32,uint256,address)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { dipAmount: BigNumber }>;
+
+    "getBundleStakes(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { dipAmount: BigNumber }>;
+
+    getRewardRate(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { rate: BigNumber }>;
+
+    getStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { rate: BigNumber }>;
+
+    getStakingWallet(
+      overrides?: CallOverrides
+    ): Promise<[string] & { stakingWallet: string }>;
+
+    "getTotalStakes()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { dipAmount: BigNumber }>;
+
+    "getTotalStakes(bytes32)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { dipAmount: BigNumber }>;
+
+    hasBundleStakeInfo(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean] & { hasInfo: boolean }>;
+
+    hasDefinedStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean] & { hasRate: boolean }>;
+
+    oneYear(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { yearInSeconds: BigNumber }>;
+
+    toRate(
+      value: PromiseOrValue<BigNumberish>,
+      exp: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { rate: BigNumber }>;
   };
 
-  getBundleStakes(
+  calculateCapitalSupport(
+    token: PromiseOrValue<string>,
+    chainId: PromiseOrValue<BigNumberish>,
+    dipAmount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  calculateRequiredStaking(
+    token: PromiseOrValue<string>,
+    chainId: PromiseOrValue<BigNumberish>,
+    tokenAmount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  calculateRewards(
+    amount: PromiseOrValue<BigNumberish>,
+    duration: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  calculateRewardsIncrement(
+    stakeInfo: IStakingDataProvider.BundleStakeInfoStruct,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  fromRate(
+    rate: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber] & { value: BigNumber; divisor: BigNumber }>;
+
+  getBundleCapitalSupport(
     instanceId: PromiseOrValue<BytesLike>,
     bundleId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getSupportedCapitalAmount(
+  getBundleRegistry(overrides?: CallOverrides): Promise<string>;
+
+  getBundleStakeInfo(
     instanceId: PromiseOrValue<BytesLike>,
     bundleId: PromiseOrValue<BigNumberish>,
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<IStakingDataProvider.BundleStakeInfoStructOutput>;
+
+  "getBundleStakes(bytes32,uint256,address)"(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getBundleStakes(bytes32,uint256)"(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getRewardRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getStakingRate(
     token: PromiseOrValue<string>,
+    chainId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getStakingWallet(overrides?: CallOverrides): Promise<string>;
+
+  "getTotalStakes()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getTotalStakes(bytes32)"(
+    instanceId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  hasBundleStakeInfo(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  hasDefinedStakingRate(
+    token: PromiseOrValue<string>,
+    chainId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  oneYear(overrides?: CallOverrides): Promise<BigNumber>;
+
+  toRate(
+    value: PromiseOrValue<BigNumberish>,
+    exp: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   callStatic: {
-    getBundleStakes(
+    calculateCapitalSupport(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      dipAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateRequiredStaking(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateRewards(
+      amount: PromiseOrValue<BigNumberish>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateRewardsIncrement(
+      stakeInfo: IStakingDataProvider.BundleStakeInfoStruct,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fromRate(
+      rate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { value: BigNumber; divisor: BigNumber }
+    >;
+
+    getBundleCapitalSupport(
       instanceId: PromiseOrValue<BytesLike>,
       bundleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSupportedCapitalAmount(
+    getBundleRegistry(overrides?: CallOverrides): Promise<string>;
+
+    getBundleStakeInfo(
       instanceId: PromiseOrValue<BytesLike>,
       bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<IStakingDataProvider.BundleStakeInfoStructOutput>;
+
+    "getBundleStakes(bytes32,uint256,address)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getBundleStakes(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRewardRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getStakingRate(
       token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getStakingWallet(overrides?: CallOverrides): Promise<string>;
+
+    "getTotalStakes()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTotalStakes(bytes32)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    hasBundleStakeInfo(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    hasDefinedStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    oneYear(overrides?: CallOverrides): Promise<BigNumber>;
+
+    toRate(
+      value: PromiseOrValue<BigNumberish>,
+      exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -128,31 +607,199 @@ export interface IStakingDataProvider extends BaseContract {
   filters: {};
 
   estimateGas: {
-    getBundleStakes(
+    calculateCapitalSupport(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      dipAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateRequiredStaking(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateRewards(
+      amount: PromiseOrValue<BigNumberish>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateRewardsIncrement(
+      stakeInfo: IStakingDataProvider.BundleStakeInfoStruct,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fromRate(
+      rate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getBundleCapitalSupport(
       instanceId: PromiseOrValue<BytesLike>,
       bundleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSupportedCapitalAmount(
+    getBundleRegistry(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBundleStakeInfo(
       instanceId: PromiseOrValue<BytesLike>,
       bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getBundleStakes(bytes32,uint256,address)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getBundleStakes(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRewardRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getStakingRate(
       token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getStakingWallet(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTotalStakes()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTotalStakes(bytes32)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    hasBundleStakeInfo(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    hasDefinedStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    oneYear(overrides?: CallOverrides): Promise<BigNumber>;
+
+    toRate(
+      value: PromiseOrValue<BigNumberish>,
+      exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getBundleStakes(
+    calculateCapitalSupport(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      dipAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateRequiredStaking(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateRewards(
+      amount: PromiseOrValue<BigNumberish>,
+      duration: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateRewardsIncrement(
+      stakeInfo: IStakingDataProvider.BundleStakeInfoStruct,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    fromRate(
+      rate: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBundleCapitalSupport(
       instanceId: PromiseOrValue<BytesLike>,
       bundleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSupportedCapitalAmount(
+    getBundleRegistry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getBundleStakeInfo(
       instanceId: PromiseOrValue<BytesLike>,
       bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBundleStakes(bytes32,uint256,address)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBundleStakes(bytes32,uint256)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRewardRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getStakingRate(
       token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getStakingWallet(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTotalStakes()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTotalStakes(bytes32)"(
+      instanceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    hasBundleStakeInfo(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    hasDefinedStakingRate(
+      token: PromiseOrValue<string>,
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    oneYear(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    toRate(
+      value: PromiseOrValue<BigNumberish>,
+      exp: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
