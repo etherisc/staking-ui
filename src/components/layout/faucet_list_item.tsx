@@ -10,7 +10,7 @@ import { RootState } from "../../redux/store";
 export default function FaucetListItem() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { t } = useTranslation('common');
-    const currency = process.env.NEXT_PUBLIC_DEPEG_USD2;
+    const currency = process.env.NEXT_PUBLIC_FAUCET_SYMBOL;
 
     const signer = useSelector((state: RootState) => state.chain.signer);
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
