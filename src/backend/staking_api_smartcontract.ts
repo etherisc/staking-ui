@@ -1,6 +1,7 @@
 import { BigNumber, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { parse } from "path";
+import { IERC20Metadata__factory } from "../contracts/depeg-contracts";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
 import { StakingApi } from "./staking_api";
@@ -11,6 +12,8 @@ export class StakingApiSmartContract implements StakingApi {
     private stakingContractAddress: string;
     private gifStakingApi: StakingContract;
     private gifStakingApiInitialized = false;
+    private dipSymbol?: string;
+    private dipDecimals?: number;
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
@@ -25,12 +28,26 @@ export class StakingApiSmartContract implements StakingApi {
         return this.gifStakingApi;
     }
 
+    async initializeDip() {
+        const dipAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS ?? '0xc719d010b63e5bbf2c0551872cd5316ed26acd83';
+        const token = IERC20Metadata__factory.connect(dipAddress, this.signer);
+        const [symbol, decimals] = await Promise.all([token.symbol(), token.decimals()]);
+        this.dipSymbol = symbol;
+        this.dipDecimals = decimals;
+    }
+
     currency(): string {
-        return process.env.NEXT_PUBLIC_DIP_SYMBOL || "DIP";
+        if (this.dipSymbol === undefined) {
+            this.initializeDip();
+        }
+        return this.dipSymbol || "DIP";
     }
 
     currencyDecimals(): number {
-        return parseInt(process.env.NEXT_PUBLIC_DIP_DECIMALS || "18");
+        if (this.dipSymbol === undefined) {
+            this.initializeDip();
+        }
+        return this.dipDecimals || 18;
     }
 
     minStakedAmount(): BigNumber {
