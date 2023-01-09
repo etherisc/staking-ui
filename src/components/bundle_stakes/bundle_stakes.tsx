@@ -103,6 +103,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                 onSelectionModelChange={rowSelected}
                 disableSelectionOnClick={props.disableSelection ?? false}
+                disableColumnMenu={true}
                 />
         </>
     );
