@@ -11,7 +11,7 @@ import { createTheme } from '@mui/material/styles';
 export const etheriscTheme = createTheme({
     palette: {
         background: {
-            default: 'hsl(222,74%,96%)',
+            default: 'hsl(153,66%,98%)',
             paper: 'hsl(222,74%,96%)'
         },
         primary: {
