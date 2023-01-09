@@ -13,6 +13,7 @@ import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
+    formDisabled: boolean;
     stake: (amount: BigNumber, bundle: BundleInfo) => void;
 }
 
@@ -98,7 +99,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             <TextField 
                                 label={t('stakedAmount')}
                                 fullWidth
-                                // FIXME: disabled={props.formDisabled}
+                                disabled={props.formDisabled}
                                 variant={INPUT_VARIANT}
                                 {...field} 
                                 onBlur={e => { field.onBlur(); calculateSupportedAmount(); }}
@@ -122,7 +123,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             <TextField 
                                 label={t('supportedAmount')}
                                 fullWidth
-                                // FIXME: disabled={props.formDisabled}
+                                disabled={props.formDisabled}
                                 variant={INPUT_VARIANT}
                                 {...field} 
                                 InputProps={{
@@ -146,7 +147,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                     {...field}
                                     />
                             } 
-                            // FIXME:: disabled={props.formDisabled}
+                            disabled={props.formDisabled}
                             label={t('checkbox_t_and_c_label')} />}
                         />
                 </Grid>
@@ -167,7 +168,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                         type="submit" 
                         variant="contained" 
                         color="primary"
-                        disabled={!formState.isValid || calculationInProgress } // FIXME: || premiumCalculationInProgress || props.formDisabled || matchedBundle == null}
+                        disabled={!formState.isValid || calculationInProgress || props.formDisabled }
                         >
                         {t('action.stake')}
                     </Button>
