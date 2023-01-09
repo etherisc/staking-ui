@@ -16,8 +16,7 @@ export const etheriscTheme = createTheme({
         },
         primary: {
             // light: will be calculated from palette.primary.main,
-            main: '#41D895',
-            // main: 'hsl(153, 40%, 50%)',
+            main: "hsl(153, 66%, 50%)", //'#41D895',
             // dark: will be calculated from palette.primary.main,
             contrastText: "#fff"
         },
