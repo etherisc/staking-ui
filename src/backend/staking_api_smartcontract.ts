@@ -1,7 +1,6 @@
 import { BigNumber, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { parse } from "path";
-import { IERC20Metadata__factory } from "../contracts/depeg-contracts";
+import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from "../contracts/depeg-contracts";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
 import { StakingApi } from "./staking_api";
@@ -12,6 +11,8 @@ export class StakingApiSmartContract implements StakingApi {
     private stakingContractAddress: string;
     private gifStakingApi: StakingContract;
     private gifStakingApiInitialized = false;
+    private dipToken?: IERC20;
+    private dipTokenMetadata?: IERC20Metadata;
     private dipSymbol?: string;
     private dipDecimals?: number;
 
@@ -33,8 +34,9 @@ export class StakingApiSmartContract implements StakingApi {
         if(this.signer === null || this.signer.provider === null) {
             return;
         }
-        const token = IERC20Metadata__factory.connect(dipAddress, this.signer);
-        const [symbol, decimals] = await Promise.all([token.symbol(), token.decimals()]);
+        this.dipToken = IERC20__factory.connect(dipAddress, this.signer);
+        this.dipTokenMetadata = IERC20Metadata__factory.connect(dipAddress, this.signer);
+        const [symbol, decimals] = await Promise.all([this.dipTokenMetadata.symbol(), this.dipTokenMetadata.decimals()]);
         this.dipSymbol = symbol;
         this.dipDecimals = decimals;
     }
@@ -130,6 +132,10 @@ export class StakingApiSmartContract implements StakingApi {
             beforeTrxCallback, 
             beforeWaitCallback);
         return receipt.status === 1;
+    }
+
+    async hasDipBalance(amount: BigNumber): Promise<boolean> {
+        return (await this.dipToken!.balanceOf(await this.signer.getAddress())).gte(amount);
     }
     
 }

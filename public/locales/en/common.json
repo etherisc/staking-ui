@@ -46,7 +46,8 @@
       "maxLength": "This field must be at most {{maxLength}} characters",
       "min": "This field must be at least {{minValue}}",
       "max": "This field must be at most {{maxValue}}",
-      "minmax": "The minimum value must be smaller than the maximum value"
+      "minmax": "The minimum value must be smaller than the maximum value",
+      "balance": "DIP balance is too low"
     }
   },
   "help": {

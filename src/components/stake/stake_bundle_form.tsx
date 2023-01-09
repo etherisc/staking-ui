@@ -9,6 +9,7 @@ import { bundleSelected, setStep } from "../../redux/slices/staking";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { INPUT_VARIANT } from "../../config/theme";
+import { parse } from "path";
 
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
@@ -94,7 +95,15 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                     <Controller
                         name="stakedAmount"
                         control={control}
-                        rules={{ required: true, min: stakedAmountMin, max: stakedAmountMax, pattern: /^[0-9.]+$/ }}
+                        rules={{ 
+                            required: true, 
+                            min: stakedAmountMin, 
+                            max: stakedAmountMax, 
+                            pattern: /^[0-9.]+$/,
+                            validate: {
+                                balance: async (value: string) => props.stakingApi.hasDipBalance(parseEther(value))
+                            }
+                        }}
                         render={({ field }) => 
                             <TextField 
                                 label={t('stakedAmount')}

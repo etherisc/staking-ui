@@ -3,6 +3,7 @@ import { formatEther, parseEther } from "ethers/lib/utils";
 import { SnackbarMessage, OptionsObject, SnackbarKey } from "notistack";
 import { delay } from "../utils/delay";
 import { BundleInfo, BundleState } from "./bundle_info";
+import { hasBalance } from "./erc20";
 import { StakingApi } from "./staking_api";
 
 const BUNDLES = [
@@ -87,5 +88,8 @@ export default function stakingApiMock(
             await delay(2000);
             return Promise.resolve(true);
         },
+        async hasDipBalance(amount: BigNumber): Promise<boolean> {
+            return true;
+        }
     }
 }

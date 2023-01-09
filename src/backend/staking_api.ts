@@ -46,6 +46,9 @@ export interface StakingApi {
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;
+    hasDipBalance: (
+        amount: BigNumber,
+    ) => Promise<boolean>;
 }
 
 export function getStakingApi(
