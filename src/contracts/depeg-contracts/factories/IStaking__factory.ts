@@ -595,6 +595,54 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+    ],
+    name: "isBundleStakingSupported",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isSupported",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+    ],
+    name: "isBundleUnstakingSupported",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isSupported",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "oneYear",
     outputs: [

@@ -44,7 +44,7 @@
     "typescript": "^4.9.3"
   },
   "devDependencies": {
-    "@etherisc/depeg-contracts": "0.0.2-f594814",
+    "@etherisc/depeg-contracts": "0.0.2-3b60849",
     "@etherisc/gif-interface": "2.0.0-a8c9822",
     "@hookform/devtools": "^4.3.0",
     "@typechain/ethers-v5": "^10.2.0",

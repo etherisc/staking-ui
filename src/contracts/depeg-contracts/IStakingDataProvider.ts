@@ -76,6 +76,8 @@ export interface IStakingDataProviderInterface extends utils.Interface {
     "getTotalStakes(bytes32)": FunctionFragment;
     "hasBundleStakeInfo(bytes32,uint256,address)": FunctionFragment;
     "hasDefinedStakingRate(address,uint256)": FunctionFragment;
+    "isBundleStakingSupported(bytes32,uint256)": FunctionFragment;
+    "isBundleUnstakingSupported(bytes32,uint256)": FunctionFragment;
     "oneYear()": FunctionFragment;
     "toRate(uint256,int8)": FunctionFragment;
   };
@@ -99,6 +101,8 @@ export interface IStakingDataProviderInterface extends utils.Interface {
       | "getTotalStakes(bytes32)"
       | "hasBundleStakeInfo"
       | "hasDefinedStakingRate"
+      | "isBundleStakingSupported"
+      | "isBundleUnstakingSupported"
       | "oneYear"
       | "toRate"
   ): FunctionFragment;
@@ -191,6 +195,14 @@ export interface IStakingDataProviderInterface extends utils.Interface {
     functionFragment: "hasDefinedStakingRate",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "isBundleStakingSupported",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBundleUnstakingSupported",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(functionFragment: "oneYear", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "toRate",
@@ -260,6 +272,14 @@ export interface IStakingDataProviderInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "hasDefinedStakingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBundleStakingSupported",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBundleUnstakingSupported",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "oneYear", data: BytesLike): Result;
@@ -397,6 +417,18 @@ export interface IStakingDataProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean] & { hasRate: boolean }>;
 
+    isBundleStakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean] & { isSupported: boolean }>;
+
+    isBundleUnstakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean] & { isSupported: boolean }>;
+
     oneYear(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { yearInSeconds: BigNumber }>;
@@ -496,6 +528,18 @@ export interface IStakingDataProvider extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isBundleStakingSupported(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isBundleUnstakingSupported(
+    instanceId: PromiseOrValue<BytesLike>,
+    bundleId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   oneYear(overrides?: CallOverrides): Promise<BigNumber>;
 
   toRate(
@@ -592,6 +636,18 @@ export interface IStakingDataProvider extends BaseContract {
     hasDefinedStakingRate(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isBundleStakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isBundleUnstakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -695,6 +751,18 @@ export interface IStakingDataProvider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isBundleStakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isBundleUnstakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     oneYear(overrides?: CallOverrides): Promise<BigNumber>;
 
     toRate(
@@ -792,6 +860,18 @@ export interface IStakingDataProvider extends BaseContract {
     hasDefinedStakingRate(
       token: PromiseOrValue<string>,
       chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isBundleStakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isBundleUnstakingSupported(
+      instanceId: PromiseOrValue<BytesLike>,
+      bundleId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
