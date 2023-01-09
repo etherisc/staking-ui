@@ -17,6 +17,7 @@ interface BundleStakesProps {
     onBundleSelected?: (bundle: BundleInfo) => void;
     disableSelection?: boolean;
     showMyAmounts?: boolean;
+    showTotalAmounts?: boolean;
 }
 
 export default function BundleStakes(props: BundleStakesProps) {
@@ -40,18 +41,23 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     let stakedAmountHeader = t('table.header.stakedAmount');
     let supportingAmountHeader = t('table.header.supportingAmount');
-    if (props.showMyAmounts !== undefined && props.showMyAmounts) {
+    if (props.showMyAmounts !== undefined && props.showMyAmounts && props.showTotalAmounts !== undefined && props.showTotalAmounts) {
+        stakedAmountHeader = t('table.header.myAllStakedAmount');
+        supportingAmountHeader = t('table.header.myAllSupportingAmount');
+    } else if (props.showMyAmounts !== undefined && props.showMyAmounts) {
         stakedAmountHeader = t('table.header.myStakedAmount');
         supportingAmountHeader = t('table.header.mySupportingAmount');
-    }
+    } 
 
     function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
         // console.log('formatAmountMineTotal', myValue, totalValue, tokenSymbol, tokenDecimals);
-        let r = `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
-        if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-            r = `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${r}`;
+        if (props.showMyAmounts !== undefined && props.showMyAmounts && props.showTotalAmounts !== undefined && props.showTotalAmounts) {
+            return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
+        } else if (props.showMyAmounts !== undefined && props.showMyAmounts) {
+            return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)}`;
+        } else {
+            return `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
         }
-        return r;
     }
 
     // TODO: display some more values from the bundle

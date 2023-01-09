@@ -71,6 +71,7 @@ export default function SelectBundle(props: SelectBundleProps) {
                 bundles={bundles}
                 isBundlesLoading={isLoadingBundles}
                 onBundleSelected={setSelectedBundle}
+                showMyAmounts={true}
                 />
 
             <Grid container justifyContent="flex-end" sx={{ my: 2 }}>

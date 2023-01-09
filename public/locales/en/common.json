@@ -63,10 +63,12 @@
     "header": {
       "instanceId": "Instance ID",
       "bundleId": "Bundle ID",
-      "myStakedAmount": "Staked Amount (Mine/Total)",
-      "stakedAmount": "Staked Amount",
-      "mySupportingAmount": "Supporting Amount (Mine/Total)",
-      "supportingAmount": "Supporting Amount",
+      "myAllStakedAmount": "Staked Amount (Mine/Total)",
+      "myStakedAmount": "My Staked Amount",
+      "stakedAmount": "Total Staked Amount",
+      "myAllSupportingAmount": "Supporting Amount (Mine/Total)",
+      "mySupportingAmount": "My Supporting Amount",
+      "supportingAmount": "Total Supporting Amount",
       "state": "State"
     }
   },

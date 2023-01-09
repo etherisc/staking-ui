@@ -56,6 +56,7 @@ export default function Stakes(props: StakingProps) {
             isBundlesLoading={isLoadingBundles}
             disableSelection={true}
             showMyAmounts={true}
+            showTotalAmounts={true}
             />
     </>);
 }
