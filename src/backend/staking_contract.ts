@@ -2,6 +2,7 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { BundleInfo } from "./bundle_info";
 import { TransactionFailedError } from "../utils/error";
 import { IBundleDataProvider, IBundleDataProvider__factory, IERC20Metadata__factory, IStaking, IStakingDataProvider, IStakingDataProvider__factory, IStaking__factory } from "../contracts/depeg-contracts";
+import moment from "moment";
 
 export default class StakingContract {
     private signer: Signer;
@@ -64,7 +65,7 @@ export default class StakingContract {
     }
 
     async getBundleInfo(instanceId: string, instanceName: string, chainId: number, bundleId: BigNumber, myWallet: string | undefined): Promise<BundleInfo> {
-        const [_key, _riskpoolId, token, state, _name, _expiryAt, _closedAt, _createdAt, _updatedAt] = 
+        const [_key, _riskpoolId, token, state, _name, expiryAt, _closedAt, _createdAt, _updatedAt] = 
                     await (this.bundleDataProvider!).getBundleInfo(instanceId, bundleId);
 
         const stakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256)"](instanceId, bundleId);
@@ -93,6 +94,7 @@ export default class StakingContract {
             supportingToken: tokenSymbol,
             supportingTokenDecimals: tokenDecimals,
             state: state,
+            expiryAt: expiryAt.toNumber(),
         } as BundleInfo;
         return bundleInfo;
     }
@@ -125,6 +127,12 @@ export default class StakingContract {
         const s = await this.stakingDataProvider.calculateCapitalSupport(token, chainId, dipAmount);
         // console.log("calculateSupportedAmount", s.toString());
         return s;
+    }
+
+    async calculateReward(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
+        const duration = moment.unix(bundle.expiryAt).diff(moment(), "seconds");
+        console.log("calculateReward", amount.toString(), bundle.expiryAt, duration);
+        return await this.stakingDataProvider.calculateRewards(amount, duration);
     }
 
     async stake(
@@ -190,11 +198,10 @@ export default class StakingContract {
 
     async getRewardRate(): Promise<number> {
         const rewardRateParts = await this.staking.fromRate(await this.staking.getRewardRate());
-        console.log("rewardRateParts", rewardRateParts);
+        // console.log("rewardRateParts", rewardRateParts);
         // ethers bignumber doesn't handle fractionals, thats why we need to do this manually
-        const t = rewardRateParts[0].mul(10000).div(rewardRateParts[1]);
-        console.log(t);
-        return t.toNumber() / 10000;
+        const rate = rewardRateParts[0].mul(10000).div(rewardRateParts[1]);
+        return rate.toNumber() / 10000;
     }
 
 }

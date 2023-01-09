@@ -18,6 +18,10 @@ export interface StakingApi {
         amount: BigNumber,
         bundle: BundleInfo,
     ) => Promise<BigNumber>;
+    calculateReward: (
+        amount: BigNumber,
+        bundle: BundleInfo,
+    ) => Promise<BigNumber>;
     createApproval: (
         walletAddress: string, 
         amount: BigNumber,

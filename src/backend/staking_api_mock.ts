@@ -65,6 +65,9 @@ export default function stakingApiMock(
             console.log(amount);
             return Promise.resolve(amount.mul(10));
         },
+        calculateReward(amount: BigNumber, bundle: BundleInfo) {
+            return Promise.resolve(amount.mul(0.01));
+        },
         async createApproval(walletAddress: string, premium: BigNumber) {
             enqueueSnackbar(`Approval mocked (${walletAddress}, ${formatEther(premium)}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);

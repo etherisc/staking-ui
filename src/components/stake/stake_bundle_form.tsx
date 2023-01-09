@@ -22,7 +22,8 @@ interface StakeBundleFormProps {
 type IStakeFormValues = {
     stakedAmount: string;
     supportedAmount: number;
-    rewardRate: number;
+    rewardRate: string;
+    expectedReward: string;
     termsAndConditions: boolean;
 };
 
@@ -41,7 +42,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         defaultValues: {
             stakedAmount: undefined,
             supportedAmount: undefined,
-            rewardRate: 0,
+            rewardRate: "",
+            expectedReward: "",
             termsAndConditions: false,
         }
     });
@@ -66,12 +68,15 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             try {
                 console.log("Calculating supported amount for", stakedAmount);
                 const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
-                setCalculationInProgress(false);
                 setValue("supportedAmount", parseFloat(formatUnits(supportedAmount, props.bundle.supportingTokenDecimals)));
+                const expectedReward = await props.stakingApi.calculateReward(stakedAmount, props.bundle);
+                setValue("expectedReward", parseFloat(formatEther(expectedReward)).toFixed(0));
+                setCalculationInProgress(false);
             } finally {
             }
         } else {
-            setValue("supportedAmount", -1);
+            setValue("supportedAmount", 0);
+            setValue("expectedReward", "");
         }
     }, [errors, setValue, getValues, props.bundle, props.stakingApi]);
 
@@ -80,10 +85,10 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             if (isConnected) {
                 const rewardRate = await props.stakingApi.getRewardRate();
                 console.log("Reward rate", rewardRate);
-                setValue("rewardRate", rewardRate * 100);
+                setValue("rewardRate", (rewardRate * 100).toFixed(2));
             } else {
                 console.log("clearing reward rate");
-                setValue("rewardRate", 0);
+                setValue("rewardRate", "");
             }
         } 
         getRewardRate();
@@ -177,6 +182,26 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                     endAdornment: <InputAdornment position="end">%</InputAdornment>,
                                     readOnly: true,
                                 }}
+                                />}
+                        />
+                    {loadingBar}
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="expectedReward"
+                        control={control}
+                        render={({ field }) => 
+                            <TextField 
+                                label={t('expected_reward')}
+                                fullWidth
+                                disabled={props.formDisabled}
+                                variant="outlined"
+                                {...field} 
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">{props.stakingApi.currency()}</InputAdornment>,
+                                    readOnly: true,
+                                }}
+                                helperText={t('expected_reward_notice')}
                                 />}
                         />
                     {loadingBar}

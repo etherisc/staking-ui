@@ -15,6 +15,7 @@ export type BundleInfo = {
     supportingToken: string;
     supportingTokenDecimals: number;
     state: BundleState;
+    expiryAt: number;
 }
 
 export enum BundleState {
