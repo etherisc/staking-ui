@@ -7,12 +7,13 @@ import StakeBundleForm from "./unstake_bundle_form";
 interface UnstakeBundleProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
+    formDisabled: boolean;
     unstake: (amount: BigNumber, max:boolean, bundle: BundleInfo) => void;
 }
 
 export default function UnstakeBundle(props: UnstakeBundleProps) {
     return (<>
         <BundleDetails bundle={props.bundle} />
-        <StakeBundleForm stakingApi={props.stakingApi} bundle={props.bundle} unstake={props.unstake} />
+        <StakeBundleForm stakingApi={props.stakingApi} bundle={props.bundle} unstake={props.unstake} formDisabled={props.formDisabled} />
     </>);
 }

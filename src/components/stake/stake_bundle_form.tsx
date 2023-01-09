@@ -6,9 +6,9 @@ import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { bundleSelected, setStep } from "../../redux/slices/staking";
-import { INPUT_VARIANT } from "../form/numeric_text_field";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
+import { INPUT_VARIANT } from "../../config/theme";
 
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
@@ -31,7 +31,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
     const [ stakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.maxStakedAmount())));
 
-    const { handleSubmit, control, formState, getValues, setValue, watch } = useForm<IStakeFormValues>({ 
+    const { handleSubmit, control, formState, getValues, setValue } = useForm<IStakeFormValues>({ 
         mode: "onChange",
         reValidateMode: "onChange",
         defaultValues: {
@@ -140,16 +140,16 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                         control={control}
                         rules={{ required: true }}
                         render={({ field }) => 
-                        <FormControlLabel 
-                            control={
-                                <Checkbox 
-                                    defaultChecked={false}
-                                    {...field}
-                                    />
-                            } 
-                            disabled={props.formDisabled}
-                            label={t('checkbox_t_and_c_label')} />}
-                        />
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        defaultChecked={false}
+                                        {...field}
+                                        />
+                                } 
+                                disabled={props.formDisabled}
+                                label={t('checkbox_t_and_c_label')} />}
+                            />
                 </Grid>
                 <Grid item xs={6}>
                     <Button 
