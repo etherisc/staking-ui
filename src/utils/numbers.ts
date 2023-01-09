@@ -23,7 +23,7 @@ export function formatCurrency(value: FormNumber, decimals: number, displayPreci
 }
 
 function formatLocale(number: number, displayPrecision?: number): string {
-    return number.toLocaleString(undefined, { useGrouping: true, 
+    return number.toLocaleString("en", { useGrouping: true, 
         minimumFractionDigits: displayPrecision || DISPLAY_PRECISION,
         maximumFractionDigits: displayPrecision || DISPLAY_PRECISION });
 }

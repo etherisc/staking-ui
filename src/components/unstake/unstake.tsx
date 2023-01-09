@@ -159,6 +159,7 @@ export default function Unstake(props: UnstakeProps) {
             return <UnstakeBundle 
                 stakingApi={props.stakingApi}
                 bundle={stakeingBundle!}
+                formDisabled={activeStep < 1 || activeStep > 3}
                 unstake={unstake}
                 />;
         }

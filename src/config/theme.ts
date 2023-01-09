@@ -1,5 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import red from '@mui/material/colors/red';
 
 // etherisc main colors
 // red: EE4620
@@ -31,3 +30,5 @@ export const etheriscTheme = createTheme({
         },
     },
 });
+
+export const INPUT_VARIANT = 'filled';

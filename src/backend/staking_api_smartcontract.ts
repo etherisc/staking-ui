@@ -30,6 +30,9 @@ export class StakingApiSmartContract implements StakingApi {
 
     async initializeDip() {
         const dipAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS ?? '0xc719d010b63e5bbf2c0551872cd5316ed26acd83';
+        if(this.signer === null || this.signer.provider === null) {
+            return;
+        }
         const token = IERC20Metadata__factory.connect(dipAddress, this.signer);
         const [symbol, decimals] = await Promise.all([token.symbol(), token.decimals()]);
         this.dipSymbol = symbol;

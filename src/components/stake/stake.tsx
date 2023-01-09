@@ -231,6 +231,7 @@ export default function Stake(props: StakeProps) {
                 />;
         } else {
             return <StakeBundle 
+                formDisabled={activeStep < 2 || activeStep > 3}
                 stakingApi={props.stakingApi}
                 bundle={stakeingBundle!}
                 stake={stake}
