@@ -2,7 +2,7 @@ import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgres
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { bundleSelected, setStep } from "../../redux/slices/staking";
@@ -10,6 +10,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { INPUT_VARIANT } from "../../config/theme";
 import { parse } from "path";
+import { RootState } from "../../redux/store";
 
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
@@ -21,6 +22,8 @@ interface StakeBundleFormProps {
 type IStakeFormValues = {
     stakedAmount: string;
     supportedAmount: number;
+    rewardRate: string;
+    expectedReward: string;
     termsAndConditions: boolean;
 };
 
@@ -28,6 +31,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const { t } = useTranslation(['stake', 'common']);
     const currency = props.stakingApi.currency();
     const dispatch = useDispatch();
+    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
 
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
     const [ stakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.maxStakedAmount())));
@@ -38,6 +42,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         defaultValues: {
             stakedAmount: undefined,
             supportedAmount: undefined,
+            rewardRate: "",
+            expectedReward: "",
             termsAndConditions: false,
         }
     });
@@ -62,14 +68,32 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             try {
                 console.log("Calculating supported amount for", stakedAmount);
                 const supportedAmount = await props.stakingApi.calculateSupportedAmount(stakedAmount, props.bundle);
-                setCalculationInProgress(false);
                 setValue("supportedAmount", parseFloat(formatUnits(supportedAmount, props.bundle.supportingTokenDecimals)));
+                const expectedReward = await props.stakingApi.calculateReward(stakedAmount, props.bundle);
+                setValue("expectedReward", parseFloat(formatEther(expectedReward)).toFixed(0));
+                setCalculationInProgress(false);
             } finally {
             }
         } else {
-            setValue("supportedAmount", -1);
+            setValue("supportedAmount", 0);
+            setValue("expectedReward", "");
         }
     }, [errors, setValue, getValues, props.bundle, props.stakingApi]);
+
+    useEffect(() => {
+        async function getRewardRate() {
+            if (isConnected) {
+                const rewardRate = await props.stakingApi.getRewardRate();
+                console.log("Reward rate", rewardRate);
+                setValue("rewardRate", (rewardRate * 100).toFixed(2));
+            } else {
+                console.log("clearing reward rate");
+                setValue("rewardRate", "");
+            }
+        } 
+        getRewardRate();
+    }, [isConnected, props.stakingApi, setValue]);
+
 
     function back() {
         dispatch(bundleSelected(null));
@@ -133,12 +157,51 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 label={t('supportedAmount')}
                                 fullWidth
                                 disabled={props.formDisabled}
-                                variant={INPUT_VARIANT}
+                                variant="outlined"
                                 {...field} 
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">{props.bundle.supportingToken}</InputAdornment>,
                                     readOnly: true,
                                 }}
+                                />}
+                        />
+                    {loadingBar}
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="rewardRate"
+                        control={control}
+                        render={({ field }) => 
+                            <TextField 
+                                label={t('reward_rate')}
+                                fullWidth
+                                disabled={props.formDisabled}
+                                variant="outlined"
+                                {...field} 
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                    readOnly: true,
+                                }}
+                                />}
+                        />
+                    {loadingBar}
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="expectedReward"
+                        control={control}
+                        render={({ field }) => 
+                            <TextField 
+                                label={t('expected_reward')}
+                                fullWidth
+                                disabled={props.formDisabled}
+                                variant="outlined"
+                                {...field} 
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">{props.stakingApi.currency()}</InputAdornment>,
+                                    readOnly: true,
+                                }}
+                                helperText={t('expected_reward_notice')}
                                 />}
                         />
                     {loadingBar}

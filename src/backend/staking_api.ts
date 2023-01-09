@@ -18,6 +18,10 @@ export interface StakingApi {
         amount: BigNumber,
         bundle: BundleInfo,
     ) => Promise<BigNumber>;
+    calculateReward: (
+        amount: BigNumber,
+        bundle: BundleInfo,
+    ) => Promise<BigNumber>;
     createApproval: (
         walletAddress: string, 
         amount: BigNumber,
@@ -49,6 +53,7 @@ export interface StakingApi {
     hasDipBalance: (
         amount: BigNumber,
     ) => Promise<boolean>;
+    getRewardRate: () => Promise<number>;
 }
 
 export function getStakingApi(
