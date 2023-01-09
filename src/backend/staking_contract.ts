@@ -188,4 +188,13 @@ export default class StakingContract {
         return await this.stakingDataProvider["getBundleStakes(bytes32,uint256,address)"](bundle.instanceId, bundle.bundleId, address);
     }
 
+    async getRewardRate(): Promise<number> {
+        const rewardRateParts = await this.staking.fromRate(await this.staking.getRewardRate());
+        console.log("rewardRateParts", rewardRateParts);
+        // ethers bignumber doesn't handle fractionals, thats why we need to do this manually
+        const t = rewardRateParts[0].mul(10000).div(rewardRateParts[1]);
+        console.log(t);
+        return t.toNumber() / 10000;
+    }
+
 }

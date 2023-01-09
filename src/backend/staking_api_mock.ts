@@ -90,6 +90,9 @@ export default function stakingApiMock(
         },
         async hasDipBalance(amount: BigNumber): Promise<boolean> {
             return true;
+        },
+        async getRewardRate() {
+            return Promise.resolve(0.1);
         }
     }
 }

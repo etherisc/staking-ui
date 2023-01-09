@@ -49,6 +49,7 @@ export interface StakingApi {
     hasDipBalance: (
         amount: BigNumber,
     ) => Promise<boolean>;
+    getRewardRate: () => Promise<number>;
 }
 
 export function getStakingApi(
