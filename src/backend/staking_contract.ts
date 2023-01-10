@@ -80,6 +80,9 @@ export default class StakingContract {
 
         const [tokenSymbol, tokenDecimals] = await this.getToken(token);
 
+        const stakingSupported = await this.stakingDataProvider.isBundleStakingSupported(instanceId, bundleId);
+        const unstakingSupported = await this.stakingDataProvider.isBundleUnstakingSupported(instanceId, bundleId);
+
         const bundleInfo = {
             id: `${instanceId}-${bundleId}`,
             chainId: chainId,
@@ -96,6 +99,8 @@ export default class StakingContract {
             supportingTokenDecimals: tokenDecimals,
             state: state,
             expiryAt: expiryAt.toNumber(),
+            stakingSupported: stakingSupported,
+            unstakingSupported: unstakingSupported
         } as BundleInfo;
         return bundleInfo;
     }

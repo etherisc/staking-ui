@@ -17,6 +17,8 @@ export type BundleInfo = {
     supportingTokenDecimals: number;
     state: BundleState;
     expiryAt: number;
+    stakingSupported: boolean;
+    unstakingSupported: boolean;
 }
 
 export enum BundleState {

@@ -9,10 +9,12 @@ import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 
 interface SelectBundleProps {
+    stakingType: StakingType;
     stakingApi: StakingApi;
-    title?: string;
     onlyStakesFromWallet?: boolean;
 }
+
+export enum StakingType { STAKE, UNSTAKE }
 
 export default function SelectBundle(props: SelectBundleProps) {
     const { t } = useTranslation(['stake', 'common']);
@@ -25,13 +27,23 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     const [ selectedBundle, setSelectedBundle ] = useState<BundleInfo | undefined>(undefined);
 
+    function canUseBundle(bundle: BundleInfo) {
+        if (props.stakingType === StakingType.STAKE) {
+            return bundle.stakingSupported;
+        } else if (props.stakingType === StakingType.UNSTAKE) {
+            return bundle.unstakingSupported;
+        } else {
+            return bundle.stakingSupported;
+        }
+    }
+
     useEffect(() => {
         async function getBundles() {
             if (props.onlyStakesFromWallet !== undefined && props.onlyStakesFromWallet === true) {
                 props.stakingApi.retrieveStakesForWallet(
                     await signer!.getAddress(),
                     (bundle: BundleInfo) => {
-                        if (bundle.myStakedAmount != "0") {
+                        if (bundle.myStakedAmount != "0" && canUseBundle(bundle)) {
                             dispatch(add(bundle));
                         }
                         return Promise.resolve();
@@ -64,7 +76,7 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     return (
         <>
-            <Typography variant="body1" sx={{ my: 2 }}>{props.title ?? t('choose_bundle')}</Typography>
+            <Typography variant="body1" sx={{ my: 2 }}>{t('choose_bundle')}</Typography>
 
             <BundleStakes 
                 stakingApi={props.stakingApi}

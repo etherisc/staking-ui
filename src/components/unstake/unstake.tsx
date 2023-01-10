@@ -12,7 +12,7 @@ import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { TransactionFailedError } from "../../utils/error";
 import { Heading1 } from "../heading";
-import SelectBundle from "../stake/select_bundle";
+import SelectBundle, { StakingType } from "../stake/select_bundle";
 import UnstakeBundle from "./unstake_bundle";
 
 interface UnstakeProps {
@@ -157,7 +157,7 @@ export default function Unstake(props: UnstakeProps) {
         if (activeStep < 2) {
             return <SelectBundle 
                 stakingApi={props.stakingApi}
-                title={t('choose_bundle', { currency: currency})}
+                stakingType={StakingType.UNSTAKE}                
                 onlyStakesFromWallet={true}
                 />;
         } else {

@@ -134,9 +134,11 @@ export default function BundleStakes(props: BundleStakesProps) {
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
                 params.row,
             renderCell: (params: GridRenderCellParams<BundleInfo>) => {
+                const stakeAction = params.value!.stakingSupported ? <Button onClick={() => stakeBundle(params.value!)}>{t('action.stake')}</Button> : undefined;
+                const unstakeAction = params.value!.unstakingSupported ? <Button onClick={() => unstakeBundle(params.value!)}>{t('action.unstake')}</Button> : undefined;
                 return (<>
-                    <Button onClick={() => stakeBundle(params.value!)}>{t('action.stake')}</Button>
-                    <Button onClick={() => unstakeBundle(params.value!)}>{t('action.unstake')}</Button>
+                    {stakeAction}
+                    {unstakeAction}
                 </>);
             }
         });
