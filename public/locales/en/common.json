@@ -72,9 +72,11 @@
       "state": "State"
     }
   },
-  "bundle_information": "Bundle Information",
+  "bundle_information": "Selected Bundle",
   "instance_id": "Instance ID",
+  "instance_name": "Name",
   "bundle_id": "Bundle ID",
+  "bundle_name": "Name",
   "bundle_state": "State",
   "bundle_id_num": "Bundle ID: {{id}}"
 
