@@ -38,7 +38,12 @@ export default function Stake(props: StakeProps) {
     const steps = ['step0', 'step1', 'step2', 'step3', 'step4', 'step5'];
     
     useEffect(() => {
-        dispatch(resetForm());
+        if (! router.isReady ) {
+            return;
+        }
+        if ( router.query.noreset !== 'true') {
+            dispatch(resetForm());
+        }
     }, []);
 
     // change steps according to application state

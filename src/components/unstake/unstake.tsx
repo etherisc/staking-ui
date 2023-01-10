@@ -37,7 +37,12 @@ export default function Unstake(props: UnstakeProps) {
     const steps = ['step0', 'step1', 'step2', 'step3', 'step4'];
     
     useEffect(() => {
-        dispatch(resetForm());
+        if (! router.isReady ) {
+            return;
+        }
+        if ( router.query.noreset !== 'true') {
+            dispatch(resetForm());
+        }
     }, []);
 
     // change steps according to application state

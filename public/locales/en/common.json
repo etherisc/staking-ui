@@ -21,7 +21,9 @@
     "address_copied": "Value copied to clipboard",
     "dismiss" : "Dismiss",
     "back": "Back",
-    "continue": "Continue"
+    "continue": "Continue",
+    "stake": "Stake",
+    "unstake": "Unstake"
   },
   "login_select": "Please choose a wallet",
   "warning": {
@@ -69,7 +71,8 @@
       "myAllSupportingAmount": "Supporting Amount (Mine/Total)",
       "mySupportingAmount": "My Supporting Amount",
       "supportingAmount": "Total Supporting Amount",
-      "state": "State"
+      "state": "State",
+      "actions": "Actions"
     }
   },
   "bundle_information": "Selected Bundle",
