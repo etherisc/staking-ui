@@ -64,8 +64,8 @@ export default class StakingContract {
         return bundlesIds;
     }
 
-    async getBundleInfo(instanceId: string, instanceName: string, chainId: number, bundleId: BigNumber, myWallet: string | undefined): Promise<BundleInfo> {
-        const [_key, _riskpoolId, token, state, name, expiryAt, _closedAt, _createdAt, _updatedAt] = 
+    async getBundleInfo(instanceId: string, instanceName: string, chainId: number, bundleId: BigNumber, myWallet: string | undefined, registry: string): Promise<BundleInfo> {
+        const [_key, riskpoolId, token, state, name, expiryAt, _closedAt, _createdAt, _updatedAt] = 
                     await (this.bundleDataProvider!).getBundleInfo(instanceId, bundleId);
 
         const stakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256)"](instanceId, bundleId);
@@ -88,6 +88,8 @@ export default class StakingContract {
             chainId: chainId,
             instanceId: instanceId,
             instanceName: instanceName,
+            registry: registry,
+            riskpoolId: riskpoolId.toNumber(),
             bundleId: bundleId.toNumber(),
             bundleName: name,
             token: token,
@@ -117,7 +119,7 @@ export default class StakingContract {
             const bundleIds = await this.getBundleIds(instanceId);
 
             for (const bundleId of bundleIds) {
-                const bundleInfo = await this.getBundleInfo(instanceId, instanceInfo.name, instanceInfo.chainid, bundleId, myWallet);
+                const bundleInfo = await this.getBundleInfo(instanceId, instanceInfo.name, instanceInfo.chainid, bundleId, myWallet, instanceInfo.registry);
                 console.log("bundleInfo", bundleInfo);
                 await bundleRetrieved(bundleInfo);
             }

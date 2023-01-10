@@ -72,7 +72,8 @@
       "mySupportingAmount": "My Supporting Amount",
       "supportingAmount": "Total Supporting Amount",
       "state": "State",
-      "actions": "Actions"
+      "actions": "Actions",
+      "stake_usage": "Stake Usage"
     }
   },
   "bundle_information": "Selected Bundle",

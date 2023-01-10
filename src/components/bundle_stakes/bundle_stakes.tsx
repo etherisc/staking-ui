@@ -1,18 +1,20 @@
-import { Button, LinearProgress, Tooltip, Typography } from "@mui/material";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, LinearProgress, Typography, useTheme } from "@mui/material";
 import { DataGrid, GridCallbackDetails, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
-import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { BundleRowView } from "../../model/bundle_row_view";
+import { updateStakeUsage } from "../../redux/slices/stakes";
 import { bundleSelected } from "../../redux/slices/staking";
 import { formatInstanceId } from "../../utils/format";
 import { formatCurrency } from "../../utils/numbers";
 import WithTooltip from "../with_tooltip";
+import { grey } from "@mui/material/colors";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -23,6 +25,7 @@ interface BundleStakesProps {
     showMyAmounts?: boolean;
     showTotalAmounts?: boolean;
     showActions?: boolean;
+    showStakeLevel?: boolean;
 }
 
 export default function BundleStakes(props: BundleStakesProps) {
@@ -33,6 +36,22 @@ export default function BundleStakes(props: BundleStakesProps) {
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
     const router = useRouter();
+    const theme = useTheme();
+
+    // retrieve the stake usage data for each bundle (when the props define that stake usage should be displayed)
+    useEffect(() => {
+        async function updateStakeUsageData() {
+            if (props.showStakeLevel && props.bundles.length > 0) {
+                for (const bundle of props.bundles) {
+                    if (bundle.stakeUsage === undefined) {
+                        const stakeUsage = await props.stakingApi.getStakeUsage(bundle);
+                        dispatch(updateStakeUsage({ bundleId: bundle.bundleId, stakeUsage}));
+                    }
+                }
+            }
+        }
+        updateStakeUsageData();
+    }, [props.bundles, props.showStakeLevel, props.stakingApi, dispatch]);
 
     function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
         const bi = props.bundles.find((bundle) => bundle.id === selectionModel[0]);
@@ -77,7 +96,6 @@ export default function BundleStakes(props: BundleStakesProps) {
         router.push("/unstake?noreset=true", undefined, { shallow: true });
     }
 
-    // TODO: display some more values from the bundle
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.5, 
@@ -125,6 +143,25 @@ export default function BundleStakes(props: BundleStakesProps) {
             valueFormatter: (params: GridValueFormatterParams<string>) => t(`bundle_state_${params.value}`, { ns: 'common'})
         },
     ];
+
+    if (props.showStakeLevel !== undefined && props.showStakeLevel) {
+        columns.push({ 
+            field: 'stakeUsage', 
+            headerName: t('table.header.stake_usage'), 
+            flex: 0.35,
+            renderCell: (params: GridRenderCellParams<number>) => {
+                if (params.value === undefined || params.value < 0) {
+                    return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: grey[500] }} />);
+                } if (params.value === undefined || params.value >= 1) {
+                    return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: theme.palette.error.light }} />);
+                } if (params.value === undefined || params.value >= 0.9) {
+                    return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: theme.palette.warning.light }} />);
+                } else {
+                    return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: theme.palette.success.light }} />);
+                }
+            }
+        });
+    }
 
     if (props.showActions !== undefined && props.showActions) {
         columns.push({ 

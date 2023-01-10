@@ -5,6 +5,8 @@ export type BundleInfo = {
     chainId: number;
     instanceId: string;
     instanceName: string;
+    registry: string;
+    riskpoolId: number;
     bundleId: number;
     bundleName: string;
     token: string;
@@ -19,6 +21,7 @@ export type BundleInfo = {
     expiryAt: number;
     stakingSupported: boolean;
     unstakingSupported: boolean;
+    stakeUsage: number;
 }
 
 export enum BundleState {

@@ -57,6 +57,7 @@ export default function Stakes(props: StakingProps) {
             disableSelection={true}
             showMyAmounts={true}
             showTotalAmounts={true}
+            showStakeLevel={true}
             showActions={true}
             />
     </>);

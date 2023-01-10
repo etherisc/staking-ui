@@ -22,6 +22,12 @@ export const stakesSlice = createSlice({
                 state.bundles.push(action.payload);
             }
         },
+        updateStakeUsage: (state, action: PayloadAction<{bundleId: number, stakeUsage: number}>) => {
+            const bundle = state.bundles.find((bundle) => bundle.bundleId === action.payload.bundleId);
+            if (bundle) {
+                bundle.stakeUsage = action.payload.stakeUsage;
+            }
+        },
         reset: (state) => {
             state.bundles = [];
         },
@@ -36,7 +42,7 @@ export const stakesSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { 
-    add, reset, startLoading, finishLoading,
+    add, updateStakeUsage, reset, startLoading, finishLoading,
 } = stakesSlice.actions
 
 export default stakesSlice.reducer

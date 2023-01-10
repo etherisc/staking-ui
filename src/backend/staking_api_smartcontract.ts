@@ -1,6 +1,7 @@
 import { BigNumber, Signer } from "ethers";
-import { parseEther } from "ethers/lib/utils";
+import { formatBytes32String, formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from "../contracts/depeg-contracts";
+import { IInstanceService, IInstanceService__factory, IRegistry__factory } from "../contracts/gif-interface";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
 import { StakingApi } from "./staking_api";
@@ -145,5 +146,26 @@ export class StakingApiSmartContract implements StakingApi {
     async getRewardRate(): Promise<number> {
         return (await this.getGifStakingApi()).getRewardRate();
     }
+
+    async getStakeUsage(bundle: BundleInfo): Promise<number> {
+        const supportedAmount = BigNumber.from(bundle.supportingAmount);
+        const instanceService = await this.getInstanceService(bundle.registry);
+        const { lockedCapital } = await instanceService.getBundle(bundle.bundleId);
+        if (supportedAmount.eq(BigNumber.from(0))) {
+            if (lockedCapital.gt(BigNumber.from(0))) {
+                return 1;
+            }
+            return -1;
+        }
+        return lockedCapital.mul(100).div(supportedAmount).toNumber() / 100;
+    }
+
+    async getInstanceService(registryAddress: string): Promise<IInstanceService> {
+        const registry = IRegistry__factory.connect(registryAddress, this.signer);
+        const instanceServiceAddress = await registry.getContract(formatBytes32String("InstanceService"));
+        // console.log("instanceServiceAddress", instanceServiceAddress);
+        return IInstanceService__factory.connect(instanceServiceAddress, this.signer);
+    }
     
 }
+

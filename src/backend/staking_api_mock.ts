@@ -96,6 +96,9 @@ export default function stakingApiMock(
         },
         async getRewardRate() {
             return Promise.resolve(0.1);
+        },
+        async getStakeUsage(bundle: BundleInfo) {
+            return Promise.resolve(0.5);
         }
     }
 }

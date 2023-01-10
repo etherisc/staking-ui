@@ -54,6 +54,11 @@ export interface StakingApi {
         amount: BigNumber,
     ) => Promise<boolean>;
     getRewardRate: () => Promise<number>;
+    /**
+     * Get a number indicating if the locked capital is sufficiently covered by the staked amount. 
+     * if between 0 and 1, the staked amount is too low. If > 1, the staked amount is sufficient.
+     */
+    getStakeUsage(bundle: BundleInfo): Promise<number>;
 }
 
 export function getStakingApi(
