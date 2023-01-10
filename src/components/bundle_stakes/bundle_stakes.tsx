@@ -1,5 +1,5 @@
-import { LinearProgress } from "@mui/material";
-import { DataGrid, GridCallbackDetails, GridColDef, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { LinearProgress, Tooltip, Typography } from "@mui/material";
+import { DataGrid, GridCallbackDetails, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
@@ -9,6 +9,7 @@ import { StakingApi } from "../../backend/staking_api";
 import { BundleRowView } from "../../model/bundle_row_view";
 import { formatInstanceId } from "../../utils/format";
 import { formatCurrency } from "../../utils/numbers";
+import WithTooltip from "../with_tooltip";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -64,9 +65,30 @@ export default function BundleStakes(props: BundleStakesProps) {
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.5, 
-            valueFormatter: (params: GridValueFormatterParams<string>) => formatInstanceId(params.value) 
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.instanceId, params.row.instanceName ],
+            renderCell: (params: GridRenderCellParams<[string, string]>) => {
+                if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
+                    return (<>
+                        <WithTooltip text={params.value![1]} tooltipText={params.value![0]} />
+                    </>);
+                }
+                return (<>
+                    <WithTooltip text={formatInstanceId(params.value![0])} tooltipText={params.value![0]} />
+                </>);
+            }
         },
-        { field: 'bundleId', headerName: t('table.header.bundleId'), flex: 0.5 },
+        { 
+            field: 'bundleId', headerName: t('table.header.bundleId'), flex: 0.5,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.bundleId, params.row.bundleName ],
+            renderCell: (params: GridRenderCellParams<[string, string]>) => {
+                if (params.value![1] === undefined || params.value![1] === null || params.value![1] === '') {
+                    return (<>{params.value![0]}</>);
+                }
+                return (<>
+                    <WithTooltip text={params.value![1]} tooltipText={t('bundle_id_num', { id: params.value![0]})} />
+                </>);
+            }
+        },
         { 
             field: 'stakedAmount', headerName: stakedAmountHeader, flex: 1,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.stakedAmount, params.row.myStakedAmount ],

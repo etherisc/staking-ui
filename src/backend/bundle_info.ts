@@ -6,6 +6,7 @@ export type BundleInfo = {
     instanceId: string;
     instanceName: string;
     bundleId: number;
+    bundleName: string;
     token: string;
     // numbers are stored as strings to avoid serialization issue with BigNumber
     myStakedAmount: string;

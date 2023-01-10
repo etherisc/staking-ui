@@ -65,7 +65,7 @@ export default class StakingContract {
     }
 
     async getBundleInfo(instanceId: string, instanceName: string, chainId: number, bundleId: BigNumber, myWallet: string | undefined): Promise<BundleInfo> {
-        const [_key, _riskpoolId, token, state, _name, expiryAt, _closedAt, _createdAt, _updatedAt] = 
+        const [_key, _riskpoolId, token, state, name, expiryAt, _closedAt, _createdAt, _updatedAt] = 
                     await (this.bundleDataProvider!).getBundleInfo(instanceId, bundleId);
 
         const stakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256)"](instanceId, bundleId);
@@ -86,6 +86,7 @@ export default class StakingContract {
             instanceId: instanceId,
             instanceName: instanceName,
             bundleId: bundleId.toNumber(),
+            bundleName: name,
             token: token,
             myStakedAmount: myStakedAmount.toString(),
             stakedAmount: stakedAmount.toString(),
