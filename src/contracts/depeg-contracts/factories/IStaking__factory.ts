@@ -13,6 +13,37 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "stakeBalance",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "rewardBalance",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "actualBalance",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "reserves",
+        type: "uint256",
+      },
+    ],
+    name: "LogStakingDipBalanceChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "oldRewardRate",
         type: "uint256",
       },
@@ -37,9 +68,46 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newBalance",
+        type: "uint256",
+      },
+    ],
+    name: "LogStakingRewardReservesIncreased",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
         internalType: "bytes32",
         name: "instanceId",
         type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -56,11 +124,109 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "rewards",
+        name: "newBalance",
         type: "uint256",
       },
     ],
-    name: "LogStakingStakedForBundle",
+    name: "LogStakingRewardsClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newBalance",
+        type: "uint256",
+      },
+    ],
+    name: "LogStakingRewardsUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newBalance",
+        type: "uint256",
+      },
+    ],
+    name: "LogStakingStaked",
     type: "event",
   },
   {
@@ -99,6 +265,43 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "enum IStakingDataProvider.TargetType",
+        name: "targetType",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+    ],
+    name: "LogStakingTargetRegistered",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "address",
         name: "user",
         type: "address",
@@ -106,8 +309,20 @@ const _abi = [
       {
         indexed: false,
         internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
         name: "instanceId",
         type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -124,17 +339,11 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "rewards",
+        name: "newBalance",
         type: "uint256",
       },
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "all",
-        type: "bool",
-      },
     ],
-    name: "LogStakingUnstakedFromBundle",
+    name: "LogStakingUnstaked",
     type: "event",
   },
   {
@@ -229,25 +438,18 @@ const _abi = [
             type: "address",
           },
           {
-            components: [
-              {
-                internalType: "bytes32",
-                name: "instanceId",
-                type: "bytes32",
-              },
-              {
-                internalType: "uint256",
-                name: "bundleId",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct IBundleDataProvider.BundleKey",
-            name: "key",
-            type: "tuple",
+            internalType: "bytes32",
+            name: "targetId",
+            type: "bytes32",
           },
           {
             internalType: "uint256",
-            name: "balance",
+            name: "stakeBalance",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "rewardBalance",
             type: "uint256",
           },
           {
@@ -261,8 +463,8 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IStakingDataProvider.BundleStakeInfo",
-        name: "stakeInfo",
+        internalType: "struct IStakingDataProvider.StakeInfo",
+        name: "info",
         type: "tuple",
       },
     ],
@@ -275,6 +477,38 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    name: "capitalSupport",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "capitalAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    name: "claimRewards",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -302,30 +536,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "instanceId",
-        type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
-      },
-    ],
-    name: "getBundleCapitalSupport",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "capitalAmount",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "getBundleRegistry",
     outputs: [
@@ -342,13 +552,8 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "instanceId",
+        name: "targetId",
         type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
       },
       {
         internalType: "address",
@@ -356,7 +561,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "getBundleStakeInfo",
+    name: "getInfo",
     outputs: [
       {
         components: [
@@ -366,25 +571,18 @@ const _abi = [
             type: "address",
           },
           {
-            components: [
-              {
-                internalType: "bytes32",
-                name: "instanceId",
-                type: "bytes32",
-              },
-              {
-                internalType: "uint256",
-                name: "bundleId",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct IBundleDataProvider.BundleKey",
-            name: "key",
-            type: "tuple",
+            internalType: "bytes32",
+            name: "targetId",
+            type: "bytes32",
           },
           {
             internalType: "uint256",
-            name: "balance",
+            name: "stakeBalance",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "rewardBalance",
             type: "uint256",
           },
           {
@@ -398,7 +596,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct IStakingDataProvider.BundleStakeInfo",
+        internalType: "struct IStakingDataProvider.StakeInfo",
         name: "info",
         type: "tuple",
       },
@@ -407,52 +605,12 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "instanceId",
-        type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
-    ],
-    name: "getBundleStakes",
+    inputs: [],
+    name: "getRewardBalance",
     outputs: [
       {
         internalType: "uint256",
-        name: "dipAmount",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "instanceId",
-        type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
-      },
-    ],
-    name: "getBundleStakes",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "dipAmount",
+        name: "rewardReserves",
         type: "uint256",
       },
     ],
@@ -466,6 +624,32 @@ const _abi = [
       {
         internalType: "uint256",
         name: "rate",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getRewardReserves",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "rewardReserves",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getStakeBalance",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "stakeBalance",
         type: "uint256",
       },
     ],
@@ -510,13 +694,56 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getTotalStakes",
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    name: "getTarget",
     outputs: [
       {
-        internalType: "uint256",
-        name: "dipAmount",
-        type: "uint256",
+        components: [
+          {
+            internalType: "enum IStakingDataProvider.TargetType",
+            name: "targetType",
+            type: "uint8",
+          },
+          {
+            internalType: "bytes32",
+            name: "instanceId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint256",
+            name: "componentId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "bundleId",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "chainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IStakingDataProvider.Target",
+        name: "target",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -525,46 +752,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
-        name: "instanceId",
-        type: "bytes32",
-      },
-    ],
-    name: "getTotalStakes",
-    outputs: [
-      {
         internalType: "uint256",
-        name: "dipAmount",
+        name: "idx",
         type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "instanceId",
-        type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
-    ],
-    name: "hasBundleStakeInfo",
+    name: "getTargetId",
     outputs: [
       {
-        internalType: "bool",
-        name: "hasInfo",
-        type: "bool",
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
       },
     ],
     stateMutability: "view",
@@ -598,16 +796,48 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "instanceId",
+        name: "targetId",
         type: "bytes32",
       },
       {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "hasInfo",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "hasInfos",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
-        name: "bundleId",
+        name: "amount",
         type: "uint256",
       },
     ],
-    name: "isBundleStakingSupported",
+    name: "increaseRewardReserves",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    name: "isStakingSupported",
     outputs: [
       {
         internalType: "bool",
@@ -622,16 +852,86 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "instanceId",
+        name: "targetId",
         type: "bytes32",
       },
+    ],
+    name: "isTarget",
+    outputs: [
       {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
+        internalType: "bool",
+        name: "isATarget",
+        type: "bool",
       },
     ],
-    name: "isBundleUnstakingSupported",
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "enum IStakingDataProvider.TargetType",
+            name: "targetType",
+            type: "uint8",
+          },
+          {
+            internalType: "bytes32",
+            name: "instanceId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint256",
+            name: "componentId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "bundleId",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "chainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IStakingDataProvider.Target",
+        name: "target",
+        type: "tuple",
+      },
+    ],
+    name: "isTargetRegistered",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isRegistered",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    name: "isUnstakingSupported",
     outputs: [
       {
         internalType: "bool",
@@ -653,6 +953,61 @@ const _abi = [
       },
     ],
     stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        components: [
+          {
+            internalType: "enum IStakingDataProvider.TargetType",
+            name: "targetType",
+            type: "uint8",
+          },
+          {
+            internalType: "bytes32",
+            name: "instanceId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint256",
+            name: "componentId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "bundleId",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "chainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IStakingDataProvider.Target",
+        name: "target",
+        type: "tuple",
+      },
+    ],
+    name: "register",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -695,13 +1050,8 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "instanceId",
+        name: "targetId",
         type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -709,9 +1059,137 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "stakeForBundle",
+    name: "stake",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    name: "stakes",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "stakes",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "dipAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "targets",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "numberOfTargets",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "bundleId",
+        type: "uint256",
+      },
+    ],
+    name: "toBundleTargetId",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
+      },
+    ],
+    name: "toComponentTargetId",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "instanceId",
+        type: "bytes32",
+      },
+    ],
+    name: "toInstanceTargetId",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
   {
@@ -741,9 +1219,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "enum IStakingDataProvider.TargetType",
+        name: "targetType",
+        type: "uint8",
+      },
+      {
         internalType: "bytes32",
         name: "instanceId",
         type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "componentId",
+        type: "uint256",
       },
       {
         internalType: "uint256",
@@ -751,12 +1239,78 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "toTarget",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
+        components: [
+          {
+            internalType: "enum IStakingDataProvider.TargetType",
+            name: "targetType",
+            type: "uint8",
+          },
+          {
+            internalType: "bytes32",
+            name: "instanceId",
+            type: "bytes32",
+          },
+          {
+            internalType: "uint256",
+            name: "componentId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "bundleId",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "chainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IStakingDataProvider.Target",
+        name: "target",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetId",
+        type: "bytes32",
+      },
+      {
         internalType: "uint256",
         name: "amount",
         type: "uint256",
       },
     ],
-    name: "unstakeFromBundle",
+    name: "unstake",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -765,16 +1319,11 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "instanceId",
+        name: "targetId",
         type: "bytes32",
       },
-      {
-        internalType: "uint256",
-        name: "bundleId",
-        type: "uint256",
-      },
     ],
-    name: "unstakeFromBundle",
+    name: "unstakeAndClaimRewards",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

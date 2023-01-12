@@ -147,6 +147,8 @@ export declare namespace IComponentDataProvider {
     key: IComponentDataProvider.ComponentKeyStruct;
     componentType: PromiseOrValue<BigNumberish>;
     state: PromiseOrValue<BigNumberish>;
+    token: PromiseOrValue<string>;
+    chainId: PromiseOrValue<BigNumberish>;
     createdAt: PromiseOrValue<BigNumberish>;
     updatedAt: PromiseOrValue<BigNumberish>;
   };
@@ -155,12 +157,16 @@ export declare namespace IComponentDataProvider {
     IComponentDataProvider.ComponentKeyStructOutput,
     number,
     number,
+    string,
+    BigNumber,
     BigNumber,
     BigNumber
   ] & {
     key: IComponentDataProvider.ComponentKeyStructOutput;
     componentType: number;
     state: number;
+    token: string;
+    chainId: BigNumber;
     createdAt: BigNumber;
     updatedAt: BigNumber;
   };
