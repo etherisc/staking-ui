@@ -149,6 +149,7 @@ export class StakingApiSmartContract implements StakingApi {
 
     async getStakeUsage(bundle: BundleInfo): Promise<number> {
         const supportedAmount = BigNumber.from(bundle.supportingAmount);
+        // TODO: move bundle retrieval to a separate service
         const instanceService = await this.getInstanceService(bundle.registry);
         const { lockedCapital } = await instanceService.getBundle(bundle.bundleId);
         if (supportedAmount.eq(BigNumber.from(0))) {
