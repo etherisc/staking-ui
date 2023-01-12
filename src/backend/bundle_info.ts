@@ -1,5 +1,3 @@
-import { BigNumber } from "ethers";
-
 export type BundleInfo = {
     id: string;
     chainId: number;
@@ -9,6 +7,7 @@ export type BundleInfo = {
     riskpoolId: number;
     bundleId: number;
     bundleName: string;
+    targetId: string;
     token: string;
     // numbers are stored as strings to avoid serialization issue with BigNumber
     myStakedAmount: string;
