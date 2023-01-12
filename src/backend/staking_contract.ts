@@ -102,7 +102,7 @@ export default class StakingContract {
             supportingToken: tokenSymbol,
             supportingTokenDecimals: tokenDecimals,
             state: state,
-            stakeUsage: -1,
+            stakeUsage: undefined,
             expiryAt: expiryAt.toNumber(),
             stakingSupported: stakingSupported,
             unstakingSupported: unstakingSupported

@@ -1,3 +1,5 @@
+import { StakeUsage } from "../utils/types";
+
 export type BundleInfo = {
     id: string;
     chainId: number;
@@ -20,7 +22,7 @@ export type BundleInfo = {
     expiryAt: number;
     stakingSupported: boolean;
     unstakingSupported: boolean;
-    stakeUsage: number;
+    stakeUsage: StakeUsage;
 }
 
 export enum BundleState {
