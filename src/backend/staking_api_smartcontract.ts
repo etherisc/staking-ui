@@ -4,6 +4,7 @@ import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from
 import { IInstanceService, IInstanceService__factory, IRegistry__factory } from "../contracts/gif-interface";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
+import { GifInstanceService } from "./gif_instance_service";
 import { StakingApi } from "./staking_api";
 import StakingContract from "./staking_contract";
 
@@ -11,6 +12,7 @@ export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
     private stakingContractAddress: string;
     private gifStakingApi: StakingContract;
+    private gifInstanceService: GifInstanceService;
     private gifStakingApiInitialized = false;
     private dipToken?: IERC20;
     private dipTokenMetadata?: IERC20Metadata;
@@ -21,6 +23,7 @@ export class StakingApiSmartContract implements StakingApi {
         this.signer = signer;
         this.stakingContractAddress = stakingContractAddress;
         this.gifStakingApi = new StakingContract(signer, stakingContractAddress);
+        this.gifInstanceService = new GifInstanceService(signer);
     }
 
     async getGifStakingApi(): Promise<StakingContract> {
@@ -149,8 +152,7 @@ export class StakingApiSmartContract implements StakingApi {
 
     async getStakeUsage(bundle: BundleInfo): Promise<number> {
         const supportedAmount = BigNumber.from(bundle.supportingAmount);
-        const instanceService = await this.getInstanceService(bundle.registry);
-        const { lockedCapital } = await instanceService.getBundle(bundle.bundleId);
+        const { lockedCapital } = await this.gifInstanceService.getBundle(bundle.registry, bundle.bundleId);
         if (supportedAmount.eq(BigNumber.from(0))) {
             if (lockedCapital.gt(BigNumber.from(0))) {
                 return 1;
@@ -158,13 +160,6 @@ export class StakingApiSmartContract implements StakingApi {
             return -1;
         }
         return lockedCapital.mul(100).div(supportedAmount).toNumber() / 100;
-    }
-
-    async getInstanceService(registryAddress: string): Promise<IInstanceService> {
-        const registry = IRegistry__factory.connect(registryAddress, this.signer);
-        const instanceServiceAddress = await registry.getContract(formatBytes32String("InstanceService"));
-        // console.log("instanceServiceAddress", instanceServiceAddress);
-        return IInstanceService__factory.connect(instanceServiceAddress, this.signer);
     }
     
 }

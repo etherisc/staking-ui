@@ -98,6 +98,16 @@ const _abi = [
             type: "uint8",
           },
           {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "chainId",
+            type: "uint256",
+          },
+          {
             internalType: "uint256",
             name: "createdAt",
             type: "uint256",
