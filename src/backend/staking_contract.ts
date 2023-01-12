@@ -67,21 +67,22 @@ export default class StakingContract {
     async getBundleInfo(instanceId: string, instanceName: string, chainId: number, bundleId: BigNumber, myWallet: string | undefined, registry: string): Promise<BundleInfo> {
         const [_key, riskpoolId, token, state, name, expiryAt, _closedAt, _createdAt, _updatedAt] = 
                     await (this.bundleDataProvider!).getBundleInfo(instanceId, bundleId);
+        const targetId = await this.stakingDataProvider.toBundleTargetId(instanceId, riskpoolId, bundleId);
 
-        const stakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256)"](instanceId, bundleId);
+        const stakedAmount = await this.stakingDataProvider["stakes(bytes32)"](targetId);
         let myStakedAmount = BigNumber.from(0);
         const supportedAmount = await this.calculateSupportedAmount(stakedAmount, chainId, token);
         let mySupportingAmount = BigNumber.from(0);
 
         if (myWallet !== undefined) {
-            myStakedAmount = await this.stakingDataProvider["getBundleStakes(bytes32,uint256,address)"](instanceId, bundleId, myWallet);
+            myStakedAmount = await this.stakingDataProvider["stakes(bytes32,address)"](targetId, myWallet);
             mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, chainId, token);
         }
 
         const [tokenSymbol, tokenDecimals] = await this.getToken(token);
 
-        const stakingSupported = await this.stakingDataProvider.isBundleStakingSupported(instanceId, bundleId);
-        const unstakingSupported = await this.stakingDataProvider.isBundleUnstakingSupported(instanceId, bundleId);
+        const stakingSupported = await this.stakingDataProvider.isStakingSupported(targetId);
+        const unstakingSupported = await this.stakingDataProvider.isUnstakingSupported(targetId);
 
         const bundleInfo = {
             id: `${instanceId}-${bundleId}`,
@@ -92,6 +93,7 @@ export default class StakingContract {
             riskpoolId: riskpoolId.toNumber(),
             bundleId: bundleId.toNumber(),
             bundleName: name,
+            targetId: targetId,
             token: token,
             myStakedAmount: myStakedAmount.toString(),
             stakedAmount: stakedAmount.toString(),
@@ -153,7 +155,7 @@ export default class StakingContract {
             beforeTrxCallback(this.stakingDataProvider.address);
         }
         try {
-            const tx = await this.staking.stakeForBundle(bundle.instanceId, bundle.bundleId, stakedAmount);
+            const tx = await this.staking.stake(bundle.targetId, stakedAmount);
 
             if (beforeWaitCallback !== undefined) {
                 beforeWaitCallback(this.staking.address);
@@ -170,21 +172,21 @@ export default class StakingContract {
 
     async unstake(
         bundle: BundleInfo,
-        stakedAmount?: BigNumber, 
+        unstakeAmount?: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<[ContractTransaction, ContractReceipt]> {
-        console.log("unstake", bundle, stakedAmount?.toString());
+        console.log("unstake", bundle, unstakeAmount?.toString());
         if (beforeTrxCallback !== undefined) {
             beforeTrxCallback(this.staking.address);
         }
         try {
             let tx;
 
-            if (stakedAmount === undefined) {
-                tx = await this.staking["unstakeFromBundle(bytes32,uint256)"](bundle.instanceId, bundle.bundleId);
+            if (unstakeAmount === undefined) {
+                tx = await this.staking.unstakeAndClaimRewards(bundle.targetId);
             } else {
-                tx = await this.staking["unstakeFromBundle(bytes32,uint256,uint256)"](bundle.instanceId, bundle.bundleId, stakedAmount);
+                tx = await this.staking.unstake(bundle.targetId, unstakeAmount);
             }
 
             if (beforeWaitCallback !== undefined) {
@@ -201,7 +203,7 @@ export default class StakingContract {
     }
 
     async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        return await this.stakingDataProvider["getBundleStakes(bytes32,uint256,address)"](bundle.instanceId, bundle.bundleId, address);
+        return await this.stakingDataProvider["stakes(bytes32,address)"](bundle.targetId, address);
     }
 
     async getRewardRate(): Promise<number> {
