@@ -1,6 +1,10 @@
 {
     "todo-tree.highlights.enabled": false,
     "peacock.remoteColor": "#365e4b",
+    "i18n-ally.localesPaths": [
+        "public/locales"
+    ],
+    "i18n-ally.keystyle": "nested",
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#497e65",
         "activityBar.background": "#497e65",
@@ -20,8 +24,4 @@
         "titleBar.inactiveBackground": "#365e4b99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "i18n-ally.localesPaths": [
-        "public/locales"
-    ],
-    "i18n-ally.keystyle": "nested",
 }
