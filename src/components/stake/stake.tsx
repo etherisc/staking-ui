@@ -13,7 +13,7 @@ import { RootState } from "../../redux/store";
 import { ApprovalFailedError, TransactionFailedError } from "../../utils/error";
 import { formatCurrency } from "../../utils/numbers";
 import { Heading1 } from "../heading";
-import SelectBundle, { StakingType } from "./select_bundle";
+import SelectBundle from "./select_bundle";
 import StakeBundle from "./stake_bundle";
 
 interface StakeProps {
@@ -233,7 +233,7 @@ export default function Stake(props: StakeProps) {
         if (activeStep < 2) {
             return <SelectBundle 
                 stakingApi={props.stakingApi}
-                stakingType={StakingType.STAKE}
+                displayBundle={(bundle: BundleInfo) => bundle.stakingSupported}
                 />;
         } else {
             return <StakeBundle 

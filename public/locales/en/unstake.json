@@ -10,7 +10,6 @@
   },
   "supportedAmount": "Supported Amount",
   "stakedAmount": "Staked Amount",
-  "choose_bundle": "Please select to bundle to unstake {{currency}} from",
   "bundle_information": "Bundle Information",
   "instance_id": "Instance ID",
   "bundle_id": "Bundle ID",

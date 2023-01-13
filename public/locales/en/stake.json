@@ -11,7 +11,6 @@
   },
   "supportedAmount": "Supported Amount",
   "stakedAmount": "Staked Amount",
-  "choose_bundle": "Please select to bundle to stake",
   "approval_info": "To stake, the Staking contract at {{address}} needs permission to transfer {{currency}} {{amount}} to the staking pool. Please confirm this allowance in your wallet app.",
   "approval_wait": "Allowance creating, wait for onchain confirmation",
   "approval_failed": "",

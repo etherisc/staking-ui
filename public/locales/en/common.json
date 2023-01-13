@@ -70,20 +70,21 @@
       "myAllStakedAmount": "Staked Amount (Mine/Total)",
       "myStakedAmount": "My Staked Amount",
       "stakedAmount": "Total Staked Amount",
-      "myAllSupportingAmount": "Supporting Amount (Mine/Total)",
-      "mySupportingAmount": "My Supporting Amount",
+      "myAllSupportingAmount": "Supported Capital (Mine/Total)",
       "supportingAmount": "Total Supporting Amount",
       "state": "State",
       "actions": "Actions",
-      "stake_usage": "Stake Usage"
+      "stake_usage": "Usage"
     }
   },
+  "choose_bundle": "Please select a bundle",
   "bundle_information": "Selected Bundle",
   "instance_id": "Instance ID",
   "instance_name": "Name",
   "bundle_id": "Bundle ID",
   "bundle_name": "Name",
   "bundle_state": "State",
-  "bundle_id_num": "Bundle ID: {{id}}"
+  "bundle_id_num": "Bundle ID: {{id}}",
+  "staked_amount_total": "Bundle Total Staked Amount"
 
 }

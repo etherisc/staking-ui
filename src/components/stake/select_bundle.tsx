@@ -9,15 +9,12 @@ import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 
 interface SelectBundleProps {
-    stakingType: StakingType;
     stakingApi: StakingApi;
-    onlyStakesFromWallet?: boolean;
+    displayBundle?: (bundle: BundleInfo) => boolean;
 }
 
-export enum StakingType { STAKE, UNSTAKE }
-
 export default function SelectBundle(props: SelectBundleProps) {
-    const { t } = useTranslation(['stake', 'common']);
+    const { t } = useTranslation(['common']);
 
     const signer = useSelector((state: RootState) => state.chain.signer);
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
@@ -27,42 +24,20 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     const [ selectedBundle, setSelectedBundle ] = useState<BundleInfo | undefined>(undefined);
 
-    function canUseBundle(bundle: BundleInfo) {
-        if (props.stakingType === StakingType.STAKE) {
-            return bundle.stakingSupported;
-        } else if (props.stakingType === StakingType.UNSTAKE) {
-            return bundle.unstakingSupported;
-        } else {
-            return bundle.stakingSupported;
-        }
-    }
-
     useEffect(() => {
         async function getBundles() {
-            if (props.onlyStakesFromWallet !== undefined && props.onlyStakesFromWallet === true) {
-                props.stakingApi.retrieveStakesForWallet(
-                    await signer!.getAddress(),
-                    (bundle: BundleInfo) => {
-                        if (bundle.myStakedAmount != "0" && canUseBundle(bundle)) {
-                            dispatch(add(bundle));
-                        }
-                        return Promise.resolve();
-                    },
-                    () => {
-                        dispatch(finishLoading());
-                    }
-                );
-            } else {
-                props.stakingApi.retrieveBundles(
-                    (bundle: BundleInfo) => {
+            props.stakingApi.retrieveStakesForWallet(
+                await signer!.getAddress(),
+                (bundle: BundleInfo) => {
+                    if (props.displayBundle === undefined || props.displayBundle(bundle)) {
                         dispatch(add(bundle));
-                        return Promise.resolve();
-                    },
-                    () => {
-                        dispatch(finishLoading());
                     }
-                );    
-            }
+                    return Promise.resolve();
+                },
+                () => {
+                    dispatch(finishLoading());
+                }
+            );
         }
 
         if (isConnected) {
@@ -83,7 +58,6 @@ export default function SelectBundle(props: SelectBundleProps) {
                 bundles={bundles}
                 isBundlesLoading={isLoadingBundles}
                 onBundleSelected={setSelectedBundle}
-                showMyAmounts={props.onlyStakesFromWallet}
                 />
 
             <Grid container justifyContent="flex-end" sx={{ my: 2 }}>

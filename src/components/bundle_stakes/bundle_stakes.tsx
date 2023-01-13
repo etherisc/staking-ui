@@ -1,6 +1,6 @@
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, LinearProgress, Typography, useTheme } from "@mui/material";
+import { Box, Button, LinearProgress, Typography, useTheme } from "@mui/material";
 import { DataGrid, GridCallbackDetails, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
@@ -11,7 +11,6 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { updateStakeUsage } from "../../redux/slices/stakes";
 import { bundleSelected } from "../../redux/slices/staking";
-import { formatInstanceId } from "../../utils/format";
 import { formatCurrency } from "../../utils/numbers";
 import WithTooltip from "../with_tooltip";
 import { grey } from "@mui/material/colors";
@@ -23,10 +22,8 @@ interface BundleStakesProps {
     isBundlesLoading: boolean;
     onBundleSelected?: (bundle: BundleInfo) => void;
     disableSelection?: boolean;
-    showMyAmounts?: boolean;
-    showTotalAmounts?: boolean;
     showActions?: boolean;
-    showStakeLevel?: boolean;
+    showStakeUsage?: boolean;
 }
 
 export default function BundleStakes(props: BundleStakesProps) {
@@ -42,7 +39,7 @@ export default function BundleStakes(props: BundleStakesProps) {
     // retrieve the stake usage data for each bundle (when the props define that stake usage should be displayed)
     useEffect(() => {
         async function updateStakeUsageData() {
-            if (!props.showStakeLevel || props.bundles.length == 0) {
+            if (!props.showStakeUsage || props.bundles.length == 0) {
                 return;
             }
 
@@ -58,7 +55,7 @@ export default function BundleStakes(props: BundleStakesProps) {
             }
         }
         updateStakeUsageData();
-    }, [props.bundles, props.showStakeLevel, props.stakingApi, dispatch]);
+    }, [props.bundles, props.showStakeUsage, props.stakingApi, dispatch]);
 
     function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
         const bi = props.bundles.find((bundle) => bundle.id === selectionModel[0]);
@@ -72,25 +69,13 @@ export default function BundleStakes(props: BundleStakesProps) {
         }
     }
 
-    let stakedAmountHeader = t('table.header.stakedAmount');
-    let supportingAmountHeader = t('table.header.supportingAmount');
-    if (props.showMyAmounts !== undefined && props.showMyAmounts && props.showTotalAmounts !== undefined && props.showTotalAmounts) {
-        stakedAmountHeader = t('table.header.myAllStakedAmount');
-        supportingAmountHeader = t('table.header.myAllSupportingAmount');
-    } else if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-        stakedAmountHeader = t('table.header.myStakedAmount');
-        supportingAmountHeader = t('table.header.mySupportingAmount');
-    } 
-
     function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
         // console.log('formatAmountMineTotal', myValue, totalValue, tokenSymbol, tokenDecimals);
-        if (props.showMyAmounts !== undefined && props.showMyAmounts && props.showTotalAmounts !== undefined && props.showTotalAmounts) {
-            return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
-        } else if (props.showMyAmounts !== undefined && props.showMyAmounts) {
-            return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)}`;
-        } else {
-            return `${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;
-        }
+        return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
+    }
+
+    function formatAmount(amount: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
+        return `${tokenSymbol} ${formatCurrency(amount, tokenDecimals)}`;
     }
 
     function stakeBundle(bundle: BundleInfo) {
@@ -133,13 +118,16 @@ export default function BundleStakes(props: BundleStakesProps) {
             }
         },
         { 
-            field: 'stakedAmount', headerName: stakedAmountHeader, flex: 1,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.stakedAmount, params.row.myStakedAmount ],
-            valueFormatter: (params: GridValueFormatterParams<[string, string, string, number]>) => 
-                formatAmountMineTotal(BigNumber.from(params.value[1]), BigNumber.from(params.value[0]), currency, currencyDecimals)
+            field: 'myStakedAmount', headerName: t('table.header.myStakedAmount'), flex: 0.7,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.myStakedAmount, params.row.stakedAmount ],
+            renderCell: (params: GridRenderCellParams<[string, string]>) => (<>
+                    <WithTooltip tooltipText={`${t('staked_amount_total')} ${formatAmount(BigNumber.from(params.value![1]), currency, currencyDecimals)}`}>
+                        {formatAmount(BigNumber.from(params.value![0]), currency, currencyDecimals)}
+                    </WithTooltip>
+                </>)
         },
         { 
-            field: 'supportingAmount', headerName: supportingAmountHeader, flex: 1,
+            field: 'supportingAmount', headerName: t('table.header.myAllSupportingAmount'), flex: 1,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
                 [ params.row.mySupportingAmount, params.row.supportingAmount, params.row.supportingToken, params.row.supportingTokenDecimals ],
             valueFormatter: (params: GridValueFormatterParams<[string, string, string, number]>) => {
@@ -153,11 +141,11 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
     ];
 
-    if (props.showStakeLevel !== undefined && props.showStakeLevel) {
+    if (props.showStakeUsage !== undefined && props.showStakeUsage) {
         columns.push({ 
             field: 'stakeUsage', 
             headerName: t('table.header.stake_usage'), 
-            flex: 0.35,
+            flex: 0.3,
             renderCell: (params: GridRenderCellParams<number>) => {
                 if (params.value === undefined || params.value < 0) {
                     return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: grey[500] }} />);
@@ -176,7 +164,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         columns.push({ 
             field: 'actions', 
             headerName: t('table.header.actions'), 
-            flex: 0.65,
+            flex: 0.5,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
                 params.row,
             renderCell: (params: GridRenderCellParams<BundleInfo>) => {
