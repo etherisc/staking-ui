@@ -31,12 +31,12 @@ export async function createDipApproval(
 ): Promise<[ContractTransaction, ContractReceipt]> {
     const dipAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS!;
     console.log(`creating treasury approval for ${amount} on token ${dipAddress}`);
-    const usd1 = getErc20Token(dipAddress, signer);
+    const dip = getErc20Token(dipAddress, signer);
     if (beforeApprovalCallback !== undefined) {
         beforeApprovalCallback(recipient, "", amount); // TODO: currency symbol
     }
     try {
-        const tx = await usd1.approve(recipient, amount);
+        const tx = await dip.approve(recipient, amount, { gasLimit: 200000 });
         console.log("tx done", tx)
         if (beforeWaitCallback !== undefined) {
             beforeWaitCallback(recipient, "", amount); // TODO: currency symbol
