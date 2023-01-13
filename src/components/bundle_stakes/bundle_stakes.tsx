@@ -15,6 +15,7 @@ import { formatInstanceId } from "../../utils/format";
 import { formatCurrency } from "../../utils/numbers";
 import WithTooltip from "../with_tooltip";
 import { grey } from "@mui/material/colors";
+import Address from "../address";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -104,16 +105,16 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     const columns: Array<GridColDef> = [
         { 
-            field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.5, 
+            field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.6, 
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.instanceId, params.row.instanceName ],
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
                     return (<>
-                        <WithTooltip text={params.value![1]} tooltipText={params.value![0]} />
+                        <Address address={params.value![1]} iconColor="palette.secondary.main" />
                     </>);
                 }
                 return (<>
-                    <WithTooltip text={formatInstanceId(params.value![0])} tooltipText={params.value![0]} />
+                    <Address address={params.value![0]} iconColor="secondary.main" />
                 </>);
             }
         },
@@ -125,7 +126,9 @@ export default function BundleStakes(props: BundleStakesProps) {
                     return (<>{params.value![0]}</>);
                 }
                 return (<>
-                    <WithTooltip text={params.value![1]} tooltipText={t('bundle_id_num', { id: params.value![0]})} />
+                    <WithTooltip tooltipText={t('bundle_id_num', { id: params.value![0]})}>
+                        {params.value![1]}
+                    </WithTooltip>
                 </>);
             }
         },

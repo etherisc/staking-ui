@@ -23,7 +23,8 @@
     "back": "Back",
     "continue": "Continue",
     "stake": "Stake",
-    "unstake": "Unstake"
+    "unstake": "Unstake",
+    "copy_value": "Copy value to clipboard"
   },
   "login_select": "Please choose a wallet",
   "warning": {

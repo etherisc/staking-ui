@@ -1,11 +1,11 @@
 import { Tooltip, Typography } from "@mui/material";
 
 export default function WithTooltip(props: any) {
-    const { text, tooltipText } = props;
+    const { tooltipText, children } = props;
     return (<>
-        <Tooltip title={tooltipText} enterDelay={700} leaveDelay={200}>
+        <Tooltip title={tooltipText} enterDelay={700} leaveDelay={200} sx={{ display: 'inline-block'}}>
             <Typography>
-                {text}
+                {children}
             </Typography>
         </Tooltip>
     </>);
