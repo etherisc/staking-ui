@@ -41,13 +41,19 @@ export default function BundleStakes(props: BundleStakesProps) {
     // retrieve the stake usage data for each bundle (when the props define that stake usage should be displayed)
     useEffect(() => {
         async function updateStakeUsageData() {
-            if (props.showStakeLevel && props.bundles.length > 0) {
-                for (const bundle of props.bundles) {
-                    if (bundle.stakeUsage === undefined) {
-                        const stakeUsage = await props.stakingApi.getStakeUsage(bundle);
-                        dispatch(updateStakeUsage({ bundleId: bundle.bundleId, stakeUsage}));
-                    }
+            if (!props.showStakeLevel || props.bundles.length == 0) {
+                return;
+            }
+
+            for (const bundle of props.bundles) {
+                if (bundle.chainId !== await props.stakingApi.getChainId()) {
+                    continue;
                 }
+                if (bundle.stakeUsage !== undefined) {
+                    continue;
+                }
+                const stakeUsage = await props.stakingApi.getStakeUsage(bundle);
+                dispatch(updateStakeUsage({ bundleId: bundle.bundleId, stakeUsage}));
             }
         }
         updateStakeUsageData();

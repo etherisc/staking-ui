@@ -45,6 +45,10 @@ export class StakingApiSmartContract implements StakingApi {
         this.dipDecimals = decimals;
     }
 
+    async getChainId(): Promise<number> {
+        return (await this.signer.getChainId());
+    }
+
     currency(): string {
         if (this.dipSymbol === undefined) {
             this.initializeDip();

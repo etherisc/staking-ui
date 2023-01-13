@@ -49,6 +49,7 @@ export default function stakingApiMock(
     enqueueSnackbar: (message: SnackbarMessage, options?: OptionsObject) => SnackbarKey) 
     : StakingApi {
     return {
+        getChainId: () => Promise.resolve(1234),
         currency: (): string => { return "DIP"; },
         currencyDecimals: (): number => { return 18; },
         minStakedAmount: (): BigNumber => { return parseEther("1000"); },

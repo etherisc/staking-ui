@@ -5,7 +5,7 @@ import stakingApiMock from "./staking_api_mock";
 import { StakingApiSmartContract } from "./staking_api_smartcontract";
 
 export interface StakingApi {
-
+    getChainId(): Promise<number>;
     currency(): string;
     currencyDecimals(): number;
     minStakedAmount(): BigNumber;
