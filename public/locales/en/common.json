@@ -54,6 +54,7 @@
     }
   },
   "help": {
+    "faucet": "Click this link to receive some {{currency}} from the faucet",
     "faucet_copy": "Copy {{currency}} address to clipboard"
   },
   "coins_sent": "Some coins have been sent to your wallet for testing purposes",
