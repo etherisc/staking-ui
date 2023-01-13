@@ -3,6 +3,7 @@ import { BundleInfo } from "./bundle_info";
 import { TransactionFailedError } from "../utils/error";
 import { IBundleDataProvider, IBundleDataProvider__factory, IERC20Metadata__factory, IStaking, IStakingDataProvider, IStakingDataProvider__factory, IStaking__factory } from "../contracts/depeg-contracts";
 import moment from "moment";
+import { formatEther } from "ethers/lib/utils";
 
 export default class StakingContract {
     private signer: Signer;
@@ -156,6 +157,7 @@ export default class StakingContract {
             beforeTrxCallback(this.stakingDataProvider.address);
         }
         try {
+            console.log("stake", bundle, formatEther(stakedAmount));
             const tx = await this.staking.stake(bundle.targetId, stakedAmount);
 
             if (beforeWaitCallback !== undefined) {
@@ -213,6 +215,10 @@ export default class StakingContract {
         // ethers bignumber doesn't handle fractionals, thats why we need to do this manually
         const rate = rewardRateParts[0].mul(10000).div(rewardRateParts[1]);
         return rate.toNumber() / 10000;
+    }
+
+    async getStakingWallet(): Promise<string> {
+        return await this.staking.getStakingWallet();
     }
 
 }
