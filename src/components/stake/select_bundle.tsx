@@ -58,15 +58,15 @@ export default function SelectBundle(props: SelectBundleProps) {
                 bundles={bundles}
                 isBundlesLoading={isLoadingBundles}
                 onBundleSelected={setSelectedBundle}
+                buildActions={(bundle: BundleInfo) => 
+                    <Button 
+                        variant="text"
+                        onClick={() => dispatch(bundleSelected(bundle))}
+                        >
+                        {t('action.select', { ns: "common" })}
+                    </Button>
+                }
                 />
-
-            <Grid container justifyContent="flex-end" sx={{ my: 2 }}>
-                <Button 
-                    variant="contained"
-                    disabled={selectedBundle === undefined}
-                    onClick={() => dispatch(bundleSelected(selectedBundle!))}
-                    >{t('action.continue', { ns: "common" })}</Button>
-            </Grid>
         </>
     );
 }
