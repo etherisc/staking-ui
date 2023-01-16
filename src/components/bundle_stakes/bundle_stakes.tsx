@@ -1,22 +1,19 @@
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, LinearProgress, Typography, useTheme } from "@mui/material";
+import { LinearProgress, useTheme } from "@mui/material";
 import { DataGrid, GridCallbackDetails, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { updateStakeUsage } from "../../redux/slices/stakes";
-import { bundleSelected } from "../../redux/slices/staking";
 import { formatCurrency } from "../../utils/numbers";
 import WithTooltip from "../with_tooltip";
 import { grey } from "@mui/material/colors";
 import Address from "../address";
 import { StakeUsage } from "../../utils/types";
-import test from "node:test";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -24,8 +21,11 @@ interface BundleStakesProps {
     isBundlesLoading: boolean;
     onBundleSelected?: (bundle: BundleInfo) => void;
     disableSelection?: boolean;
-    showActions?: boolean;
     showStakeUsage?: boolean;
+    /**
+     * Build the actions to be displayed for each bundle.
+     */
+    buildActions?: (bundle: BundleInfo) => JSX.Element;
 }
 
 export default function BundleStakes(props: BundleStakesProps) {
@@ -35,7 +35,6 @@ export default function BundleStakes(props: BundleStakesProps) {
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
-    const router = useRouter();
     const theme = useTheme();
 
     // retrieve the stake usage data for each bundle (when the props define that stake usage should be displayed)
@@ -78,16 +77,6 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     function formatAmount(amount: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
         return `${tokenSymbol} ${formatCurrency(amount, tokenDecimals)}`;
-    }
-
-    function stakeBundle(bundle: BundleInfo) {
-        dispatch(bundleSelected(bundle))
-        router.push("/?noreset=true", undefined, { shallow: true });
-    }
-
-    function unstakeBundle(bundle: BundleInfo) {
-        dispatch(bundleSelected(bundle))
-        router.push("/unstake?noreset=true", undefined, { shallow: true });
     }
 
     function statusIcon(stakeUsage: StakeUsage) {
@@ -179,7 +168,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         });
     }
 
-    if (props.showActions !== undefined && props.showActions) {
+    if (props.buildActions !== undefined) {
         columns.push({ 
             field: 'actions', 
             headerName: t('table.header.actions'), 
@@ -187,12 +176,7 @@ export default function BundleStakes(props: BundleStakesProps) {
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
                 params.row,
             renderCell: (params: GridRenderCellParams<BundleInfo>) => {
-                const stakeAction = params.value!.stakingSupported ? <Button onClick={() => stakeBundle(params.value!)}>{t('action.stake')}</Button> : undefined;
-                const unstakeAction = params.value!.unstakingSupported ? <Button onClick={() => unstakeBundle(params.value!)}>{t('action.unstake')}</Button> : undefined;
-                return (<>
-                    {stakeAction}
-                    {unstakeAction}
-                </>);
+                return props.buildActions!(params.value!);
             }
         });
     }

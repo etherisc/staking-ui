@@ -22,8 +22,6 @@
     "dismiss" : "Dismiss",
     "back": "Back",
     "continue": "Continue",
-    "stake": "Stake",
-    "unstake": "Unstake",
     "copy_value": "Copy value to clipboard"
   },
   "login_select": "Please choose a wallet",
