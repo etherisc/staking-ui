@@ -50,7 +50,18 @@ NEXT_FAUCET_SEND_TESTCOIN=true
 
 
 
+## Run docker image locally with mumbai instance configuration
+
+```
+docker build -t staking-ui --build-arg INSTANCE=mumbai .
+docker run --rm -p 3003:3000 staking-ui
+```
+
+open browser at http://localhost:3003
+
+
 ## Deployment
 
-TODO:
-
+```
+git push dokku develop:main
+```
