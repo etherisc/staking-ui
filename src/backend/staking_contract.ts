@@ -103,10 +103,12 @@ export default class StakingContract {
             supportingToken: tokenSymbol,
             supportingTokenDecimals: tokenDecimals,
             state: state,
-            stakeUsage: undefined,
             expiryAt: expiryAt.toNumber(),
             stakingSupported: stakingSupported,
-            unstakingSupported: unstakingSupported
+            unstakingSupported: unstakingSupported,
+            lockedAmount: undefined,
+            stakeUsage: undefined,
+            policies: 0,
         } as BundleInfo;
         return bundleInfo;
     }

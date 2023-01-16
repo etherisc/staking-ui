@@ -85,6 +85,8 @@
   "bundle_name": "Name",
   "bundle_state": "State",
   "bundle_id_num": "Bundle ID: {{id}}",
-  "staked_amount_total": "Bundle Total Staked Amount"
-
+  "staked_amount_total": "Bundle Total Staked Amount",
+  "stake_usage": "Stake Usage",
+  "locked_capital": "Locked Capital",
+  "supported_capital": "Total Supported Capital"
 }

@@ -99,7 +99,7 @@ export default function stakingApiMock(
             return Promise.resolve(0.1);
         },
         async getStakeUsage(bundle: BundleInfo) {
-            return Promise.resolve(0.5);
-        }
+            return Promise.resolve({ usage: 0.5, lockedCapital: BigNumber.from(1000)});
+        },
     }
 }

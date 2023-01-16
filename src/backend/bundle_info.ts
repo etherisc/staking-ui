@@ -1,3 +1,4 @@
+import { LogMaximumNumberOfActiveBundlesSetEventFilter } from "../contracts/depeg-contracts/BasicRiskpool2";
 import { StakeUsage } from "../utils/types";
 
 export type BundleInfo = {
@@ -22,6 +23,7 @@ export type BundleInfo = {
     expiryAt: number;
     stakingSupported: boolean;
     unstakingSupported: boolean;
+    lockedAmount: string | undefined;
     stakeUsage: StakeUsage;
 }
 

@@ -29,6 +29,4 @@ export class GifInstanceService {
         // console.log("instanceServiceAddress", instanceServiceAddress);
         return IInstanceService__factory.connect(instanceServiceAddress, this.signer);
     }
-        
-
 }
