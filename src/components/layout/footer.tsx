@@ -18,13 +18,30 @@ export default function Footer() {
                 right: 0,
                 bgcolor: "HSL(214, 27%, 92%)",
             }}>
-                <Box maxWidth="lg" sx={{ mr: 'auto', ml: 'auto', py: 1, display: { 'xs': 'none', 'md': 'flex' } }} flexWrap="wrap" justifyContent="right" color="palette.secondary.dark">
-                    <Faucet />
-                    <Typography variant="body2" sx={{ fontSize: '10px', ml: 1 }}  color="palette.priary.dark">
-                        {DOT}
-                    </Typography>
-                    <ChainData />
-                </Box>
+                <Container 
+                    maxWidth="lg" 
+                    sx={{ mr: 'auto', ml: 'auto', py: 1, display: { 'xs': 'none', 'md': 'flex' } }} 
+                    color="palette.secondary.dark"
+                    >
+                    <Box 
+                        sx={{ display: { 'xs': 'none', 'md': 'flex' }, ml: '0', mr: 'auto' }} 
+                        justifySelf="left"
+                        >
+                        <Typography variant="body2" sx={{ fontSize: '10px', ml: 1 }}  color="palette.priary.dark">
+                            Baaa
+                        </Typography>
+                    </Box>
+                    <Box 
+                        sx={{ display: { 'xs': 'none', 'md': 'flex' }, ml: 'auto', mr: 0 }} 
+                        justifySelf="right"
+                        >
+                        <Faucet />
+                        <Typography variant="body2" sx={{ fontSize: '10px', ml: 1 }}  color="palette.priary.dark">
+                            {DOT}
+                        </Typography>
+                        <ChainData />
+                    </Box>
+                </Container>
             </Container>
         </footer>
     );
