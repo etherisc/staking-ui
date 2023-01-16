@@ -6,7 +6,7 @@ import React from 'react';
 import { DOT } from '../../utils/chars';
 import ChainData from './chain_data';
 import Faucet from './faucet';
-import { name, version, date } from "../../version.json";
+import buildInfo from "../../version.json";
 
 export default function Footer() {
 
@@ -29,7 +29,7 @@ export default function Footer() {
                         justifySelf="left"
                         >
                         <Typography variant="body2" sx={{ fontSize: '10px', ml: 1 }}  color="palette.priary.dark">
-                            {name} v{version} ({date})
+                            {buildInfo.name} v{buildInfo.version} ({buildInfo.date})
                         </Typography>
                     </Box>
                     <Box 
