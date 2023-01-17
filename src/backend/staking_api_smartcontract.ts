@@ -1,7 +1,7 @@
 import { BigNumber, Signer } from "ethers";
-import { formatBytes32String, formatEther, formatUnits, parseEther } from "ethers/lib/utils";
+import { parseEther } from "ethers/lib/utils";
 import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from "../contracts/depeg-contracts";
-import { IInstanceService, IInstanceService__factory, IRegistry__factory } from "../contracts/gif-interface";
+import { StakeUsage } from "../utils/types";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
 import { GifInstanceService } from "./gif_instance_service";
@@ -155,14 +155,14 @@ export class StakingApiSmartContract implements StakingApi {
         return (await this.getGifStakingApi()).getRewardRate();
     }
 
-    async getStakeUsage(bundle: BundleInfo): Promise<{usage: number, lockedCapital: BigNumber}> {
+    async getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}> {
         const supportedAmount = BigNumber.from(bundle.supportingAmount);
         const { lockedCapital } = await this.gifInstanceService.getBundle(bundle.registry, bundle.bundleId);
         if (supportedAmount.eq(BigNumber.from(0))) {
             if (lockedCapital.gt(BigNumber.from(0))) {
                 return { usage: 1, lockedCapital };
             }
-            return { usage: -1, lockedCapital: BigNumber.from(0)};
+            return { usage: undefined, lockedCapital: BigNumber.from(0)};
         }
         const usage = lockedCapital.mul(100).div(supportedAmount).toNumber() / 100;
         return {usage, lockedCapital};

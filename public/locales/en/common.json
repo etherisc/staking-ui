@@ -87,5 +87,6 @@
   "staked_amount_total": "Bundle Total Staked Amount",
   "stake_usage": "Stake Usage",
   "locked_capital": "Locked Capital",
-  "supported_capital": "Total Supported Capital"
+  "supported_capital": "Total Supported Capital",
+  "no_stakes": "No stakes"
 }

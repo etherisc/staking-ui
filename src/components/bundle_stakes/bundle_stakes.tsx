@@ -1,5 +1,3 @@
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LinearProgress, useTheme } from "@mui/material";
 import { DataGrid, GridCallbackDetails, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
@@ -11,9 +9,10 @@ import { StakingApi } from "../../backend/staking_api";
 import { updateStakeUsage } from "../../redux/slices/stakes";
 import { formatCurrency } from "../../utils/numbers";
 import WithTooltip from "../with_tooltip";
-import { grey } from "@mui/material/colors";
 import Address from "../address";
 import { StakeUsage } from "../../utils/types";
+import { formatAmount } from "../../utils/format";
+import StakeUsageIndicator from "./stake_usage_indicator";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -73,30 +72,6 @@ export default function BundleStakes(props: BundleStakesProps) {
     function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
         // console.log('formatAmountMineTotal', myValue, totalValue, tokenSymbol, tokenDecimals);
         return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
-    }
-
-    function formatAmount(amount: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
-        return `${tokenSymbol} ${formatCurrency(amount, tokenDecimals)}`;
-    }
-
-    function statusIcon(stakeUsage: StakeUsage) {
-        if (stakeUsage === undefined || stakeUsage < 0) {
-            return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: grey[500] }} />);
-        } else if (stakeUsage >= 1) {
-            return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: theme.palette.error.light }} />);
-        } else if (stakeUsage >= 0.9) {
-            return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: theme.palette.warning.light }} />);
-        } else {
-            return (<FontAwesomeIcon icon={faCircle} className="fa" style={{ color: theme.palette.success.light }} />);
-        }
-    }
-
-    function stakeUsageTooltip(stakeUsage: StakeUsage, supportingAmount: BigNumber, lockedCapital: BigNumber, supportingToken: string, supportingTokenDecimals: number) {
-        return (<>
-            {t('stake_usage')}: {(stakeUsage! * 100).toFixed(0)}%<br/>
-            {t('locked_capital')}: {formatAmount(lockedCapital, supportingToken, supportingTokenDecimals)}<br/>
-            {t('supported_capital')}: {formatAmount(supportingAmount, supportingToken, supportingTokenDecimals)}
-        </>);
     }
 
     const columns: Array<GridColDef> = [
@@ -163,7 +138,13 @@ export default function BundleStakes(props: BundleStakesProps) {
                 const stakeUsage = params.value![0];
                 const supportingAmount = BigNumber.from(params.value![1]);
                 const lockedAmount = params.value![2] !== undefined ? BigNumber.from(params.value![2]) : BigNumber.from(0);
-                return (<WithTooltip tooltipText={stakeUsageTooltip(stakeUsage, supportingAmount, lockedAmount, params.value![3], params.value![4])}>{statusIcon(stakeUsage)}</WithTooltip>);
+                return (<StakeUsageIndicator
+                            stakeUsage={stakeUsage}
+                            lockedCapital={lockedAmount}
+                            supportedCapital={supportingAmount}
+                            supportedToken={params.value![3]}
+                            supportedTokenDecimals={params.value![4]}
+                            />);
             }
         });
     }

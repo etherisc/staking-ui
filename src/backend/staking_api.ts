@@ -1,5 +1,6 @@
 import { BigNumber, ethers, Signer } from "ethers";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
+import { StakeUsage } from "../utils/types";
 import { BundleInfo } from "./bundle_info";
 import stakingApiMock from "./staking_api_mock";
 import { StakingApiSmartContract } from "./staking_api_smartcontract";
@@ -58,7 +59,7 @@ export interface StakingApi {
      * Get a number indicating if the locked capital is sufficiently covered by the staked amount. 
      * if between 0 and 1, the staked amount is too low. If > 1, the staked amount is sufficient.
      */
-    getStakeUsage(bundle: BundleInfo): Promise<{usage: number, lockedCapital: BigNumber}>;
+    getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}>;
 }
 
 export function getStakingApi(
