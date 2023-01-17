@@ -1,5 +1,5 @@
 import { LinearProgress, useTheme } from "@mui/material";
-import { DataGrid, GridCallbackDetails, GridColDef, GridRenderCellParams, GridSelectionModel, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
@@ -34,7 +34,6 @@ export default function BundleStakes(props: BundleStakesProps) {
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
-    const theme = useTheme();
 
     // retrieve the stake usage data for each bundle (when the props define that stake usage should be displayed)
     useEffect(() => {
@@ -56,18 +55,6 @@ export default function BundleStakes(props: BundleStakesProps) {
         }
         updateStakeUsageData();
     }, [props.bundles, props.showStakeUsage, props.stakingApi, dispatch]);
-
-    function rowSelected(selectionModel: GridSelectionModel, details: GridCallbackDetails) {
-        const bi = props.bundles.find((bundle) => bundle.id === selectionModel[0]);
-        if (bi === undefined) {
-            console.log(`Bundle with id ${selectionModel[0]} not found`);
-            return;
-        }
-        console.log(bi);
-        if (props.onBundleSelected !== undefined) {
-            props.onBundleSelected(bi);
-        }
-    }
 
     function formatAmountMineTotal(myValue: BigNumber, totalValue: BigNumber, tokenSymbol: string, tokenDecimals: number): string {
         // console.log('formatAmountMineTotal', myValue, totalValue, tokenSymbol, tokenDecimals);
@@ -181,7 +168,6 @@ export default function BundleStakes(props: BundleStakesProps) {
                 pageSize={pageSize}
                 rowsPerPageOptions={[5, 10, 20, 50]}
                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                onSelectionModelChange={rowSelected}
                 disableSelectionOnClick={true}
                 disableColumnMenu={true}
                 />
