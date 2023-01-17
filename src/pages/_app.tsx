@@ -82,8 +82,8 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
   }
 
   let items = [
-    [t('nav.link.stakes'), '/stakes', faCubesStacked],
-    [t('nav.link.stake'), '/', faRightToBracket],
+    [t('nav.link.stakes'), '/', faCubesStacked],
+    [t('nav.link.stake'), '/stake', faRightToBracket],
     [t('nav.link.unstake'), '/unstake', faRightFromBracket],
   ];
 

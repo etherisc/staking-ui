@@ -51,7 +51,7 @@ export default function Stakes(props: StakingProps) {
 
     function stakeBundle(bundle: BundleInfo) {
         dispatch(bundleSelected(bundle))
-        router.push("/?noreset=true", undefined, { shallow: true });
+        router.push("/stake?noreset=true", undefined, { shallow: true });
     }
 
     function unstakeBundle(bundle: BundleInfo) {

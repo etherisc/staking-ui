@@ -216,7 +216,7 @@ export default function Stake(props: StakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
-        router.push("/stakes");
+        router.push("/");
     }
 
     function enableUnloadWarning(enable: boolean) {
