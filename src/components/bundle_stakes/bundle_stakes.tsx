@@ -1,5 +1,5 @@
 import { LinearProgress, useTheme } from "@mui/material";
-import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridSortCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
@@ -147,7 +147,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                             supportedTokenDecimals={params.value![4]}
                             />);
             },
-            sortComparator: (v1: [StakeUsage], v2: [StakeUsage]) => gridNumberComparator(v1[0], v2[0])
+            sortComparator: (v1: [StakeUsage], v2: [StakeUsage], p1: GridSortCellParams, p2: GridSortCellParams) => gridNumberComparator(v1[0], v2[0], p1, p2)
         });
     }
 
