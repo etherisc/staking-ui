@@ -2,6 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import stakingReducer from './slices/staking';
 import stakesReducer from './slices/stakes';
 import chainReducer from './slices/chain';
+import accountReducer from './slices/account';
+
 import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 export const store: ToolkitStore = configureStore({
@@ -9,6 +11,7 @@ export const store: ToolkitStore = configureStore({
         chain: chainReducer,
         staking: stakingReducer,
         stakes: stakesReducer,
+        account: accountReducer,
     },
 })
 
