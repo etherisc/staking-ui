@@ -10,6 +10,7 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
+import { updateAccountBalance } from "../../utils/chain";
 import { TransactionFailedError } from "../../utils/error";
 import { Heading1 } from "../heading";
 import SelectBundle from "../stake/select_bundle";
@@ -141,6 +142,7 @@ export default function Unstake(props: UnstakeProps) {
             origin: { y: 0.6 }
         });
         router.push("/stakes");
+        updateAccountBalance(signer!, dispatch);
     }
 
     function enableUnloadWarning(enable: boolean) {

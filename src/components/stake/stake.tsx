@@ -10,6 +10,7 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
+import { updateAccountBalance } from "../../utils/chain";
 import { ApprovalFailedError, TransactionFailedError } from "../../utils/error";
 import { formatCurrency } from "../../utils/numbers";
 import { Heading1 } from "../heading";
@@ -216,6 +217,7 @@ export default function Stake(props: StakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
+        updateAccountBalance(signer!, dispatch);
         router.push("/");
     }
 
