@@ -1,26 +1,10 @@
-import { BigNumber, Signer } from "ethers";
-import { useEffect, useState } from "react";
+import { BigNumber } from "ethers";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 import { formatEthersNumber } from "../utils/bignumber";
 
-export interface BalanceProps {
-    signer: Signer;
-    currency: string;
-    usdAggregatorAddress?: string;
-}
-
-export default function Balance(props: BalanceProps) {
-    const [ balance, setBalance ] = useState(BigNumber.from(-1));
-
-    useEffect(() => {
-        // console.log("signer changed");
-        async function updateData() {
-            const balance = await props.signer.getBalance();
-            setBalance(balance);
-        }
-        updateData();
-    }, [props]);
-
-    
-    let balanceString = `${props.currency} ${formatEthersNumber(balance, 4)}`;
+export default function Balance() {
+    const balance = useSelector((state: RootState) => state.account.balance);
+    let balanceString = `${balance?.currency} ${formatEthersNumber(BigNumber.from(balance?.amount), 4)}`;
     return (<span>{balanceString}</span>);
 }
