@@ -20,6 +20,6 @@
   "staking_success": "Staking of DIPs was successful",
   "reward_rate" : "Reward Rate (%)",
   "expected_reward": "Expected Reward (at the end bundle lifetime)",
-  "expected_reward_notice": "Please not, the expected reward is an approximation. The actual reward depends on the exact time of staking."
+  "expected_reward_notice": "Please note, the expected reward is an approximation. The actual reward depends on the exact time of staking."
 }
 
