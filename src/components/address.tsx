@@ -32,7 +32,7 @@ export default function Address(props: AddressProps) {
     return (
         <>
             <Box component="span" sx={{ display: { 'xs': 'none', 'md': 'inline'}}}>
-                <WithTooltip tooltipText={props.address}>
+                <WithTooltip tooltipText={props.address} typographyVariant="body">
                     {abrAdr}
                 </WithTooltip>
                 {NBSP}
