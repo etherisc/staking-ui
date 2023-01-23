@@ -31,7 +31,7 @@ interface BundleStakesProps {
 export default function BundleStakes(props: BundleStakesProps) {
     const { t } = useTranslation(['common']);
 
-    const [ pageSize, setPageSize ] = useState(5);
+    const [ pageSize, setPageSize ] = useState(10);
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
