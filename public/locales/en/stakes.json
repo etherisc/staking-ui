@@ -3,6 +3,7 @@
   "stakes": "Stakes",
   "action": {
     "stake": "Stake",
-    "unstake": "Unstake"
+    "unstake": "Unstake",
+    "refresh": "Refresh bundles"
   }
 }

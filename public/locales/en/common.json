@@ -23,7 +23,8 @@
     "back": "Back",
     "continue": "Continue",
     "copy_value": "Copy value to clipboard",
-    "select": "Select"
+    "select": "Select",
+    "refresh": "Refresh"
   },
   "login_select": "Please choose a wallet",
   "warning": {

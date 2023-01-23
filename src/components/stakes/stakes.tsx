@@ -1,8 +1,10 @@
-import { Button } from "@mui/material";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button } from "@mui/material";
 import { Signer } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { ReactFragment, useEffect } from "react";
+import { ReactFragment, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
@@ -25,29 +27,29 @@ export default function Stakes(props: StakingProps) {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    useEffect(() => {
-        const retrieveStakes = async (signer: Signer) => {
-            const address = await signer.getAddress();
-            dispatch(startLoading());
-            dispatch(reset());
-            props.stakingApi.retrieveStakesForWallet(
-                address,
-                (bundle: BundleInfo) => {
-                    dispatch(add(bundle));
-                    return Promise.resolve();
-                },
-                () => {
-                    dispatch(finishLoading());
-                }
-            );
-        }
+    const retrieveStakes = useCallback(async (signer: Signer) => {
+        const address = await signer.getAddress();
+        dispatch(startLoading());
+        dispatch(reset());
+        props.stakingApi.retrieveStakesForWallet(
+            address,
+            (bundle: BundleInfo) => {
+                dispatch(add(bundle));
+                return Promise.resolve();
+            },
+            () => {
+                dispatch(finishLoading());
+            }
+        );
+    }, [dispatch, props.stakingApi]);
 
+    useEffect(() => {
         if (isConnected) {
             retrieveStakes(signer!);
         } else {
             dispatch(reset());
         }
-    }, [signer, isConnected, props.stakingApi, dispatch]);
+    }, [signer, isConnected, props.stakingApi, dispatch, retrieveStakes]);
 
     function stakeBundle(bundle: BundleInfo) {
         dispatch(bundleSelected(bundle))
@@ -70,7 +72,13 @@ export default function Stakes(props: StakingProps) {
     }
 
     return (<>
-        <Heading1>{t('stakes')}</Heading1>
+        <Box sx={{ display: 'flex'}}>
+            <Heading1>{t('stakes')}</Heading1>
+            <Button variant="text" color="secondary" onClick={() => retrieveStakes(signer!) } sx={{ mb: 2, ml: 2 }}>
+                <FontAwesomeIcon icon={faRefresh} className="fa cursor-pointer" />
+                {t('action.refresh')}
+            </Button>
+        </Box>
 
         <BundleStakes 
             stakingApi={props.stakingApi}
