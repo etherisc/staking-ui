@@ -35,9 +35,9 @@ export default async function handler(
     }
 
     if (process.env.NEXT_FAUCET_SEND_TESTCOIN === "true") {
-        const amount = parseEther("100000"); 
+        const amount = parseEther(process.env.NEXT_FAUCET_SEND_TESTCOIN_AMOUNT ?? "100000"); 
         console.log("sending", currency, address);
-        // transfer 100'000 DIP
+        // transfer 500'000 DIP
         const tokenAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS ?? "";
         await transferAmount(address!, amount, tokenAddress, coinSourceSigner!); 
         console.log("done");
