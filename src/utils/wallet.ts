@@ -74,3 +74,21 @@ export async function getAndUpdateWalletAccount(dispatch: any) {
         getAndUpdateBlock(dispatch, provider, blockNumber);
     });
 }
+
+export async function addTokenToWallet(symbol: string, tokenAddress: string) {
+    // @ts-ignore
+    if (window.ethereum !== undefined) {
+        // @ts-ignore
+        await window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+                type: 'ERC20',
+                options: {
+                    address: tokenAddress,
+                    symbol: symbol,
+                    decimals: 18,
+                },
+            },
+        })
+    }
+}
