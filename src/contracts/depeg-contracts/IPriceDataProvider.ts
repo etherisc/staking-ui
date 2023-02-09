@@ -33,6 +33,7 @@ export declare namespace IPriceDataProvider {
     price: PromiseOrValue<BigNumberish>;
     compliance: PromiseOrValue<BigNumberish>;
     stability: PromiseOrValue<BigNumberish>;
+    eventType: PromiseOrValue<BigNumberish>;
     triggeredAt: PromiseOrValue<BigNumberish>;
     depeggedAt: PromiseOrValue<BigNumberish>;
     createdAt: PromiseOrValue<BigNumberish>;
@@ -43,6 +44,7 @@ export declare namespace IPriceDataProvider {
     BigNumber,
     number,
     number,
+    number,
     BigNumber,
     BigNumber,
     BigNumber
@@ -51,6 +53,7 @@ export declare namespace IPriceDataProvider {
     price: BigNumber;
     compliance: number;
     stability: number;
+    eventType: number;
     triggeredAt: BigNumber;
     depeggedAt: BigNumber;
     createdAt: BigNumber;
@@ -68,10 +71,11 @@ export interface IPriceDataProviderInterface extends utils.Interface {
     "getHeartbeat()": FunctionFragment;
     "getLatestPriceInfo()": FunctionFragment;
     "getOwner()": FunctionFragment;
+    "getTargetPrice()": FunctionFragment;
     "getToken()": FunctionFragment;
     "getTriggeredAt()": FunctionFragment;
-    "hasNewPriceInfo()": FunctionFragment;
     "isMainnetProvider()": FunctionFragment;
+    "isNewPriceInfoEventAvailable()": FunctionFragment;
     "isTestnetProvider()": FunctionFragment;
     "processLatestPriceInfo()": FunctionFragment;
     "resetDepeg()": FunctionFragment;
@@ -88,10 +92,11 @@ export interface IPriceDataProviderInterface extends utils.Interface {
       | "getHeartbeat"
       | "getLatestPriceInfo"
       | "getOwner"
+      | "getTargetPrice"
       | "getToken"
       | "getTriggeredAt"
-      | "hasNewPriceInfo"
       | "isMainnetProvider"
+      | "isNewPriceInfoEventAvailable"
       | "isTestnetProvider"
       | "processLatestPriceInfo"
       | "resetDepeg"
@@ -130,17 +135,21 @@ export interface IPriceDataProviderInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getOwner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getTargetPrice",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getToken", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getTriggeredAt",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "hasNewPriceInfo",
+    functionFragment: "isMainnetProvider",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "isMainnetProvider",
+    functionFragment: "isNewPriceInfoEventAvailable",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -189,17 +198,21 @@ export interface IPriceDataProviderInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTargetPrice",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getTriggeredAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "hasNewPriceInfo",
+    functionFragment: "isMainnetProvider",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isMainnetProvider",
+    functionFragment: "isNewPriceInfoEventAvailable",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -216,8 +229,11 @@ export interface IPriceDataProviderInterface extends utils.Interface {
     "LogPriceDataDepegged(uint256,uint256,uint256,uint256)": EventFragment;
     "LogPriceDataDeviationExceeded(uint256,uint256,uint256,uint256)": EventFragment;
     "LogPriceDataHeartbeatExceeded(uint256,uint256,uint256,uint256)": EventFragment;
+    "LogPriceDataProcessed(uint256,uint256,uint256)": EventFragment;
     "LogPriceDataRecovered(uint256,uint256,uint256,uint256)": EventFragment;
     "LogPriceDataTriggered(uint256,uint256,uint256)": EventFragment;
+    "LogUsdcProviderForcedDepeg(uint256,uint256)": EventFragment;
+    "LogUsdcProviderResetDepeg(uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "LogPriceDataDepegged"): EventFragment;
@@ -227,8 +243,11 @@ export interface IPriceDataProviderInterface extends utils.Interface {
   getEvent(
     nameOrSignatureOrTopic: "LogPriceDataHeartbeatExceeded"
   ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogPriceDataProcessed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogPriceDataRecovered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogPriceDataTriggered"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogUsdcProviderForcedDepeg"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogUsdcProviderResetDepeg"): EventFragment;
 }
 
 export interface LogPriceDataDepeggedEventObject {
@@ -273,6 +292,19 @@ export type LogPriceDataHeartbeatExceededEvent = TypedEvent<
 export type LogPriceDataHeartbeatExceededEventFilter =
   TypedEventFilter<LogPriceDataHeartbeatExceededEvent>;
 
+export interface LogPriceDataProcessedEventObject {
+  priceId: BigNumber;
+  price: BigNumber;
+  createdAt: BigNumber;
+}
+export type LogPriceDataProcessedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber],
+  LogPriceDataProcessedEventObject
+>;
+
+export type LogPriceDataProcessedEventFilter =
+  TypedEventFilter<LogPriceDataProcessedEvent>;
+
 export interface LogPriceDataRecoveredEventObject {
   priceId: BigNumber;
   price: BigNumber;
@@ -299,6 +331,29 @@ export type LogPriceDataTriggeredEvent = TypedEvent<
 
 export type LogPriceDataTriggeredEventFilter =
   TypedEventFilter<LogPriceDataTriggeredEvent>;
+
+export interface LogUsdcProviderForcedDepegEventObject {
+  updatedTriggeredAt: BigNumber;
+  forcedDepegAt: BigNumber;
+}
+export type LogUsdcProviderForcedDepegEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  LogUsdcProviderForcedDepegEventObject
+>;
+
+export type LogUsdcProviderForcedDepegEventFilter =
+  TypedEventFilter<LogUsdcProviderForcedDepegEvent>;
+
+export interface LogUsdcProviderResetDepegEventObject {
+  resetDepegAt: BigNumber;
+}
+export type LogUsdcProviderResetDepegEvent = TypedEvent<
+  [BigNumber],
+  LogUsdcProviderResetDepegEventObject
+>;
+
+export type LogUsdcProviderResetDepegEventFilter =
+  TypedEventFilter<LogUsdcProviderResetDepegEvent>;
 
 export interface IPriceDataProvider extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -369,23 +424,27 @@ export interface IPriceDataProvider extends BaseContract {
 
     getOwner(overrides?: CallOverrides): Promise<[string]>;
 
+    getTargetPrice(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { targetPrice: BigNumber }>;
+
     getToken(overrides?: CallOverrides): Promise<[string]>;
 
     getTriggeredAt(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { triggeredAt: BigNumber }>;
 
-    hasNewPriceInfo(
+    isMainnetProvider(overrides?: CallOverrides): Promise<[boolean]>;
+
+    isNewPriceInfoEventAvailable(
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber] & {
-        newInfoAvailable: boolean;
-        priceId: BigNumber;
-        timeSinceLastUpdate: BigNumber;
+      [boolean, IPriceDataProvider.PriceInfoStructOutput, BigNumber] & {
+        newEvent: boolean;
+        priceInfo: IPriceDataProvider.PriceInfoStructOutput;
+        timeSinceEvent: BigNumber;
       }
     >;
-
-    isMainnetProvider(overrides?: CallOverrides): Promise<[boolean]>;
 
     isTestnetProvider(overrides?: CallOverrides): Promise<[boolean]>;
 
@@ -422,21 +481,23 @@ export interface IPriceDataProvider extends BaseContract {
 
   getOwner(overrides?: CallOverrides): Promise<string>;
 
+  getTargetPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
   getToken(overrides?: CallOverrides): Promise<string>;
 
   getTriggeredAt(overrides?: CallOverrides): Promise<BigNumber>;
 
-  hasNewPriceInfo(
+  isMainnetProvider(overrides?: CallOverrides): Promise<boolean>;
+
+  isNewPriceInfoEventAvailable(
     overrides?: CallOverrides
   ): Promise<
-    [boolean, BigNumber, BigNumber] & {
-      newInfoAvailable: boolean;
-      priceId: BigNumber;
-      timeSinceLastUpdate: BigNumber;
+    [boolean, IPriceDataProvider.PriceInfoStructOutput, BigNumber] & {
+      newEvent: boolean;
+      priceInfo: IPriceDataProvider.PriceInfoStructOutput;
+      timeSinceEvent: BigNumber;
     }
   >;
-
-  isMainnetProvider(overrides?: CallOverrides): Promise<boolean>;
 
   isTestnetProvider(overrides?: CallOverrides): Promise<boolean>;
 
@@ -471,21 +532,23 @@ export interface IPriceDataProvider extends BaseContract {
 
     getOwner(overrides?: CallOverrides): Promise<string>;
 
+    getTargetPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
     getToken(overrides?: CallOverrides): Promise<string>;
 
     getTriggeredAt(overrides?: CallOverrides): Promise<BigNumber>;
 
-    hasNewPriceInfo(
+    isMainnetProvider(overrides?: CallOverrides): Promise<boolean>;
+
+    isNewPriceInfoEventAvailable(
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber] & {
-        newInfoAvailable: boolean;
-        priceId: BigNumber;
-        timeSinceLastUpdate: BigNumber;
+      [boolean, IPriceDataProvider.PriceInfoStructOutput, BigNumber] & {
+        newEvent: boolean;
+        priceInfo: IPriceDataProvider.PriceInfoStructOutput;
+        timeSinceEvent: BigNumber;
       }
     >;
-
-    isMainnetProvider(overrides?: CallOverrides): Promise<boolean>;
 
     isTestnetProvider(overrides?: CallOverrides): Promise<boolean>;
 
@@ -536,6 +599,17 @@ export interface IPriceDataProvider extends BaseContract {
       lastCreatedAt?: null
     ): LogPriceDataHeartbeatExceededEventFilter;
 
+    "LogPriceDataProcessed(uint256,uint256,uint256)"(
+      priceId?: null,
+      price?: null,
+      createdAt?: null
+    ): LogPriceDataProcessedEventFilter;
+    LogPriceDataProcessed(
+      priceId?: null,
+      price?: null,
+      createdAt?: null
+    ): LogPriceDataProcessedEventFilter;
+
     "LogPriceDataRecovered(uint256,uint256,uint256,uint256)"(
       priceId?: null,
       price?: null,
@@ -559,6 +633,22 @@ export interface IPriceDataProvider extends BaseContract {
       price?: null,
       triggeredAt?: null
     ): LogPriceDataTriggeredEventFilter;
+
+    "LogUsdcProviderForcedDepeg(uint256,uint256)"(
+      updatedTriggeredAt?: null,
+      forcedDepegAt?: null
+    ): LogUsdcProviderForcedDepegEventFilter;
+    LogUsdcProviderForcedDepeg(
+      updatedTriggeredAt?: null,
+      forcedDepegAt?: null
+    ): LogUsdcProviderForcedDepegEventFilter;
+
+    "LogUsdcProviderResetDepeg(uint256)"(
+      resetDepegAt?: null
+    ): LogUsdcProviderResetDepegEventFilter;
+    LogUsdcProviderResetDepeg(
+      resetDepegAt?: null
+    ): LogUsdcProviderResetDepegEventFilter;
   };
 
   estimateGas: {
@@ -582,13 +672,15 @@ export interface IPriceDataProvider extends BaseContract {
 
     getOwner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getTargetPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
     getToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTriggeredAt(overrides?: CallOverrides): Promise<BigNumber>;
 
-    hasNewPriceInfo(overrides?: CallOverrides): Promise<BigNumber>;
-
     isMainnetProvider(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isNewPriceInfoEventAvailable(overrides?: CallOverrides): Promise<BigNumber>;
 
     isTestnetProvider(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -626,13 +718,17 @@ export interface IPriceDataProvider extends BaseContract {
 
     getOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getTargetPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTriggeredAt(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    hasNewPriceInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     isMainnetProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    isNewPriceInfoEventAvailable(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     isTestnetProvider(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
