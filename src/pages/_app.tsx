@@ -92,7 +92,7 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
 
   return (
     <AppContext.Provider value={{ data, dispatch}} >
-      <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider maxSnack={3} anchorOrigin={{ horizontal: "center", vertical: "top" }}>
         <Layout {...appProps} />
       </SnackbarProvider>
     </AppContext.Provider>
