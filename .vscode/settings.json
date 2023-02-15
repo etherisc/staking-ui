@@ -1,5 +1,4 @@
 {
-    "todo-tree.highlights.enabled": false,
     "peacock.remoteColor": "#365e4b",
     "i18n-ally.localesPaths": [
         "public/locales"
