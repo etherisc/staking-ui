@@ -11,21 +11,23 @@ import { createTheme } from '@mui/material/styles';
 export const etheriscTheme = createTheme({
     palette: {
         background: {
-            default: 'hsl(153,66%,98%)',
-            paper: 'hsl(222,74%,96%)'
+            // default: 'hsl(153,66%,98%)',
+            // paper: 'hsl(222,74%,96%)'
         },
         primary: {
             // light: will be calculated from palette.primary.main,
-            main: "hsl(153, 66%, 50%)", //'#41D895',
+            // main: "hsl(153, 66%, 50%)", // green
+            main: "#2B66EE", // green
             // dark: will be calculated from palette.primary.main,
-            contrastText: "#fff"
+            // contrastText: "#fff"
         },
         secondary: {
             // light: will be calculated from palette.secondary.main,
-            main: "#F8B83A",
+            // main: "#F8B83A", // yellow
+            main: "#41D895",
             // dark: will be calculated from palette.secondary.main,
             // contrastText: will be calculated to contrast with palette.secondary.main
-            // contrastText: "#fff"
+            contrastText: "#fff"
         },
     },
 });
