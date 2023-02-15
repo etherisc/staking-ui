@@ -11,15 +11,15 @@
   },
   "supportedAmount": "Supported Amount",
   "stakedAmount": "Staked Amount",
-  "approval_info": "To stake, the Staking contract at {{address}} needs permission to transfer {{currency}} {{amount}} to the staking pool. Please confirm this allowance in your wallet app.",
-  "approval_wait": "Allowance creating, wait for onchain confirmation",
+  "approval_info": "To stake, two steps are needed. First - give Etherisc contract at {{address}} permission to take {{currency}} {{amount}} from your wallet.",
+  "approval_wait": "Allowance created, wait for onchain confirmation",
   "approval_failed": "",
-  "stake_info": "Please confirm execution of the stake transaction on contract {{address}} in your wallet app",
+  "stake_info": "Second - please confirm staking on contract {{address}}",
   "stake_wait": "Transaction created, waiting for onchain confirmation",
   "checkbox_t_and_c_label": "By checking this box, I confirm that I have read and agree to the Terms and Conditions.",
-  "staking_success": "Staking of DIPs was successful. It can take up to 5 minutes for the stakes to be reflected in the issuing application! ",
+  "staking_success": "Staking of DIPs successful. It can take up to 5 minutes for the applications to refresh and your stakes to be accurately reflected.",
   "reward_rate" : "Reward Rate (%)",
   "expected_reward": "Expected Reward (at the end bundle lifetime)",
-  "expected_reward_notice": "Please note, the expected reward is an approximation. The actual reward depends on the exact time of staking."
+  "expected_reward_notice": "Please note, the expected reward is an approximation and the reward rate may change at any time."
 }
 
