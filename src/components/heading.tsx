@@ -1,8 +1,4 @@
-import { Step, StepLabel, Stepper } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { t } from "i18next";
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../context/app_context";
 
 interface HeadingProps {
     children: React.ReactNode;

@@ -7,7 +7,6 @@ import '@fontsource/roboto/700.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import React, { useReducer } from 'react';
 import Head from 'next/head';
-import { initialAppData, removeSigner, AppContext, signerReducer } from '../context/app_context';
 import { SnackbarProvider } from 'notistack';
 import { appWithTranslation, useTranslation } from 'next-i18next';
 import { getAndUpdateWalletAccount } from '../utils/wallet';
@@ -23,6 +22,7 @@ import { faRightToBracket, faRightFromBracket, faCubesStacked } from "@fortaweso
 import '@fortawesome/fontawesome-svg-core/styles.css';
 // Prevent fontawesome from adding its CSS since we did it manually above:
 import { config } from '@fortawesome/fontawesome-svg-core';
+import { removeSigner } from '../utils/chain';
 config.autoAddCss = false; /* eslint-disable import/first */
 
 export function App(appProps: AppProps) {
@@ -47,8 +47,7 @@ export default appWithTranslation(App);
 
 export function AppWithBlockchainConnection(appProps: AppProps) {
   const { t } = useTranslation('common');
-  const [ data, dispatch ] = useReducer(signerReducer, initialAppData());
-  const reduxDispatch = useDispatch();
+  const dispatch = useDispatch();
   const provider = useSelector((state: RootState) => state.chain.provider);
 
   if (provider != undefined) {
@@ -63,9 +62,9 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
       window.ethereum.on('accountsChanged', function (accounts: string[]) {
         console.log('accountsChanged', accounts);
         if (accounts.length == 0) {
-          removeSigner(reduxDispatch);
+          removeSigner(dispatch);
         } else {
-          getAndUpdateWalletAccount(reduxDispatch);
+          getAndUpdateWalletAccount(dispatch);
         }
       });
       // @ts-ignore
@@ -91,11 +90,9 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
   appProps.pageProps.title = t('apptitle_short');
 
   return (
-    <AppContext.Provider value={{ data, dispatch}} >
-      <SnackbarProvider maxSnack={3} anchorOrigin={{ horizontal: "center", vertical: "top" }}>
-        <Layout {...appProps} />
-      </SnackbarProvider>
-    </AppContext.Provider>
+    <SnackbarProvider maxSnack={3} anchorOrigin={{ horizontal: "center", vertical: "top" }}>
+      <Layout {...appProps} />
+    </SnackbarProvider>
   );
 }
 
