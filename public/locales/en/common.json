@@ -74,7 +74,8 @@
       "supportingAmount": "Total Supporting Amount",
       "state": "State",
       "actions": "Actions",
-      "stake_usage": "Usage"
+      "stake_usage": "Usage",
+      "expiryAt": "Active until"
     }
   },
   "choose_bundle": "Please select a bundle",
