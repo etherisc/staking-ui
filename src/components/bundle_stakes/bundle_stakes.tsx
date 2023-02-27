@@ -1,19 +1,20 @@
-import { LinearProgress, useTheme } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridSortCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { BundleInfo } from "../../backend/bundle_info";
+import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { updateStakeUsage } from "../../redux/slices/stakes";
-import { formatCurrency } from "../../utils/numbers";
-import WithTooltip from "../with_tooltip";
-import Address from "../address";
-import { StakeUsage } from "../../utils/types";
-import { formatAmount } from "../../utils/format";
-import StakeUsageIndicator from "./stake_usage_indicator";
 import { bigNumberComparator } from "../../utils/bignumber";
+import { formatAmount } from "../../utils/format";
+import { formatCurrency } from "../../utils/numbers";
+import { StakeUsage } from "../../utils/types";
+import Address from "../address";
+import Timestamp from "../timestamp";
+import WithTooltip from "../with_tooltip";
+import StakeUsageIndicator from "./stake_usage_indicator";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -64,7 +65,7 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     const columns: Array<GridColDef> = [
         { 
-            field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.6, 
+            field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.55, 
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.instanceId, params.row.instanceName ],
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
@@ -104,7 +105,7 @@ export default function BundleStakes(props: BundleStakesProps) {
             }
         },
         { 
-            field: 'myStakedAmount', headerName: t('table.header.myStakedAmount'), flex: 0.7,
+            field: 'myStakedAmount', headerName: t('table.header.myStakedAmount'), flex: 0.6,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ BigNumber.from(params.row.myStakedAmount), BigNumber.from(params.row.stakedAmount) ],
             renderCell: (params: GridRenderCellParams<[BigNumber, BigNumber]>) => (<>
                     <WithTooltip tooltipText={`${t('staked_amount_total')} ${formatAmount(params.value![1], currency, currencyDecimals)}`}>
@@ -125,6 +126,17 @@ export default function BundleStakes(props: BundleStakesProps) {
         { 
             field: 'state', headerName: t('table.header.state'), flex: 0.35,
             valueFormatter: (params: GridValueFormatterParams<string>) => t(`bundle_state_${params.value}`, { ns: 'common'})
+        },
+        { 
+            field: 'expiryAt', headerName: t('table.header.expiryAt'), flex: 0.7,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => params.row,
+            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
+                if (params.value!.state !== BundleState.ACTIVE && params.value!.state !== BundleState.LOCKED) {
+                    return (<></>);
+                }
+                return (<Timestamp at={params.value!.expiryAt} />);
+            },
+            sortComparator: (v1: BundleInfo, v2: BundleInfo) => v1?.expiryAt - v2?.expiryAt,
         },
     ];
 
@@ -155,7 +167,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         columns.push({ 
             field: 'actions', 
             headerName: t('table.header.actions'), 
-            flex: 0.5,
+            flex: 0.45,
             sortable: false,
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
                 params.row,
