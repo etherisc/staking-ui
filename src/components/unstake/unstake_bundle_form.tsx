@@ -30,7 +30,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
     const dispatch = useDispatch();
     const signer = useSelector((state: RootState) => state.chain.signer);
 
-    const [ unstakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
+    const unstakedAmountMin = 1;
     const [ unstakedAmountMax, setUnstakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
 
     const { handleSubmit, control, formState, getValues, setValue, watch } = useForm<IUnstakeFormValues>({ 
