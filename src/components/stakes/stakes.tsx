@@ -64,7 +64,7 @@ export default function Stakes(props: StakingProps) {
 
     function buildActions(bundle: BundleInfo): JSX.Element {
         const stakeAction = bundle.stakingSupported ? <Button onClick={() => stakeBundle(bundle)}>{t('action.stake')}</Button> : undefined;
-        const isAllowedToUnstake = bundle.unstakingSupported && BigNumber.from(bundle.stakedAmount).gt(0);
+        const isAllowedToUnstake = bundle.unstakingSupported && BigNumber.from(bundle.myStakedAmount).gt(0);
         const unstakeAction = isAllowedToUnstake ? <Button onClick={() => unstakeBundle(bundle)}>{t('action.unstake')}</Button> : undefined;
         return (<>
             {stakeAction}

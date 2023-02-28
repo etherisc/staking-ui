@@ -157,7 +157,7 @@ export default function Unstake(props: UnstakeProps) {
         if (activeStep < 2) {
             return <SelectBundle 
                 stakingApi={props.stakingApi}
-                displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported && BigNumber.from(bundle.stakedAmount).gt(0) }
+                displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported && BigNumber.from(bundle.myStakedAmount).gt(0) }
                 />;
         } else {
             return <UnstakeBundle 
