@@ -1,7 +1,7 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button } from "@mui/material";
-import { Signer } from "ethers";
+import { BigNumber, Signer } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactFragment, useCallback, useEffect } from "react";
@@ -64,7 +64,8 @@ export default function Stakes(props: StakingProps) {
 
     function buildActions(bundle: BundleInfo): JSX.Element {
         const stakeAction = bundle.stakingSupported ? <Button onClick={() => stakeBundle(bundle)}>{t('action.stake')}</Button> : undefined;
-        const unstakeAction = bundle.unstakingSupported ? <Button onClick={() => unstakeBundle(bundle)}>{t('action.unstake')}</Button> : undefined;
+        const isAllowedToUnstake = bundle.unstakingSupported && BigNumber.from(bundle.stakedAmount).gt(0);
+        const unstakeAction = isAllowedToUnstake ? <Button onClick={() => unstakeBundle(bundle)}>{t('action.unstake')}</Button> : undefined;
         return (<>
             {stakeAction}
             {unstakeAction}

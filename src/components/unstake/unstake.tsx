@@ -55,8 +55,6 @@ export default function Unstake(props: UnstakeProps) {
         }
     }, [isConnected, activeStep, dispatch]);
 
-    useEffect
-
     async function unstake(amount: BigNumber, max: boolean, bundle: BundleInfo) {
         try {
             enableUnloadWarning(true);
@@ -159,7 +157,7 @@ export default function Unstake(props: UnstakeProps) {
         if (activeStep < 2) {
             return <SelectBundle 
                 stakingApi={props.stakingApi}
-                displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported}
+                displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported && BigNumber.from(bundle.stakedAmount).gt(0) }
                 />;
         } else {
             return <UnstakeBundle 
