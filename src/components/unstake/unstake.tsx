@@ -139,7 +139,7 @@ export default function Unstake(props: UnstakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
-        router.push("/stakes");
+        router.push("/");
         updateAccountBalance(signer!, dispatch);
     }
 
