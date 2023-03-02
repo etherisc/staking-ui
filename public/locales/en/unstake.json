@@ -20,6 +20,7 @@
   "unstake_info": "Please confirm execution of the unstake transaction on contract {{address}} in your wallet app",
   "unstake_wait": "Transaction created, waiting for onchain confirmation",
   "checkbox_unstake_max_amount_label": "Unstake maximum available amount (including all rewards)",
-  "unstaking_success": "Unstaking of DIPs was successful"
+  "unstaking_success": "Unstaking of DIPs was successful",
+  "unstaking_info": "Unstaking is only available on bundles which are expired, closed or burned."
 }
 

@@ -51,8 +51,6 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     return (
         <>
-            <Typography variant="body1" sx={{ my: 2 }}>{t('choose_bundle')}</Typography>
-
             <BundleStakes 
                 stakingApi={props.stakingApi}
                 bundles={bundles}

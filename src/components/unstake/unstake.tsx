@@ -1,4 +1,4 @@
-import { Stepper, Step, StepLabel, Button } from "@mui/material";
+import { Stepper, Step, StepLabel, Button, Alert } from "@mui/material";
 import confetti from "canvas-confetti";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
@@ -155,10 +155,13 @@ export default function Unstake(props: UnstakeProps) {
 
     const wizardElement = (() => {
         if (activeStep < 2) {
-            return <SelectBundle 
-                stakingApi={props.stakingApi}
-                displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported && BigNumber.from(bundle.myStakedAmount).gt(0) }
-                />;
+            return <>
+                <Alert severity="info">{t('unstaking_info')}</Alert>
+                <SelectBundle 
+                    stakingApi={props.stakingApi}
+                    displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported && BigNumber.from(bundle.myStakedAmount).gt(0) }
+                    />
+                </>;
         } else {
             return <UnstakeBundle 
                 stakingApi={props.stakingApi}
