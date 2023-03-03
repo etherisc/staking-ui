@@ -125,7 +125,8 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
         { 
             field: 'state', headerName: t('table.header.state'), flex: 0.35,
-            valueFormatter: (params: GridValueFormatterParams<string>) => t(`bundle_state_${params.value}`, { ns: 'common'})
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => params.row,
+            valueFormatter: (params: GridValueFormatterParams<BundleInfo>) => t(`bundle_state_${params.value.state}`, { ns: 'common'})
         },
         { 
             field: 'expiryAt', headerName: t('table.header.expiryAt'), flex: 0.7,
@@ -190,7 +191,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 getRowId={(row) => row.id}
                 initialState={{
                     sorting: {
-                        sortModel: [{ field: 'coverageUntil', sort: 'asc' }],
+                        sortModel: [{ field: 'expiryAt', sort: 'asc' }],
                     },
                 }}
                 pageSize={pageSize}
@@ -198,6 +199,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                 disableSelectionOnClick={true}
                 disableColumnMenu={true}
+                columnBuffer={8}
                 />
         </>
     );
