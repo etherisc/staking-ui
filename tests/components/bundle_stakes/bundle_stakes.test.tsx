@@ -95,7 +95,7 @@ describe('When rendering bundle stakes', () => {
         expect(rows[1]).toHaveTextContent("DIP 3,000.00");
         expect(rows[1]).toHaveTextContent("USDT 300.00");
         expect(rows[1]).toHaveTextContent("USDT 4,000.00");
-        expect(rows[1]).toHaveTextContent("bundle_state_0");
+        expect(rows[1]).toHaveTextContent("bundle_state_expired");
         expect(rows[1]).toHaveTextContent(moment.unix(bundle2ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
 
         expect(rows[2]).toHaveTextContent("0x1234…efgh");
