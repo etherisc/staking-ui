@@ -38,7 +38,7 @@ export default function Address(props: AddressProps) {
                 {NBSP}
                 <WithTooltip tooltipText={t('action.copy_value')}>
                     <Typography color={iconColor} component="span">
-                        <FontAwesomeIcon icon={faCopy} className="fa cursor-pointer" onClick={copyAddressToClipboard} />
+                        <FontAwesomeIcon icon={faCopy} className="fa cursor-pointer" onClick={copyAddressToClipboard} data-testid="copy-button" />
                     </Typography>
                 </WithTooltip>
             </Box>
