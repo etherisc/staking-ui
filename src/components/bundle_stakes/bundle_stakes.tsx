@@ -1,5 +1,6 @@
 import { LinearProgress } from "@mui/material";
 import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridSortCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
+import dayjs from "dayjs";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
@@ -125,7 +126,16 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
         { 
             field: 'state', headerName: t('table.header.state'), flex: 0.35,
-            valueFormatter: (params: GridValueFormatterParams<string>) => t(`bundle_state_${params.value}`, { ns: 'common'})
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => params.row,
+            valueFormatter: (params: GridValueFormatterParams<BundleInfo>) => {
+                const bundle = params.value;
+                // active and locked bundles with expiration date in the past are considered expired
+                if ((bundle.state === 0 || bundle.state === 1)&& dayjs.unix(bundle.expiryAt).isBefore(dayjs())) {
+                    return t(`bundle_state_expired}`, { ns: 'common'});
+                }
+                return t(`bundle_state_${bundle.state}`, { ns: 'common'});
+            }
+            
         },
         { 
             field: 'expiryAt', headerName: t('table.header.expiryAt'), flex: 0.7,
@@ -190,7 +200,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 getRowId={(row) => row.id}
                 initialState={{
                     sorting: {
-                        sortModel: [{ field: 'coverageUntil', sort: 'asc' }],
+                        sortModel: [{ field: 'expiryAt', sort: 'asc' }],
                     },
                 }}
                 pageSize={pageSize}
@@ -198,6 +208,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                 disableSelectionOnClick={true}
                 disableColumnMenu={true}
+                columnBuffer={8}
                 />
         </>
     );

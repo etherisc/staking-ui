@@ -31,5 +31,5 @@ export enum BundleState {
     ACTIVE,
     LOCKED,
     CLOSED,
-    BURNED
+    BURNED,
 }
