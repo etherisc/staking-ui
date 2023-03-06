@@ -999,7 +999,7 @@ export interface StakingV01 extends BaseContract {
     ): Promise<[BigNumber]>;
 
     getBundleInfo(
-      stake: PromiseOrValue<BigNumberish>,
+      stakeId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -1018,8 +1018,8 @@ export interface StakingV01 extends BaseContract {
         displayName: string;
         bundleState: number;
         expiryAt: number;
-        stakeBalance: BigNumber;
-        rewardBalance: BigNumber;
+        stakeAmount: BigNumber;
+        rewardAmount: BigNumber;
       }
     >;
 
@@ -1311,7 +1311,7 @@ export interface StakingV01 extends BaseContract {
   ): Promise<BigNumber>;
 
   getBundleInfo(
-    stake: PromiseOrValue<BigNumberish>,
+    stakeId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [
@@ -1330,8 +1330,8 @@ export interface StakingV01 extends BaseContract {
       displayName: string;
       bundleState: number;
       expiryAt: number;
-      stakeBalance: BigNumber;
-      rewardBalance: BigNumber;
+      stakeAmount: BigNumber;
+      rewardAmount: BigNumber;
     }
   >;
 
@@ -1613,7 +1613,7 @@ export interface StakingV01 extends BaseContract {
     ): Promise<BigNumber>;
 
     getBundleInfo(
-      stake: PromiseOrValue<BigNumberish>,
+      stakeId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -1632,8 +1632,8 @@ export interface StakingV01 extends BaseContract {
         displayName: string;
         bundleState: number;
         expiryAt: number;
-        stakeBalance: BigNumber;
-        rewardBalance: BigNumber;
+        stakeAmount: BigNumber;
+        rewardAmount: BigNumber;
       }
     >;
 
@@ -2050,7 +2050,7 @@ export interface StakingV01 extends BaseContract {
     ): Promise<BigNumber>;
 
     getBundleInfo(
-      stake: PromiseOrValue<BigNumberish>,
+      stakeId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2331,7 +2331,7 @@ export interface StakingV01 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getBundleInfo(
-      stake: PromiseOrValue<BigNumberish>,
+      stakeId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
