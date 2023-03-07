@@ -138,6 +138,7 @@ export interface StakingV01Interface extends utils.Interface {
     "stake(uint256,uint256)": FunctionFragment;
     "stakes(uint256)": FunctionFragment;
     "stakingRate(bytes5,address)": FunctionFragment;
+    "toChain(uint256)": FunctionFragment;
     "toInt(bytes5)": FunctionFragment;
     "toInt(uint32)": FunctionFragment;
     "toInt(uint40)": FunctionFragment;
@@ -208,6 +209,7 @@ export interface StakingV01Interface extends utils.Interface {
       | "stake"
       | "stakes"
       | "stakingRate"
+      | "toChain"
       | "toInt(bytes5)"
       | "toInt(uint32)"
       | "toInt(uint40)"
@@ -442,6 +444,10 @@ export interface StakingV01Interface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "toChain",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "toInt(bytes5)",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -661,6 +667,7 @@ export interface StakingV01Interface extends utils.Interface {
     functionFragment: "stakingRate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "toChain", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "toInt(bytes5)",
     data: BytesLike
@@ -1168,6 +1175,11 @@ export interface StakingV01 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { rate: BigNumber }>;
 
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     "toInt(bytes5)"(
       x: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1470,6 +1482,11 @@ export interface StakingV01 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  toChain(
+    chainId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   "toInt(bytes5)"(
     x: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -1769,6 +1786,11 @@ export interface StakingV01 extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     "toInt(bytes5)"(
       x: PromiseOrValue<BytesLike>,
@@ -2183,6 +2205,11 @@ export interface StakingV01 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     "toInt(bytes5)"(
       x: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -2461,6 +2488,11 @@ export interface StakingV01 extends BaseContract {
     stakingRate(
       chain: PromiseOrValue<BytesLike>,
       token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

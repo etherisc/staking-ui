@@ -88,6 +88,7 @@ export interface IChainRegistryInterface extends utils.Interface {
     "registerRegistry(bytes5,address)": FunctionFragment;
     "registerStake(uint256,address)": FunctionFragment;
     "registerToken(bytes5,address)": FunctionFragment;
+    "toChain(uint256)": FunctionFragment;
     "toInt(bytes5)": FunctionFragment;
     "toInt(uint32)": FunctionFragment;
     "toInt(uint40)": FunctionFragment;
@@ -121,6 +122,7 @@ export interface IChainRegistryInterface extends utils.Interface {
       | "registerRegistry"
       | "registerStake"
       | "registerToken"
+      | "toChain"
       | "toInt(bytes5)"
       | "toInt(uint32)"
       | "toInt(uint40)"
@@ -238,6 +240,10 @@ export interface IChainRegistryInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "toChain",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "toInt(bytes5)",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -336,6 +342,7 @@ export interface IChainRegistryInterface extends utils.Interface {
     functionFragment: "registerToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "toChain", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "toInt(bytes5)",
     data: BytesLike
@@ -571,6 +578,11 @@ export interface IChainRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     "toInt(bytes5)"(
       x: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -755,6 +767,11 @@ export interface IChainRegistry extends BaseContract {
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  toChain(
+    chainId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   "toInt(bytes5)"(
     x: PromiseOrValue<BytesLike>,
@@ -941,6 +958,11 @@ export interface IChainRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     "toInt(bytes5)"(
       x: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1115,6 +1137,11 @@ export interface IChainRegistry extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     "toInt(bytes5)"(
       x: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1270,6 +1297,11 @@ export interface IChainRegistry extends BaseContract {
       chain: PromiseOrValue<BytesLike>,
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "toInt(bytes5)"(

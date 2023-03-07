@@ -587,6 +587,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getRegistry",
+    outputs: [
+      {
+        internalType: "contract ChainRegistryV01",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getStakingWallet",
     outputs: [
       {
@@ -839,6 +852,25 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+    ],
+    name: "toChain",
+    outputs: [
+      {
+        internalType: "ChainId",
+        name: "",
+        type: "bytes5",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
   {

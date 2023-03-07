@@ -719,6 +719,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+    ],
+    name: "toChain",
+    outputs: [
+      {
+        internalType: "ChainId",
+        name: "",
+        type: "bytes5",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "ChainId",
         name: "x",
         type: "bytes5",

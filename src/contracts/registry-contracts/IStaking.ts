@@ -69,6 +69,7 @@ export interface IStakingInterface extends utils.Interface {
     "getBundleInfo(uint256)": FunctionFragment;
     "getDip()": FunctionFragment;
     "getInfo(uint256)": FunctionFragment;
+    "getRegistry()": FunctionFragment;
     "getStakingWallet()": FunctionFragment;
     "isStakeOwner(uint256,address)": FunctionFragment;
     "isStakingSupported(uint256)": FunctionFragment;
@@ -84,6 +85,7 @@ export interface IStakingInterface extends utils.Interface {
     "stake(uint256,uint256)": FunctionFragment;
     "stakes(uint256)": FunctionFragment;
     "stakingRate(bytes5,address)": FunctionFragment;
+    "toChain(uint256)": FunctionFragment;
     "toRate(uint256,int8)": FunctionFragment;
     "unstake(uint256,uint256)": FunctionFragment;
     "unstakeAndClaimRewards(uint256)": FunctionFragment;
@@ -102,6 +104,7 @@ export interface IStakingInterface extends utils.Interface {
       | "getBundleInfo"
       | "getDip"
       | "getInfo"
+      | "getRegistry"
       | "getStakingWallet"
       | "isStakeOwner"
       | "isStakingSupported"
@@ -117,6 +120,7 @@ export interface IStakingInterface extends utils.Interface {
       | "stake"
       | "stakes"
       | "stakingRate"
+      | "toChain"
       | "toRate"
       | "unstake"
       | "unstakeAndClaimRewards"
@@ -167,6 +171,10 @@ export interface IStakingInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getInfo",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRegistry",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getStakingWallet",
@@ -233,6 +241,10 @@ export interface IStakingInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "toChain",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "toRate",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
@@ -284,6 +296,10 @@ export interface IStakingInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "getDip", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getInfo", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "getRegistry",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getStakingWallet",
     data: BytesLike
   ): Result;
@@ -334,6 +350,7 @@ export interface IStakingInterface extends utils.Interface {
     functionFragment: "stakingRate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "toChain", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "toRate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "unstake", data: BytesLike): Result;
   decodeFunctionResult(
@@ -599,6 +616,8 @@ export interface IStaking extends BaseContract {
       }
     >;
 
+    getRegistry(overrides?: CallOverrides): Promise<[string]>;
+
     getStakingWallet(
       overrides?: CallOverrides
     ): Promise<[string] & { stakingWallet: string }>;
@@ -673,6 +692,11 @@ export interface IStaking extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { stakingRate: BigNumber }>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     toRate(
       value: PromiseOrValue<BigNumberish>,
@@ -770,6 +794,8 @@ export interface IStaking extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IStaking.StakeInfoStructOutput>;
 
+  getRegistry(overrides?: CallOverrides): Promise<string>;
+
   getStakingWallet(overrides?: CallOverrides): Promise<string>;
 
   isStakeOwner(
@@ -834,6 +860,11 @@ export interface IStaking extends BaseContract {
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  toChain(
+    chainId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   toRate(
     value: PromiseOrValue<BigNumberish>,
@@ -931,6 +962,8 @@ export interface IStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IStaking.StakeInfoStructOutput>;
 
+    getRegistry(overrides?: CallOverrides): Promise<string>;
+
     getStakingWallet(overrides?: CallOverrides): Promise<string>;
 
     isStakeOwner(
@@ -995,6 +1028,11 @@ export interface IStaking extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     toRate(
       value: PromiseOrValue<BigNumberish>,
@@ -1186,6 +1224,8 @@ export interface IStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getRegistry(overrides?: CallOverrides): Promise<BigNumber>;
+
     getStakingWallet(overrides?: CallOverrides): Promise<BigNumber>;
 
     isStakeOwner(
@@ -1248,6 +1288,11 @@ export interface IStaking extends BaseContract {
     stakingRate(
       chain: PromiseOrValue<BytesLike>,
       token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1328,6 +1373,8 @@ export interface IStaking extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getRegistry(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getStakingWallet(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isStakeOwner(
@@ -1390,6 +1437,11 @@ export interface IStaking extends BaseContract {
     stakingRate(
       chain: PromiseOrValue<BytesLike>,
       token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    toChain(
+      chainId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
