@@ -37,13 +37,14 @@ export default class StakingContract {
         const registryAddress = await this.staking.getRegistry();
         this.chainRegistry = IChainRegistry__factory.connect(registryAddress, this.signer);
         this.chainId = await this.signer.getChainId();
-        this.chainIdB32 = formatBytes32String(await this.chainRegistry.toChain(this.chainId));
+        this.chainIdB32 = await this.chainRegistry.toChain(this.chainId);
     }
 
     async getAllInstanceInfos() {
+        console.log("getAllInstanceInfos", this.chainIdB32);
         const instanceInfos = [];
         const numInstances = await this.chainRegistry!.objects(this.chainIdB32, OBJECT_TYPE_INSTANCE);
-        // console.log("numInstances", numInstances);
+        console.log("numInstances", numInstances.toNumber());
         // loop over instances and get instance id
         for (let i = 0; i < numInstances.toNumber(); i++) {
             const nftId = await this.chainRegistry!["getNftId(bytes5,uint8,uint256)"](this.chainIdB32, OBJECT_TYPE_INSTANCE, i);
@@ -67,7 +68,9 @@ export default class StakingContract {
         const bundlesNftIds = [];
         // console.log("instance", instanceId);
         const numBundles = await this.chainRegistry!.objects(this.chainIdB32, OBJECT_TYPE_BUNDLE);
+        console.log("numBundles", numBundles.toNumber());
         for (let idx = 0; idx < numBundles.toNumber(); idx++) {
+            console.log("idx", idx);
             const nftId = await this.chainRegistry!["getNftId(bytes5,uint8,uint256)"](this.chainIdB32, OBJECT_TYPE_BUNDLE, idx);
             bundlesNftIds.push(nftId);
         }
@@ -75,7 +78,9 @@ export default class StakingContract {
     }
 
     async getBundleInfo(bundleNftId: BigNumber, instanceId: string, instanceName: string, chainId: number, myWallet: string | undefined, registry: string): Promise<BundleInfo> {
+        console.log("decodeBundleData");
         const { token } = await this.chainRegistry!.decodeBundleData(bundleNftId);
+        console.log("getBundleInfo", bundleNftId.toNumber());
         const { riskpoolId, bundleId, displayName, bundleState, expiryAt } = await this.staking!.getBundleInfo(bundleNftId);
 
         const stakedAmount = await this.staking!.stakes(bundleNftId);
