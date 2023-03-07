@@ -88,7 +88,7 @@ export default class StakingContract {
         const supportedAmount = await this.calculateSupportedAmount(stakedAmount, token);
         let mySupportingAmount = BigNumber.from(0);
 
-        // TODO fix this later - loop over all nfts and sum up the stakes belonging to the same bundle
+        // TODO: fix this later - loop over all nfts and sum up the stakes belonging to the same bundle
         // if (myWallet !== undefined) {
         //     myStakedAmount = await this.staking!.stakes(bundleNftId);
         //     mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, chainId, token);
@@ -171,7 +171,7 @@ export default class StakingContract {
         }
         try {
             console.log("stake", bundle, formatEther(stakedAmount));
-            // TODO check if stake nft for this bundle exists on account and if so, increment on that using stake(...)
+            // TODO: check if stake nft for this bundle exists on account and if so, increment on that using stake(...)
             const tx = await this.staking.createStake(bundle.nftId, stakedAmount);
 
             if (beforeWaitCallback !== undefined) {
@@ -200,8 +200,8 @@ export default class StakingContract {
         try {
             let tx;
 
-            // TODO grab nft id from account and use that to unstake
-            // TODO how to handle multile nfts per wallet for the same bundle?
+            // TODO: grab nft id from account and use that to unstake
+            // TODO: how to handle multile nfts per wallet for the same bundle?
             if (unstakeAmount === undefined) {
                 tx = await this.staking.unstakeAndClaimRewards(42);
             } else {
@@ -222,7 +222,7 @@ export default class StakingContract {
     }
 
     async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        // TODO loop over all nfts for this bundle and account and sum up the stakes belonging to the same bundle
+        // TODO: loop over all nfts for this bundle and account and sum up the stakes belonging to the same bundle
         // return await this.stakingDataProvider["stakes(bytes32,address)"](bundle.targetId, address);
         return BigNumber.from(0);
     }
