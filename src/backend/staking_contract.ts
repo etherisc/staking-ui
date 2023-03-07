@@ -1,9 +1,9 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
-import { BundleInfo } from "./bundle_info";
-import { TransactionFailedError } from "../utils/error";
+import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
-import { formatBytes32String, formatEther } from "ethers/lib/utils";
-import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
+import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
+import { TransactionFailedError } from "../utils/error";
+import { BundleInfo } from "./bundle_info";
 
 /** get from https://github.com/etherisc/registry-contracts/blob/develop/contracts/registry/ChainRegistryV01.sol#L27 */
 const OBJECT_TYPE_UNDEFINED = 0;
@@ -22,8 +22,10 @@ const OBJECT_TYPE_BUNDLE = 40;
 
 export default class StakingContract {
     private signer: Signer;
+    private walletAddress: string = "";
     private staking: IStaking;
     private chainRegistry?: IChainRegistry;
+    private chainNft?: IERC721EnumerableUpgradeable;
     private knownTokens: Map<string, [string, number]> = new Map();
     private chainId: number = 0;
     private chainIdB32: string = "";
@@ -36,8 +38,10 @@ export default class StakingContract {
     async initialize(): Promise<void> {
         const registryAddress = await this.staking.getRegistry();
         this.chainRegistry = IChainRegistry__factory.connect(registryAddress, this.signer);
+        this.chainNft = IERC721EnumerableUpgradeable__factory.connect(registryAddress, this.signer);
         this.chainId = await this.signer.getChainId();
         this.chainIdB32 = await this.chainRegistry.toChain(this.chainId);
+        this.walletAddress = await this.signer.getAddress();
     }
 
     async getAllInstanceInfos() {
@@ -160,6 +164,19 @@ export default class StakingContract {
         return await this.staking.calculateRewards(amount, duration);
     }
 
+    async getBundleStakeNfts(walletAddress: string): Promise<Array<BigNumber>> {
+        const bundleStakeNftIds = [];
+        const nftBalance = await this.chainNft?.balanceOf(walletAddress) || BigNumber.from(0);
+        for (let idx = 0; idx < nftBalance.toNumber(); idx++) {
+            const nftId = await this.chainNft?.tokenOfOwnerByIndex(walletAddress, idx);
+            const { t: objectType } = await this.chainRegistry!.getNftInfo(nftId!);
+            if (objectType === OBJECT_TYPE_STAKE) {
+                bundleStakeNftIds.push(nftId!);
+            }
+        }
+        return bundleStakeNftIds;
+    }
+
     async stake(
         bundle: BundleInfo,
         stakedAmount: BigNumber, 
@@ -171,8 +188,15 @@ export default class StakingContract {
         }
         try {
             console.log("stake", bundle, formatEther(stakedAmount));
-            // TODO: check if stake nft for this bundle exists on account and if so, increment on that using stake(...)
-            const tx = await this.staking.createStake(bundle.nftId, stakedAmount);
+            const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
+            let tx;
+            if (bundleStakeNftIds.length > 0) { 
+                // stake onto existing nft
+                tx = await this.staking.stake(bundleStakeNftIds[0], stakedAmount);
+            } else {
+                // new stake nft created during tx
+                tx = await this.staking.createStake(bundle.nftId, stakedAmount);
+            }
 
             if (beforeWaitCallback !== undefined) {
                 beforeWaitCallback(this.staking.address);
@@ -201,7 +225,7 @@ export default class StakingContract {
             let tx;
 
             // TODO: grab nft id from account and use that to unstake
-            // TODO: how to handle multile nfts per wallet for the same bundle?
+            // TODO: if multiple nfts are found, loop over them and unstake from the largest of them thereby limiting the amount to unstake to the amount of the nft 
             if (unstakeAmount === undefined) {
                 tx = await this.staking.unstakeAndClaimRewards(42);
             } else {
@@ -229,9 +253,13 @@ export default class StakingContract {
 
     async getRewardRate(): Promise<number> {
         const rewardRateRaw = await this.staking.rewardRate();
-        const rateDecimals = await this.staking.rateDecimals();
+        const rateDecimals = await (await this.staking.rateDecimals()).toNumber();  // 18
+        console.log(rateDecimals);
         // ethers bignumber doesn't handle fractionals, thats why we need to do this manually
-        const rate = rewardRateRaw.mul(10000).div(Math.pow(10, rateDecimals.toNumber()));
+        // 42000000000000000 * 10000 --> 42r0000000000000000000
+        // 420000000000000000000 / 10^18 --> 42000
+        // 42000 / 10000 --> 4.2
+        const rate = rewardRateRaw.mul(10000).div(BigNumber.from(10).pow(rateDecimals));
         return rate.toNumber() / 10000;
     }
 
