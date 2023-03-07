@@ -71,7 +71,7 @@ export default function BundleStakes(props: BundleStakesProps) {
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
                     return (<>
-                        <Address address={params.value![1]} iconColor="palette.secondary.main" />
+                        <Address address={params.value![1]} iconColor="secondary.main" />
                     </>);
                 }
                 return (<>
