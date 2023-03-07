@@ -1,6 +1,7 @@
 {
   "apptitle": "Etherisc DIP Staking",
   "apptitle_short": "DIP Staking",
+  "terms_and_conditions": "By checking this box, I confirm that I have read and agree to the <0>Terms and Conditions</0>.",
   "nav": {
     "link": {
       "stakes": "My Stakes",

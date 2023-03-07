@@ -16,7 +16,6 @@
   "approval_failed": "",
   "stake_info": "Second - please confirm staking on contract {{address}}",
   "stake_wait": "Transaction created, waiting for onchain confirmation",
-  "checkbox_t_and_c_label": "By checking this box, I confirm that I have read and agree to the Terms and Conditions.",
   "staking_success": "Staking of DIPs successful. It can take up to 5 minutes for the applications to refresh and your stakes to be accurately reflected.",
   "reward_rate" : "Reward Rate (%)",
   "expected_reward": "Expected Reward (at the end bundle lifetime)",

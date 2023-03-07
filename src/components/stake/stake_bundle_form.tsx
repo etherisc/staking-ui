@@ -11,6 +11,7 @@ import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { INPUT_VARIANT } from "../../config/theme";
 import { parse } from "path";
 import { RootState } from "../../redux/store";
+import TermsAndConditions from "../terms_and_conditions";
 
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
@@ -220,8 +221,9 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                         />
                                 } 
                                 disabled={props.formDisabled}
-                                label={t('checkbox_t_and_c_label')} />}
-                            />
+                                label={<TermsAndConditions />}
+                                />
+                        } />
                 </Grid>
                 <Grid item xs={6}>
                     <Button 
