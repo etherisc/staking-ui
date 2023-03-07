@@ -10,7 +10,7 @@ export type BundleInfo = {
     riskpoolId: number;
     bundleId: number;
     bundleName: string;
-    targetId: string;
+    nftId: string;
     token: string;
     // numbers are stored as strings to avoid serialization issue with BigNumber
     myStakedAmount: string;
