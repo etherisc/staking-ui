@@ -135,7 +135,10 @@ export default class StakingContract {
         } as BundleInfo;
     }
 
-    async getStakleableBundles(
+    /**
+     * Fetch all bundles from the blockchain and add them to the redux store
+     */
+    async fetchBundlesBundles(
     ): Promise<void> {
         const instanceInfos = await this.getAllInstanceInfos();
         const dispatch = store.dispatch;
