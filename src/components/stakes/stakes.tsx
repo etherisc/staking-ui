@@ -31,17 +31,7 @@ export default function Stakes(props: StakingProps) {
         const address = await signer.getAddress();
         dispatch(startLoading());
         dispatch(reset());
-        await props.stakingApi.retrieveBundles(
-            // TODO: remove
-            // address,
-            // (bundle: BundleInfo) => {
-            //     dispatch(add(bundle));
-            //     return Promise.resolve();
-            // },
-            // () => {
-            //     dispatch(finishLoading());
-            // }
-        );
+        await props.stakingApi.retrieveBundles();
         dispatch(finishLoading());
     }, [dispatch, props.stakingApi]);
 

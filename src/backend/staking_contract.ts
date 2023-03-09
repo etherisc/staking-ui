@@ -2,7 +2,7 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
 import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
-import { add, addAmountToMyStakes } from "../redux/slices/stakes";
+import { add, addAmountToMyStakes, addNftId } from "../redux/slices/stakes";
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
@@ -239,7 +239,18 @@ export default class StakingContract {
             const receipt = await tx.wait();
             // console.log(receipt);
 
-            // TODO: extract nft id from receipt and add to store
+            // if a new stake was created, we need to extract the nft id from the receipt
+            if (stakeNftId === undefined) {
+                console.log(receipt.events);
+                const event = receipt.events?.find(e => e.event === "LogStakingNewStake");
+                if (event !== undefined) {
+                    console.log(event);
+                    const stakeNftId = event.args?.id;
+                    console.log("new stake created", stakeNftId?.toString());
+                    store.dispatch(addNftId(stakeNftId));
+                }
+            }
+
             return [tx, receipt];
         } catch (e) {
             console.log("caught error while staking: ", e);
