@@ -198,20 +198,21 @@ export default class StakingContract {
     }
 
     /**
-     * Find stake nfts in current wallet that belongs to the given target. 
+     * Find all stake nfts in current wallet that stake the given target nft. 
      * 
      * @param targetNftId the NFT ID of the target
      * @returns 
      */
-    async findStakeNft(targetNftId: BigNumber): Promise<BigNumber|undefined> {
+    async findAllStakeNfts(targetNftId: BigNumber): Promise<Array<BigNumber>> {
+        const stakeNftIds = [];
         const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
         for (const stakeNftId of bundleStakeNftIds) {
             const { target } = await this.staking!.getInfo(stakeNftId);
             if (target.eq(targetNftId)) {
-                return stakeNftId;
+                stakeNftIds.push(stakeNftId);
             }
         }
-        return undefined;
+        return stakeNftIds;
     }
 
     async stake(
@@ -225,13 +226,15 @@ export default class StakingContract {
         }
         try {
             console.log("stake", bundle, formatEther(stakedAmount));
-            const stakeNftId = await this.findStakeNft(BigNumber.from(bundle.nftId));
+            const stakeNftIds = await this.findAllStakeNfts(BigNumber.from(bundle.nftId));
             let tx;
-            if (stakeNftId !== undefined) {
+            if (stakeNftIds.length > 0) {
                 // stake onto existing nft
-                tx = await this.staking.stake(stakeNftId, stakedAmount);
+                console.log("staking existing nft", stakeNftIds[0]);
+                tx = await this.staking.stake(stakeNftIds[0], stakedAmount);
             } else {
                 // new stake nft created during tx
+                console.log("no nft exists, creating new");
                 tx = await this.staking.createStake(bundle.nftId, stakedAmount);
             }
 
@@ -242,13 +245,16 @@ export default class StakingContract {
             const receipt = await tx.wait();
             // console.log(receipt);
 
-            // if a new stake was created, we need to extract the nft id from the receipt
-            if (stakeNftId === undefined) {
+            // if a new stake was created (stakeNftIds.length === 0), then extract the nft id from the receipt
+            if (stakeNftIds.length === 0) {
                 console.log(receipt.events);
                 const event = receipt.events?.find(e => e.event === "LogStakingNewStake");
                 if (event !== undefined) {
                     console.log(event);
                     const stakeNftId = event.args?.id;
+                    if (stakeNftId === undefined) {
+                        throw new Error("stake nft id not found in receipt");
+                    }
                     console.log("new stake created", stakeNftId?.toString());
                     store.dispatch(addNftId(stakeNftId));
                 }
