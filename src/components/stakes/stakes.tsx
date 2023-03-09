@@ -4,11 +4,11 @@ import { Box, Button } from "@mui/material";
 import { BigNumber, Signer } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { ReactFragment, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { add, finishLoading, reset, startLoading } from "../../redux/slices/stakes";
+import { finishLoading, reset, startLoading } from "../../redux/slices/stakes";
 import { bundleSelected } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
@@ -31,16 +31,18 @@ export default function Stakes(props: StakingProps) {
         const address = await signer.getAddress();
         dispatch(startLoading());
         dispatch(reset());
-        props.stakingApi.retrieveStakesForWallet(
-            address,
-            (bundle: BundleInfo) => {
-                dispatch(add(bundle));
-                return Promise.resolve();
-            },
-            () => {
-                dispatch(finishLoading());
-            }
+        await props.stakingApi.retrieveBundles(
+            // TODO: remove
+            // address,
+            // (bundle: BundleInfo) => {
+            //     dispatch(add(bundle));
+            //     return Promise.resolve();
+            // },
+            // () => {
+            //     dispatch(finishLoading());
+            // }
         );
+        dispatch(finishLoading());
     }, [dispatch, props.stakingApi]);
 
     useEffect(() => {

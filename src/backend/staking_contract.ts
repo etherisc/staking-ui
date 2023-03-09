@@ -2,6 +2,8 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
 import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
+import { add, addAmountToMyStakes } from "../redux/slices/stakes";
+import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
 
@@ -81,7 +83,16 @@ export default class StakingContract {
         return bundlesNftIds;
     }
 
-    async getBundleInfo(bundleNftId: BigNumber, instanceId: string, instanceName: string, chainId: number, myWallet: string | undefined, registry: string): Promise<BundleInfo> {
+    /**
+     * Get bundle details (except amount staked by current wallet)
+     * @param bundleNftId 
+     * @param instanceId 
+     * @param instanceName 
+     * @param chainId 
+     * @param registry 
+     * @returns 
+     */
+    async getBundleInfo(bundleNftId: BigNumber, instanceId: string, instanceName: string, chainId: number, registry: string): Promise<BundleInfo> {
         console.log("decodeBundleData");
         const { token } = await this.chainRegistry!.decodeBundleData(bundleNftId);
         console.log("getBundleInfo", bundleNftId.toNumber());
@@ -91,13 +102,6 @@ export default class StakingContract {
         let myStakedAmount = BigNumber.from(0);
         const supportedAmount = await this.calculateSupportedAmount(stakedAmount, token);
         let mySupportingAmount = BigNumber.from(0);
-
-        // TODO: fix this later - loop over all nfts and sum up the stakes belonging to the same bundle
-        // if (myWallet !== undefined) {
-        //     myStakedAmount = await this.staking!.stakes(bundleNftId);
-        //     mySupportingAmount = await this.calculateSupportedAmount(myStakedAmount, chainId, token);
-        // }
-
         const [tokenSymbol, tokenDecimals] = await this.getToken(token);
 
         const stakingSupported = await this.staking!.isStakingSupported(bundleNftId);
@@ -115,6 +119,7 @@ export default class StakingContract {
             nftId: bundleNftId.toString(),
             token: token,
             myStakedAmount: myStakedAmount.toString(),
+            myStakedAmountNfsIds: [],
             stakedAmount: stakedAmount.toString(),
             mySupportingAmount: mySupportingAmount.toString(),
             supportingAmount: supportedAmount.toString(),
@@ -131,10 +136,9 @@ export default class StakingContract {
     }
 
     async getStakleableBundles(
-        bundleRetrieved: (bundle: BundleInfo) => Promise<void>,
-        myWallet?: string
     ): Promise<void> {
         const instanceInfos = await this.getAllInstanceInfos();
+        const dispatch = store.dispatch;
 
         // loop over instances and get bundles
         for (const instanceInfo of instanceInfos) {
@@ -142,10 +146,18 @@ export default class StakingContract {
             const bundleNftIds = await this.getBundleNftIds();
 
             for (const bundleNftId of bundleNftIds) {
-                const bundleInfo = await this.getBundleInfo(bundleNftId, instanceId, instanceInfo.displayName, instanceInfo.chainId, myWallet, instanceInfo.registry);
+                const bundleInfo = await this.getBundleInfo(bundleNftId, instanceId, instanceInfo.displayName, instanceInfo.chainId, instanceInfo.registry);
                 console.log("bundleInfo", bundleInfo);
-                await bundleRetrieved(bundleInfo);
+                dispatch(add(bundleInfo));
             }
+        }
+
+        const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
+        console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
+        for (const nftId of bundleStakeNftIds) {
+            const { target, stakeBalance } = await this.staking!.getInfo(nftId);
+            console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
+            dispatch(addAmountToMyStakes({ stakeNftId: nftId.toString(), target: target.toString(), amountToAdd: stakeBalance.toString()}));
         }
     }
 
@@ -164,17 +176,39 @@ export default class StakingContract {
         return await this.staking.calculateRewards(amount, duration);
     }
 
-    async getBundleStakeNfts(walletAddress: string): Promise<Array<BigNumber>> {
+    /**
+     * Find all NFT IDs of bundle stake NFTs that belong to the given address
+     * @param walletAddress 
+     * @returns 
+     */
+    async getBundleStakeNfts(address: string): Promise<Array<BigNumber>> {
         const bundleStakeNftIds = [];
-        const nftBalance = await this.chainNft?.balanceOf(walletAddress) || BigNumber.from(0);
+        const nftBalance = await this.chainNft?.balanceOf(address) || BigNumber.from(0);
         for (let idx = 0; idx < nftBalance.toNumber(); idx++) {
-            const nftId = await this.chainNft?.tokenOfOwnerByIndex(walletAddress, idx);
+            const nftId = await this.chainNft?.tokenOfOwnerByIndex(address, idx);
             const { t: objectType } = await this.chainRegistry!.getNftInfo(nftId!);
             if (objectType === OBJECT_TYPE_STAKE) {
                 bundleStakeNftIds.push(nftId!);
             }
         }
         return bundleStakeNftIds;
+    }
+
+    /**
+     * Find stake nfts in current wallet that belongs to the given target. 
+     * 
+     * @param targetNftId the NFT ID of the target
+     * @returns 
+     */
+    async findStakeNft(targetNftId: BigNumber): Promise<BigNumber|undefined> {
+        const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
+        for (const stakeNftId of bundleStakeNftIds) {
+            const { target } = await this.staking!.getInfo(stakeNftId);
+            if (target.eq(targetNftId)) {
+                return stakeNftId;
+            }
+        }
+        return undefined;
     }
 
     async stake(
@@ -188,11 +222,11 @@ export default class StakingContract {
         }
         try {
             console.log("stake", bundle, formatEther(stakedAmount));
-            const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
+            const stakeNftId = await this.findStakeNft(BigNumber.from(bundle.nftId));
             let tx;
-            if (bundleStakeNftIds.length > 0) { 
+            if (stakeNftId !== undefined) {
                 // stake onto existing nft
-                tx = await this.staking.stake(bundleStakeNftIds[0], stakedAmount);
+                tx = await this.staking.stake(stakeNftId, stakedAmount);
             } else {
                 // new stake nft created during tx
                 tx = await this.staking.createStake(bundle.nftId, stakedAmount);
@@ -201,8 +235,11 @@ export default class StakingContract {
             if (beforeWaitCallback !== undefined) {
                 beforeWaitCallback(this.staking.address);
             }
+
             const receipt = await tx.wait();
             // console.log(receipt);
+
+            // TODO: extract nft id from receipt and add to store
             return [tx, receipt];
         } catch (e) {
             console.log("caught error while staking: ", e);
@@ -243,12 +280,6 @@ export default class StakingContract {
             // @ts-ignore e.code
             throw new TransactionFailedError(e.code, e);
         }
-    }
-
-    async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        // TODO: loop over all nfts for this bundle and account and sum up the stakes belonging to the same bundle
-        // return await this.stakingDataProvider["stakes(bytes32,address)"](bundle.targetId, address);
-        return BigNumber.from(0);
     }
 
     async getRewardRate(): Promise<number> {

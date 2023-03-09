@@ -71,23 +71,9 @@ export class StakingApiSmartContract implements StakingApi {
         return process.env.NEXT_PUBLIC_DIP_MAX_STAKE_AMOUNT ? parseEther(process.env.NEXT_PUBLIC_DIP_MAX_STAKE_AMOUNT) : parseEther("100000");
     }
 
-    async retrieveBundles(
-        bundleRetrieved: (bundle: BundleInfo) => Promise<void>, 
-        loadingFinished: () => void
-    ): Promise<void> {
+    async retrieveBundles(): Promise<void> {
         // console.log("StakingApiSmartContract.retrieveBundles");
-        await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved);
-        loadingFinished();
-    }
-
-    async retrieveStakesForWallet(
-        walletAddress: string, 
-        bundleRetrieved: (bundle: BundleInfo) => Promise<void>, 
-        loadingFinished: () => void
-    ): Promise<void> {
-        console.log("StakingApiSmartContract.retrieveStakesForWallet");
-        await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved, walletAddress);
-        loadingFinished();
+        await (await this.getGifStakingApi()).getStakleableBundles();
     }
     
     async calculateSupportedAmount(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
@@ -126,10 +112,6 @@ export class StakingApiSmartContract implements StakingApi {
             beforeTrxCallback, 
             beforeWaitCallback);
         return receipt.status === 1;
-    }
-
-    async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        return (await this.getGifStakingApi()).stakedAmount(bundle, address);
     }
 
     async unstake(

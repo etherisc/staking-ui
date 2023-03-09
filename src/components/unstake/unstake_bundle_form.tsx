@@ -61,9 +61,10 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
     // get max unstakeable amount
     useEffect(() => {
         async function getMaxUnstakeAmount() {
-            const address = await signer!.getAddress();
-            const maxAmount = await props.stakingApi.stakedAmount(props.bundle, address);
-            setUnstakedAmountMax(parseInt(formatEther(maxAmount)));
+            // FIXME: get max unstakeable amount per nft
+            // const address = await signer!.getAddress();
+            // const maxAmount = await props.stakingApi.stakedAmount(props.bundle, address);
+            // setUnstakedAmountMax(parseInt(formatEther(maxAmount)));
         }
         getMaxUnstakeAmount();
     }, []);
