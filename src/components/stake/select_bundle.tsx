@@ -27,18 +27,7 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     useEffect(() => {
         async function getBundles() {
-            await props.stakingApi.retrieveBundles(
-                // await signer!.getAddress(),
-                // (bundle: BundleInfo) => {
-                //     if (props.displayBundle === undefined || props.displayBundle(bundle)) {
-                //         dispatch(add(bundle));
-                //     }
-                //     return Promise.resolve();
-                // },
-                // () => {
-                //     dispatch(finishLoading());
-                // }
-            );
+            await props.stakingApi.retrieveBundles();
             dispatch(finishLoading());
         }
 
@@ -53,11 +42,9 @@ export default function SelectBundle(props: SelectBundleProps) {
 
     return (
         <>
-            {/* TODO: filter bundles to bundles that can be staked when staking (active bundles)) */}
-            {/* TODO: filter bundles to bundles that can be unstaked when unstaking (expired/closed/burned bundles)) */}
             <BundleStakes 
                 stakingApi={props.stakingApi}
-                bundles={bundles} 
+                bundles={bundles.filter(bundle => props.displayBundle === undefined || props.displayBundle(bundle))} 
                 isBundlesLoading={isLoadingBundles}
                 onBundleSelected={setSelectedBundle}
                 buildActions={(bundle: BundleInfo) => 
