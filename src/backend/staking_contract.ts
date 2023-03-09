@@ -2,7 +2,7 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
 import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
-import { add, addAmountToMyStakes, addNftId } from "../redux/slices/stakes";
+import { add, addAmountToMyStakes, addNftId, clearNftIds } from "../redux/slices/stakes";
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
@@ -155,12 +155,14 @@ export default class StakingContract {
             }
         }
 
+        dispatch(clearNftIds());
         const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
         console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
         for (const nftId of bundleStakeNftIds) {
             const { target, stakeBalance } = await this.staking!.getInfo(nftId);
             console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
             dispatch(addAmountToMyStakes({ stakeNftId: nftId.toString(), target: target.toString(), amountToAdd: stakeBalance.toString()}));
+            dispatch(addNftId({ nftId: nftId.toString(), stakedAmount: stakeBalance.toString(), targetNftId: target.toString()}));
         }
     }
 

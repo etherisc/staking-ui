@@ -2,12 +2,13 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { BundleInfo } from '../../backend/bundle_info';
 import { BigNumber } from 'ethers';
+import { NftInfo } from '../../backend/nft_info';
 
 export interface StakesState {
     bundles: BundleInfo[];
     // nft ids of the nfts that are owned by the current connected bundle
     // TODO: do we even need this?
-    ownedNftsIds: number[];
+    ownedNftsIds: NftInfo[];
     isLoadingBundles: boolean;
 }
 
@@ -46,8 +47,8 @@ export const stakesSlice = createSlice({
         reset: (state) => {
             state.bundles = [];
         },
-        addNftId: (state, action: PayloadAction<number>) => {
-            const hasNft = state.ownedNftsIds.find((id) => id === action.payload) !== undefined;
+        addNftId: (state, action: PayloadAction<NftInfo>) => {
+            const hasNft = state.ownedNftsIds.find((n) => n.nftId === action.payload.nftId) !== undefined;
             if (!hasNft) {
                 state.ownedNftsIds.push(action.payload);
             }
