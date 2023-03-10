@@ -162,6 +162,10 @@ export class StakingApiSmartContract implements StakingApi {
         const [tx, receipt] =  await (await this.getGifStakingApi()).claimRewards(bundle);
         return receipt.status === 1;
     }
+
+    async fetchUnclaimedRewards(bundle: BundleInfo): Promise<void> {
+        await (await this.getGifStakingApi()).fetchUnclaimedRewards(bundle);
+    }
     
 }
 

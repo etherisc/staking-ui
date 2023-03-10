@@ -76,6 +76,12 @@ export const stakesSlice = createSlice({
         },
         selectBundle: (state, action: PayloadAction<BundleInfo|undefined>) => {
             state.selectedBundle = action.payload;
+        },
+        setUnclaimedRewards: (state, action: PayloadAction<{bundleId: number, unclaimedReward: string}>) => {
+            const bundle = state.bundles.find((bundle) => bundle.bundleId === action.payload.bundleId);
+            if (bundle) {
+                bundle.unclaimedReward = action.payload.unclaimedReward;
+            }
         }
     },
 })
@@ -85,7 +91,8 @@ export const {
     add, updateStakeUsage, reset, addAmountToMyStakes,
     addNftId, clearNftIds,
     startLoading, finishLoading,
-    selectBundle,
+    selectBundle, 
+    setUnclaimedRewards,
 } = stakesSlice.actions
 
 export default stakesSlice.reducer

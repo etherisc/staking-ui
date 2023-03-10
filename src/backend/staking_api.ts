@@ -55,6 +55,7 @@ export interface StakingApi {
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<boolean>;
+    fetchUnclaimedRewards(bundle: BundleInfo): Promise<void>;
 }
 
 export function getStakingApi(

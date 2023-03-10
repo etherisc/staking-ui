@@ -26,6 +26,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
     const instanceName = props.bundle.instanceName;
     const stakedAmount = BigNumber.from(props.bundle.stakedAmount);
     const myStakedAmount = BigNumber.from(props.bundle.myStakedAmount);
+    const unclaimedReward = BigNumber.from(props.bundle.unclaimedReward);
     const lockedAmount = BigNumber.from(props.bundle.lockedAmount || 0);
     const supportingToken = props.bundle.supportingToken;
     const supportingTokenDecimals = props.bundle.supportingTokenDecimals;
@@ -41,6 +42,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('bundle_name')} value={<>{name}</>}/>
             <NameValue name={t('bundle_state')} value={<>{t('bundle_state_' + state, { ns: 'common'})}</>}/>
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>
+            <NameValue name={t('unclaimed_reward')} value={<>{symbol} {formatCurrency(unclaimedReward, decimals)}</>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
             <NameValue name={t('locked_amount')} value={<>{symbol} {formatCurrency(lockedAmount, decimals)}</>}/>
             <NameValue name={t('supported_capital')} value={<>{supportingToken} {formatCurrency(supportedCapital, supportingTokenDecimals)}</>}/>

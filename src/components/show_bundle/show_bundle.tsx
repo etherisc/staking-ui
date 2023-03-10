@@ -24,6 +24,10 @@ export default function ShowBundle(props: ShowBundleProps) {
     const currency = props.stakingApi.currency();
     const decimals = props.stakingApi.currencyDecimals();
 
+    if (bundle.myStakedNfsIds.length >= 0) {
+        props.stakingApi.fetchUnclaimedRewards(bundle);
+    }
+
     async function claimRewards(bundle: BundleInfo): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {

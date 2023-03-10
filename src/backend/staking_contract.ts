@@ -2,7 +2,7 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
 import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
-import { add, addAmountToMyStakes, addNftId, clearNftIds } from "../redux/slices/stakes";
+import { add, addAmountToMyStakes, addNftId, clearNftIds, setUnclaimedRewards } from "../redux/slices/stakes";
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
@@ -121,6 +121,7 @@ export default class StakingContract {
             myStakedAmount: myStakedAmount.toString(),
             myStakedNfsIds: [],
             stakedAmount: stakedAmount.toString(),
+            unclaimedReward: BigNumber.from(0).toString(),
             mySupportingAmount: mySupportingAmount.toString(),
             supportingAmount: supportedAmount.toString(),
             supportingToken: tokenSymbol,
@@ -163,7 +164,7 @@ export default class StakingContract {
             const { target, stakeBalance } = await this.staking!.getInfo(nftId);
             const bundleInfo = bundles.find(bundle => bundle.nftId === target.toString());
             const supportingAmount = await this.calculateSupportedAmount(stakeBalance, bundleInfo!.token); 
-            console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
+            // console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
             dispatch(addAmountToMyStakes({ 
                 stakeNftId: nftId.toString(), 
                 target: target.toString(), 
@@ -183,7 +184,7 @@ export default class StakingContract {
         const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
         console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
         for (const nftId of bundleStakeNftIds) {
-            const { target, stakeBalance } = await this.staking!.getInfo(nftId);
+            const { target, stakeBalance, rewardBalance } = await this.staking!.getInfo(nftId);
             console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
             const supportingAmount = await this.calculateSupportedAmount(stakeBalance, bundle.token); 
             dispatch(addAmountToMyStakes({ 
@@ -377,6 +378,22 @@ export default class StakingContract {
             // @ts-ignore e.code
             throw new TransactionFailedError(e.code, e);
         }
+    }
+
+    async fetchUnclaimedRewards(bundle: BundleInfo): Promise<void> {
+        // console.log("fetchUnclaimedRewards", bundle);
+        const dispatch = store.dispatch;
+        const bundleStakeNftId = bundle.myStakedNfsIds.map(id => BigNumber.from(id));
+        const unclaimedRewards = await bundleStakeNftId.map(async (id) => {
+            const stakeInfo = await this.staking.getInfo(id);
+            const rewardIncrement = await this.staking.calculateRewardsIncrement(stakeInfo);
+            const { rewardBalance } = stakeInfo;
+            console.log("unclaimed rewards", stakeInfo, formatEther(rewardBalance), formatEther(rewardIncrement));
+            return rewardBalance.add(rewardIncrement);
+        }).reduce(async (accP, curP) => {
+            return (await accP).add(await curP);
+        }, Promise.resolve(BigNumber.from(0)));
+        dispatch(setUnclaimedRewards({ bundleId: bundle.bundleId, unclaimedReward: unclaimedRewards.toString()}));
     }
 
 }
