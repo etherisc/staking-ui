@@ -146,8 +146,6 @@ export default class StakingContract {
         const dispatch = store.dispatch;
         const bundles = [];
 
-        // TODO: filter nfts that are archived or burned (object state)
-
         // loop over all bundles
         const bundleNftIds = await this.getBundleNftIds();
         
