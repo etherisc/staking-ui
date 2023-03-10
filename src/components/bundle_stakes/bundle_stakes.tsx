@@ -10,13 +10,12 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { selectBundle, updateStakeUsage } from "../../redux/slices/stakes";
+import { updateStakeUsage } from "../../redux/slices/stakes";
 import { bigNumberComparator } from "../../utils/bignumber";
 import { formatAmount } from "../../utils/format";
 import { formatCurrency } from "../../utils/numbers";
 import { StakeUsage } from "../../utils/types";
 import Address from "../address";
-import SelectBundle from "../stake/select_bundle";
 import Timestamp from "../timestamp";
 import WithTooltip from "../with_tooltip";
 import StakeUsageIndicator from "./stake_usage_indicator";
@@ -68,18 +67,11 @@ export default function BundleStakes(props: BundleStakesProps) {
         return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
     }
 
-<<<<<<< HEAD
     function copyToClipboard(value: string) {
         navigator.clipboard.writeText(value);
         enqueueSnackbar(t('action.address_copied'),  { autoHideDuration: 2000, variant: 'info' });
     }
 
-    function showDetails(bundle: BundleInfo) {
-        dispatch(selectBundle(bundle));
-    }
-
-=======
->>>>>>> b35bf63 (my supported amount (#158))
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.55, 
