@@ -388,7 +388,7 @@ export default class StakingContract {
             const stakeInfo = await this.staking.getInfo(id);
             const rewardIncrement = await this.staking.calculateRewardsIncrement(stakeInfo);
             const { rewardBalance } = stakeInfo;
-            console.log("unclaimed rewards", stakeInfo, formatEther(rewardBalance), formatEther(rewardIncrement));
+            console.log("unclaimed rewards", formatEther(rewardBalance), formatEther(rewardIncrement), stakeInfo);
             return rewardBalance.add(rewardIncrement);
         }).reduce(async (accP, curP) => {
             return (await accP).add(await curP);

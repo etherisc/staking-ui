@@ -97,7 +97,7 @@
   "my_staked_amount": "My Staked Amount",
   "locked_amount": "Locked Amount",
   "active_until": "Active until",
-  "unclaimed_reward": "Unclaimed Rewards",
+  "unclaimed_reward": "Accumulated Rewards",
   "my_supported_capital": "My Supported Capital",
   "alert": {
     "unstaking_multiple_nfts": "Your stakes are distributed over multiple NFTs. Unstaking must be done in multiple transactions - each being limited to the staked amount on this NFT."

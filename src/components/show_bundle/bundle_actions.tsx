@@ -18,8 +18,9 @@ export default function BundleActions(props: BundleDetailsProps) {
     const bundle = props.bundle;
     const isStakingAllowed = props.bundle.stakingSupported;
     const isUnstakingAllowed = props.bundle.unstakingSupported;
+    // TODO: if unclaimed rewards === 0 -> disable button
     const isClaimRewardsAllowed = props.bundle.myStakedNfsIds.length > 0;
-
+    
     function stake() {
         dispatch(bundleSelected(bundle))
         router.push("/stake?noreset=true", undefined, { shallow: true });
