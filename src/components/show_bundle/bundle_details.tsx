@@ -1,9 +1,12 @@
 import { Grid } from "@mui/material";
 import { BigNumber } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
 import { BundleInfo } from "../../backend/bundle_info";
+import { bundleSelected } from "../../redux/slices/staking";
 import { formatCurrency } from "../../utils/numbers";
 import Address from "../address";
+import Timestamp from "../timestamp";
 
 interface BundleDetailsProps {
     bundle: BundleInfo;
@@ -24,6 +27,11 @@ export default function BundleDetails(props: BundleDetailsProps) {
     const stakedAmount = BigNumber.from(props.bundle.stakedAmount);
     const myStakedAmount = BigNumber.from(props.bundle.myStakedAmount);
     const lockedAmount = BigNumber.from(props.bundle.lockedAmount || 0);
+    const supportingToken = props.bundle.supportingToken;
+    const supportingTokenDecimals = props.bundle.supportingTokenDecimals;
+    const supportedCapital = BigNumber.from(props.bundle.supportingAmount);
+    const mySupportedCapital = BigNumber.from(props.bundle.mySupportingAmount);
+    const expiryAt = props.bundle.expiryAt;
 
     return (<>
         <Grid container spacing={1} data-testid="bundle-details">
@@ -35,10 +43,9 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
             <NameValue name={t('locked_amount')} value={<>{symbol} {formatCurrency(lockedAmount, decimals)}</>}/>
-            {/* TODO: supported capital */}
-            {/* TODO: my supported capital */}
-            {/* TODO: active until */}
-            {/* TODO: usage */}
+            <NameValue name={t('supported_capital')} value={<>{supportingToken} {formatCurrency(supportedCapital, supportingTokenDecimals)}</>}/>
+            <NameValue name={t('my_supported_capital')} value={<>{supportingToken} {formatCurrency(mySupportedCapital, supportingTokenDecimals)}</>}/>
+            <NameValue name={t('active_until')} value={<Timestamp at={expiryAt}/>}/>
         </Grid>
     </>);
 }
@@ -55,3 +62,5 @@ function NameValue(props: { name: string, value: JSX.Element }) {
         </Grid>
     </>);
 }
+
+

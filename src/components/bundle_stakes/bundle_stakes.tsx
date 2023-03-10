@@ -68,6 +68,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
     }
 
+<<<<<<< HEAD
     function copyToClipboard(value: string) {
         navigator.clipboard.writeText(value);
         enqueueSnackbar(t('action.address_copied'),  { autoHideDuration: 2000, variant: 'info' });
@@ -77,6 +78,8 @@ export default function BundleStakes(props: BundleStakesProps) {
         dispatch(selectBundle(bundle));
     }
 
+=======
+>>>>>>> b35bf63 (my supported amount (#158))
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.55, 

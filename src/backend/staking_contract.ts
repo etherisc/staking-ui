@@ -141,6 +141,7 @@ export default class StakingContract {
     async fetchBundles(): Promise<void> {
         const instanceInfos = await this.getAllInstanceInfos();
         const dispatch = store.dispatch;
+        const bundles = [];
 
         // loop over instances and get bundles
         for (const instanceInfo of instanceInfos) {
@@ -151,6 +152,7 @@ export default class StakingContract {
                 const bundleInfo = await this.getBundleInfo(bundleNftId, instanceId, instanceInfo.displayName, instanceInfo.chainId, instanceInfo.registry);
                 console.log("bundleInfo", bundleInfo);
                 dispatch(add(bundleInfo));
+                bundles.push(bundleInfo);
             }
         }
 
@@ -159,8 +161,15 @@ export default class StakingContract {
         console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
         for (const nftId of bundleStakeNftIds) {
             const { target, stakeBalance } = await this.staking!.getInfo(nftId);
+            const bundleInfo = bundles.find(bundle => bundle.nftId === target.toString());
+            const supportingAmount = await this.calculateSupportedAmount(stakeBalance, bundleInfo!.token); 
             console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
-            dispatch(addAmountToMyStakes({ stakeNftId: nftId.toString(), target: target.toString(), amountToAdd: stakeBalance.toString()}));
+            dispatch(addAmountToMyStakes({ 
+                stakeNftId: nftId.toString(), 
+                target: target.toString(), 
+                amount: stakeBalance.toString(), 
+                supportingAmount: supportingAmount.toString()
+            }));
             dispatch(addNftId({ nftId: nftId.toString(), stakedAmount: stakeBalance.toString(), targetNftId: target.toString()}));
         }
     }
@@ -176,7 +185,13 @@ export default class StakingContract {
         for (const nftId of bundleStakeNftIds) {
             const { target, stakeBalance } = await this.staking!.getInfo(nftId);
             console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
-            dispatch(addAmountToMyStakes({ stakeNftId: nftId.toString(), target: target.toString(), amountToAdd: stakeBalance.toString()}));
+            const supportingAmount = await this.calculateSupportedAmount(stakeBalance, bundle.token); 
+            dispatch(addAmountToMyStakes({ 
+                stakeNftId: nftId.toString(), 
+                target: target.toString(), 
+                amount: stakeBalance.toString(), 
+                supportingAmount: supportingAmount.toString()
+            }));
             dispatch(addNftId({ nftId: nftId.toString(), stakedAmount: stakeBalance.toString(), targetNftId: target.toString()}));
         }
     }

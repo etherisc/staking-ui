@@ -35,12 +35,15 @@ export const stakesSlice = createSlice({
                 }
             }
         },
-        addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amountToAdd: string}>) => {
+        addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amount: string, supportingAmount: string}>) => {
             const bundle = state.bundles.find((bundle) => bundle.nftId === action.payload.target);
             if (bundle && bundle.myStakedNfsIds.indexOf(action.payload.stakeNftId) === -1) {
                 const myStakedAmount = BigNumber.from(bundle.myStakedAmount);
-                const amountToAdd = BigNumber.from(action.payload.amountToAdd);
+                const amountToAdd = BigNumber.from(action.payload.amount);
+                const mySupportingAmount = BigNumber.from(bundle.mySupportingAmount);
+                const supportingAmountToAdd = BigNumber.from(action.payload.supportingAmount);
                 bundle.myStakedAmount = myStakedAmount.add(amountToAdd).toString();
+                bundle.mySupportingAmount = mySupportingAmount.add(supportingAmountToAdd).toString();
                 bundle.myStakedNfsIds.push(action.payload.stakeNftId);
             }
         },
