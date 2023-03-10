@@ -85,12 +85,9 @@ export default class StakingContract {
     }
 
     /**
-     * Get bundle details (except amount staked by current wallet)
+     * Get bundle details (except amount staked by current wallet and unclaimed rewards)
      * @param bundleNftId 
-     * @param instanceId 
-     * @param instanceName 
-     * @param chainId 
-     * @param registry 
+     * @param instanceInfos list of all instances that are available on the current chain
      * @returns 
      */
     async getBundleInfo(bundleNftId: BigNumber, instanceInfos: InstanceInfo[] ): Promise<BundleInfo> {
