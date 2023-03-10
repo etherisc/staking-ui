@@ -17,6 +17,7 @@ export default function BundleActions(props: BundleDetailsProps) {
 
     const bundle = props.bundle;
     const isStakingAllowed = props.bundle.stakingSupported;
+    // TODO: my stake > 0
     const isUnstakingAllowed = props.bundle.unstakingSupported;
     // TODO: if unclaimed rewards === 0 -> disable button
     const isClaimRewardsAllowed = props.bundle.myStakedNfsIds.length > 0;
@@ -37,26 +38,29 @@ export default function BundleActions(props: BundleDetailsProps) {
 
 
     return (<Grid container spacing={2} data-testid="bundle-actions">
-        {isStakingAllowed && <Grid item xs={12}>
+        <Grid item xs={12}>
             <Button 
                 onClick={stake}
                 variant="contained" 
                 sx={{ minWidth: '12rem' }}
+                disabled={!isStakingAllowed}
                 >{t('action.stake')}</Button>
-        </Grid>}
-        {isUnstakingAllowed && <Grid item xs={12}>
+        </Grid>
+        <Grid item xs={12}>
             <Button 
                 onClick={unstake}
                 variant="contained" 
                 sx={{ minWidth: '12rem' }}
+                disabled={!isUnstakingAllowed}
                 >{t('action.unstake')}</Button>
-        </Grid>}
-        {isClaimRewardsAllowed && <Grid item xs={12}>
+        </Grid>
+        <Grid item xs={12}>
             <Button 
                 onClick={claimRewards}
                 variant="contained" 
                 sx={{ minWidth: '12rem' }}
+                disabled={!isClaimRewardsAllowed}
                 >{t('action.claim_rewards')}</Button>
-        </Grid>}
+        </Grid>
     </Grid>);
 }
