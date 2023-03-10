@@ -4,6 +4,9 @@
   "action": {
     "stake": "Stake",
     "unstake": "Unstake",
-    "refresh": "Refresh bundles"
-  }
+    "refresh": "Refresh bundles",
+    "claim_rewards": "Claim rewards",
+    "details": "Details"
+  },
+  "title_show_bundle": "Bundles"
 }

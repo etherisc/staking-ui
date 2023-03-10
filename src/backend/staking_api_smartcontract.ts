@@ -10,7 +10,6 @@ import StakingContract from "./staking_contract";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
-    private stakingContractAddress: string;
     private gifStakingApi: StakingContract;
     private gifInstanceService: GifInstanceService;
     private gifStakingApiInitialized = false;
@@ -21,7 +20,6 @@ export class StakingApiSmartContract implements StakingApi {
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
-        this.stakingContractAddress = stakingContractAddress;
         this.gifStakingApi = new StakingContract(signer, stakingContractAddress);
         this.gifInstanceService = new GifInstanceService(signer);
     }
@@ -73,8 +71,13 @@ export class StakingApiSmartContract implements StakingApi {
 
     async retrieveBundles(): Promise<void> {
         // console.log("StakingApiSmartContract.retrieveBundles");
-        await (await this.getGifStakingApi()).fetchBundlesBundles();
+        await (await this.getGifStakingApi()).fetchBundles();
     }
+
+    async updateBundle(bundle: BundleInfo): Promise<void> {
+        return await (await this.getGifStakingApi()).updateBundle(bundle);
+    }
+
     
     async calculateSupportedAmount(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
         return (await this.getGifStakingApi()).calculateSupportedAmount(amount, bundle.token);

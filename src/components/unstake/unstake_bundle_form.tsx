@@ -45,7 +45,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
     do {
         selectedNft = ownedNfts.find((nft) => nft.nftId === props.bundle.myStakedNfsIds[i]);
         console.log("selectedNft", selectedNft);
-        stakedAmount = BigNumber.from(selectedNft?.stakedAmount);
+        stakedAmount = BigNumber.from(selectedNft?.stakedAmount ?? 0);
         unstakedAmountMax = bigNumberToAmountStringWithDecimals(stakedAmount, 2);
     } while(stakedAmount.eq(0) && ++i < bundleStakeNfts.length)
 

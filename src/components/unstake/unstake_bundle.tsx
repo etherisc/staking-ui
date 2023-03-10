@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { BigNumber } from "ethers";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import BundleDetails from "../stake/bundle_details";
+import BundleDetails from "../show_bundle/bundle_details";
 import StakeBundleForm from "./unstake_bundle_form";
 
 interface UnstakeBundleProps {

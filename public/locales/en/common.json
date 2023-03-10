@@ -75,7 +75,7 @@
       "myAllSupportingAmount": "Supported Capital (Mine/Total)",
       "supportingAmount": "Total Supporting Amount",
       "state": "State",
-      "actions": "Actions",
+      "actions": "",
       "stake_usage": "Usage",
       "expiryAt": "Active until"
     }

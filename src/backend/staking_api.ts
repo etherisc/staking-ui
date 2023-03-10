@@ -12,6 +12,7 @@ export interface StakingApi {
     minStakedAmount(): BigNumber;
     maxStakedAmount(): BigNumber;
     retrieveBundles: () => Promise<void>;
+    updateBundle(bundle: BundleInfo): Promise<void>;
     calculateSupportedAmount: (
         amount: BigNumber,
         bundle: BundleInfo,

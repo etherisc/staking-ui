@@ -10,12 +10,13 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { updateStakeUsage } from "../../redux/slices/stakes";
+import { selectBundle, updateStakeUsage } from "../../redux/slices/stakes";
 import { bigNumberComparator } from "../../utils/bignumber";
 import { formatAmount } from "../../utils/format";
 import { formatCurrency } from "../../utils/numbers";
 import { StakeUsage } from "../../utils/types";
 import Address from "../address";
+import SelectBundle from "../stake/select_bundle";
 import Timestamp from "../timestamp";
 import WithTooltip from "../with_tooltip";
 import StakeUsageIndicator from "./stake_usage_indicator";
@@ -70,6 +71,10 @@ export default function BundleStakes(props: BundleStakesProps) {
     function copyToClipboard(value: string) {
         navigator.clipboard.writeText(value);
         enqueueSnackbar(t('action.address_copied'),  { autoHideDuration: 2000, variant: 'info' });
+    }
+
+    function showDetails(bundle: BundleInfo) {
+        dispatch(selectBundle(bundle));
     }
 
     const columns: Array<GridColDef> = [
@@ -162,10 +167,24 @@ export default function BundleStakes(props: BundleStakesProps) {
             },
             sortComparator: (v1: BundleInfo, v2: BundleInfo) => v1?.expiryAt - v2?.expiryAt,
         },
+        { 
+            field: 'actions', 
+            headerName: t('table.header.actions'), 
+            flex: 0.45,
+            sortable: false,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
+                params.row,
+            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
+                if (props.buildActions) {
+                    return props.buildActions(params.value!);
+                }
+                return (<></>);
+            }
+        }
     ];
 
     if (props.showStakeUsage !== undefined && props.showStakeUsage) {
-        columns.push({ 
+        columns.splice(6, 0, { 
             field: 'stakeUsage', 
             headerName: t('table.header.stake_usage'), 
             flex: 0.3,
@@ -184,20 +203,6 @@ export default function BundleStakes(props: BundleStakesProps) {
                             />);
             },
             sortComparator: (v1: [StakeUsage], v2: [StakeUsage], p1: GridSortCellParams, p2: GridSortCellParams) => gridNumberComparator(v1[0], v2[0], p1, p2)
-        });
-    }
-
-    if (props.buildActions !== undefined) {
-        columns.push({ 
-            field: 'actions', 
-            headerName: t('table.header.actions'), 
-            flex: 0.45,
-            sortable: false,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
-                params.row,
-            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
-                return props.buildActions!(params.value!);
-            }
         });
     }
 

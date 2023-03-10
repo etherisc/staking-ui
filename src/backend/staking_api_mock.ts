@@ -57,6 +57,9 @@ export default function stakingApiMock(
         ): Promise<void> => {
             return Promise.resolve();
         },
+        updateBundle(bundle: BundleInfo): Promise<void> {
+            return Promise.resolve();
+        },
         calculateSupportedAmount(amount, bundle) {
             console.log(amount);
             return Promise.resolve(amount.mul(10));

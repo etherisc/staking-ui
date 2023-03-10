@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import { selectBundle } from "../../redux/slices/stakes";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
@@ -67,7 +68,7 @@ export default function Unstake(props: UnstakeProps) {
                 return;
             }
             dispatch(setStep(5));
-            unstakingSuccessful();
+            await unstakingSuccessful(stakeingBundle!);
         } finally {
             enableUnloadWarning(false);
         }
@@ -126,7 +127,7 @@ export default function Unstake(props: UnstakeProps) {
         }
     }
 
-    function unstakingSuccessful() {
+    async function unstakingSuccessful(bundle: BundleInfo) {
         enqueueSnackbar(
             t('unstaking_success'),
             { 
@@ -140,6 +141,8 @@ export default function Unstake(props: UnstakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
+        await props.stakingApi.updateBundle(bundle);
+        dispatch(selectBundle(bundle));
         router.push("/");
         updateAccountBalance(signer!, dispatch);
     }

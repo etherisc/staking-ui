@@ -6,6 +6,7 @@ import { NftInfo } from '../../backend/nft_info';
 
 export interface StakesState {
     bundles: BundleInfo[];
+    selectedBundle: BundleInfo | undefined;
     // nft ids of the nfts that are owned by the current connected wallet
     ownedNfts: NftInfo[];
     isLoadingBundles: boolean;
@@ -13,6 +14,7 @@ export interface StakesState {
 
 const initialState: StakesState = {
     bundles: [],
+    selectedBundle: undefined,
     ownedNfts: [],
     isLoadingBundles: false,
 }
@@ -22,9 +24,15 @@ export const stakesSlice = createSlice({
     initialState,
     reducers: {
         add: (state, action: PayloadAction<BundleInfo>) => {
-            const hasBundle = state.bundles.find((bundle) => bundle.id === action.payload.id) !== undefined;
-            if (!hasBundle) {
+            const idx = state.bundles.findIndex((bundle) => bundle.id === action.payload.id);
+            if (idx === -1) {
                 state.bundles.push(action.payload);
+            } else {
+                // replace bundle
+                state.bundles[idx] = action.payload;
+                if (state.selectedBundle?.id === action.payload.id) {
+                    state.selectedBundle = action.payload;
+                }
             }
         },
         addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amountToAdd: string}>) => {
@@ -47,9 +55,11 @@ export const stakesSlice = createSlice({
             state.bundles = [];
         },
         addNftId: (state, action: PayloadAction<NftInfo>) => {
-            const hasNft = state.ownedNfts.find((n) => n.nftId === action.payload.nftId) !== undefined;
-            if (!hasNft) {
+            const nftIdx = state.ownedNfts.findIndex((n) => n.nftId === action.payload.nftId);
+            if (nftIdx === -1) {
                 state.ownedNfts.push(action.payload);
+            } else {
+                state.ownedNfts[nftIdx] = action.payload;
             }
         },
         clearNftIds: (state) => {
@@ -61,6 +71,9 @@ export const stakesSlice = createSlice({
         finishLoading: (state) => {
             state.isLoadingBundles = false;
         },
+        selectBundle: (state, action: PayloadAction<BundleInfo|undefined>) => {
+            state.selectedBundle = action.payload;
+        }
     },
 })
 
@@ -69,6 +82,7 @@ export const {
     add, updateStakeUsage, reset, addAmountToMyStakes,
     addNftId, clearNftIds,
     startLoading, finishLoading,
+    selectBundle,
 } = stakesSlice.actions
 
 export default stakesSlice.reducer
