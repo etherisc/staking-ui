@@ -20,5 +20,7 @@ export function mockStakingApiSimple(): StakingApi {
         hasDipBalance: jest.fn(),
         getRewardRate: jest.fn(),
         getStakeUsage: jest.fn(),
+        updateBundle: jest.fn(),
+        claimRewards: jest.fn(),
     } as StakingApi;
 }
