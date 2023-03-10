@@ -68,7 +68,7 @@
   "table": {
     "header": {
       "instanceId": "Instance",
-      "bundleId": "Bundle",
+      "bundleId": "Risk bundle",
       "myAllStakedAmount": "Staked Amount (Mine/Total)",
       "myStakedAmount": "My Staked Amount",
       "stakedAmount": "Total Staked Amount",
@@ -80,8 +80,8 @@
       "expiryAt": "Active until"
     }
   },
-  "choose_bundle": "Please select a bundle",
-  "bundle_information": "Selected Bundle",
+  "choose_bundle": "Please select a risk bundle",
+  "bundle_information": "Selected risk bundle",
   "instance_id": "Instance ID",
   "instance_name": "Instance Name",
   "bundle_id": "ID",

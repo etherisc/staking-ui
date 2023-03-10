@@ -1,7 +1,7 @@
 {
   "page_title": "Stake {{currency}}",
   "step0": "Connect wallet",
-  "step1": "Select bundle",
+  "step1": "Select risk bundle",
   "step2": "Enter amount",
   "step3": "Stake",
   "step4": "Confirm allowance",
@@ -18,7 +18,7 @@
   "stake_wait": "Transaction created, waiting for onchain confirmation",
   "staking_success": "Staking of DIPs successful. It can take up to 5 minutes for the applications to refresh and your stakes to be accurately reflected.",
   "reward_rate" : "Reward Rate (%)",
-  "expected_reward": "Expected Reward (at the end bundle lifetime)",
+  "expected_reward": "Expected Reward (at the end risk bundle lifetime)",
   "expected_reward_notice": "Please note, the expected reward is an approximation and the reward rate may change at any time."
 }
 
