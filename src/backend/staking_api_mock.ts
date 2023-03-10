@@ -91,5 +91,8 @@ export default function stakingApiMock(
         async getStakeUsage(bundle: BundleInfo) {
             return Promise.resolve({ usage: 0.5, lockedCapital: BigNumber.from(1000)});
         },
+        async claimRewards() {
+            return Promise.resolve(true);
+        }
     }
 }

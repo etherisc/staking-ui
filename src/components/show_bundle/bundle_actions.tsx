@@ -7,6 +7,7 @@ import { bundleSelected } from "../../redux/slices/staking";
 
 interface BundleDetailsProps {
     bundle: BundleInfo;
+    claimRewards: (bundle: BundleInfo) => Promise<boolean>
 }
 
 export default function BundleActions(props: BundleDetailsProps) {
@@ -29,8 +30,8 @@ export default function BundleActions(props: BundleDetailsProps) {
         router.push("/unstake?noreset=true", undefined, { shallow: true });
     }
 
-    function claimRewards() {
-        
+    async function claimRewards() {
+        await props.claimRewards(bundle);
     }
 
 

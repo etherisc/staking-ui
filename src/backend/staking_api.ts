@@ -50,6 +50,11 @@ export interface StakingApi {
      * if between 0 and 1, the staked amount is too low. If > 1, the staked amount is sufficient.
      */
     getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}>;
+    claimRewards(
+        bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<boolean>;
 }
 
 export function getStakingApi(

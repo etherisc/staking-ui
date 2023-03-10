@@ -154,6 +154,14 @@ export class StakingApiSmartContract implements StakingApi {
         const usage = lockedCapital.mul(100).div(supportedAmount).toNumber() / 100;
         return {usage, lockedCapital};
     }
+
+    async claimRewards(bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<boolean> {
+        const [tx, receipt] =  await (await this.getGifStakingApi()).claimRewards(bundle);
+        return receipt.status === 1;
+    }
     
 }
 

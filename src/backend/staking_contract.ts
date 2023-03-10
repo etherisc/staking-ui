@@ -351,4 +351,32 @@ export default class StakingContract {
         return await this.staking.getStakingWallet();
     }
 
+    async claimRewards(bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<[ContractTransaction, ContractReceipt]> {
+        console.log("claimRewards", bundle);
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.staking.address);
+        }
+        try {
+            let tx;
+
+            const bundleStakeNftId = BigNumber.from(bundle.myStakedNfsIds[0]);
+            console.log("unstaking from nft", bundleStakeNftId.toNumber());
+            tx = await this.staking.claimRewards(bundleStakeNftId);
+            
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.staking.address);
+            }
+            const receipt = await tx.wait();
+            // console.log(receipt);
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while unstaking: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
+    }
+
 }
