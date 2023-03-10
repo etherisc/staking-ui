@@ -35,6 +35,10 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
             <NameValue name={t('locked_amount')} value={<>{symbol} {formatCurrency(lockedAmount, decimals)}</>}/>
+            {/* TODO: supported capital */}
+            {/* TODO: my supported capital */}
+            {/* TODO: active until */}
+            {/* TODO: usage */}
         </Grid>
     </>);
 }
