@@ -119,7 +119,7 @@ export default class StakingContract {
             nftId: bundleNftId.toString(),
             token: token,
             myStakedAmount: myStakedAmount.toString(),
-            myStakedAmountNfsIds: [],
+            myStakedNfsIds: [],
             stakedAmount: stakedAmount.toString(),
             mySupportingAmount: mySupportingAmount.toString(),
             supportingAmount: supportedAmount.toString(),
@@ -272,6 +272,7 @@ export default class StakingContract {
 
     async unstake(
         bundle: BundleInfo,
+        nftId: string,
         unstakeAmount?: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
@@ -283,14 +284,8 @@ export default class StakingContract {
         try {
             let tx;
 
-            const bundleStakeNftIds = await this.findAllStakeNfts(BigNumber.from(bundle.nftId));
-            if (bundleStakeNftIds.length === 0) {
-                throw new Error("no bundle stake nft found");
-            }
-            // simplify by only using the first nft found
-            const bundleStakeNftId = bundleStakeNftIds[0];
+            const bundleStakeNftId = BigNumber.from(nftId);
             console.log("unstaking from nft", bundleStakeNftId.toNumber());
-            // TODO: if multiple nfts are found, loop over them and unstake from the largest of them thereby limiting the amount to unstake to the amount of the nft 
             if (unstakeAmount === undefined) {
                 tx = await this.staking.unstakeAndClaimRewards(bundleStakeNftId);
             } else {

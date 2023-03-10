@@ -34,6 +34,7 @@ export interface StakingApi {
     ) => Promise<boolean>;
     unstake: (
         bundle: BundleInfo,
+        nftId: string,
         max: boolean,
         unstakeAmount: BigNumber,
         beforeTrxCallback?: (address: string) => void,

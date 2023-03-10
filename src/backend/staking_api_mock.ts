@@ -74,7 +74,7 @@ export default function stakingApiMock(
             await delay(2000);
             return Promise.resolve(true);
         },
-        async unstake(bundle: BundleInfo, max:boolean, unstakeAmount: BigNumber) {
+        async unstake(bundle: BundleInfo, nftdId: string, max: boolean, unstakeAmount: BigNumber) {
             enqueueSnackbar(`Unstake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${formatEther(unstakeAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);

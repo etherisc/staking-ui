@@ -6,15 +6,14 @@ import { NftInfo } from '../../backend/nft_info';
 
 export interface StakesState {
     bundles: BundleInfo[];
-    // nft ids of the nfts that are owned by the current connected bundle
-    // TODO: do we even need this?
-    ownedNftsIds: NftInfo[];
+    // nft ids of the nfts that are owned by the current connected wallet
+    ownedNfts: NftInfo[];
     isLoadingBundles: boolean;
 }
 
 const initialState: StakesState = {
     bundles: [],
-    ownedNftsIds: [],
+    ownedNfts: [],
     isLoadingBundles: false,
 }
 
@@ -30,11 +29,11 @@ export const stakesSlice = createSlice({
         },
         addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amountToAdd: string}>) => {
             const bundle = state.bundles.find((bundle) => bundle.nftId === action.payload.target);
-            if (bundle && bundle.myStakedAmountNfsIds.indexOf(action.payload.stakeNftId) === -1) {
+            if (bundle && bundle.myStakedNfsIds.indexOf(action.payload.stakeNftId) === -1) {
                 const myStakedAmount = BigNumber.from(bundle.myStakedAmount);
                 const amountToAdd = BigNumber.from(action.payload.amountToAdd);
                 bundle.myStakedAmount = myStakedAmount.add(amountToAdd).toString();
-                bundle.myStakedAmountNfsIds.push(action.payload.stakeNftId);
+                bundle.myStakedNfsIds.push(action.payload.stakeNftId);
             }
         },
         updateStakeUsage: (state, action: PayloadAction<{bundleId: number, usage: number | undefined, lockedCapital: string}>) => {
@@ -48,13 +47,13 @@ export const stakesSlice = createSlice({
             state.bundles = [];
         },
         addNftId: (state, action: PayloadAction<NftInfo>) => {
-            const hasNft = state.ownedNftsIds.find((n) => n.nftId === action.payload.nftId) !== undefined;
+            const hasNft = state.ownedNfts.find((n) => n.nftId === action.payload.nftId) !== undefined;
             if (!hasNft) {
-                state.ownedNftsIds.push(action.payload);
+                state.ownedNfts.push(action.payload);
             }
         },
         clearNftIds: (state) => {
-            state.ownedNftsIds = [];
+            state.ownedNfts = [];
         },
         startLoading: (state) => {
             state.isLoadingBundles = true;

@@ -14,7 +14,7 @@ export type BundleInfo = {
     token: string;
     myStakedAmount: string;
     // list of nft ids whose stake has been added to myStakedAmount
-    myStakedAmountNfsIds: string[];
+    myStakedNfsIds: string[];
     stakedAmount: string;
     mySupportingAmount: string;
     supportingAmount: string;

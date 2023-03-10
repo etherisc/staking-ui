@@ -116,6 +116,7 @@ export class StakingApiSmartContract implements StakingApi {
 
     async unstake(
         bundle: BundleInfo,
+        nftId: string,
         max: boolean,
         unstakeAmount: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
@@ -123,6 +124,7 @@ export class StakingApiSmartContract implements StakingApi {
     ): Promise<boolean> {
         const [tx, receipt] = await (await this.getGifStakingApi()).unstake(
             bundle,
+            nftId,
             max ? undefined : unstakeAmount, 
             beforeTrxCallback, 
             beforeWaitCallback);
