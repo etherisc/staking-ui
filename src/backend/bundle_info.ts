@@ -1,6 +1,6 @@
-import { LogMaximumNumberOfActiveBundlesSetEventFilter } from "../contracts/depeg-contracts/BasicRiskpool2";
 import { StakeUsage } from "../utils/types";
 
+// all BigNumber are stored as strings to avoid serialization issue with BigNumber
 export type BundleInfo = {
     id: string;
     chainId: number;
@@ -10,10 +10,11 @@ export type BundleInfo = {
     riskpoolId: number;
     bundleId: number;
     bundleName: string;
-    targetId: string;
+    nftId: string;
     token: string;
-    // numbers are stored as strings to avoid serialization issue with BigNumber
     myStakedAmount: string;
+    // list of nft ids whose stake has been added to myStakedAmount
+    myStakedNfsIds: string[];
     stakedAmount: string;
     mySupportingAmount: string;
     supportingAmount: string;

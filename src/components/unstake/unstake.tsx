@@ -1,11 +1,11 @@
-import { Stepper, Step, StepLabel, Button, Alert } from "@mui/material";
+import { Alert, Button, Step, StepLabel, Stepper } from "@mui/material";
 import confetti from "canvas-confetti";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { SnackbarKey, useSnackbar } from "notistack";
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { resetForm, setStep } from "../../redux/slices/staking";
@@ -55,13 +55,13 @@ export default function Unstake(props: UnstakeProps) {
         }
     }, [isConnected, activeStep, dispatch]);
 
-    async function unstake(amount: BigNumber, max: boolean, bundle: BundleInfo) {
+    async function unstake(amount: BigNumber, nftId: string, max: boolean, bundle: BundleInfo) {
         try {
             enableUnloadWarning(true);
             const walletAddress = await signer!.getAddress();
 
             dispatch(setStep(4));
-            const applicationSuccess = await doUnstake(stakeingBundle!, max, amount);
+            const applicationSuccess = await doUnstake(stakeingBundle!, nftId, max, amount);
             if ( ! applicationSuccess) {
                 dispatch(setStep(3));
                 return;
@@ -73,11 +73,12 @@ export default function Unstake(props: UnstakeProps) {
         }
     }
 
-    async function doUnstake(bundle: BundleInfo, max: boolean, unstakeAmount: BigNumber): Promise<boolean> {
+    async function doUnstake(bundle: BundleInfo, nftId: string, max: boolean, unstakeAmount: BigNumber): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
             return await props.stakingApi.unstake(
                 bundle,
+                nftId,
                 max,
                 unstakeAmount,
                 (address: string) => {

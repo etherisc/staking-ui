@@ -11,10 +11,7 @@ export interface StakingApi {
     currencyDecimals(): number;
     minStakedAmount(): BigNumber;
     maxStakedAmount(): BigNumber;
-    retrieveBundles: (
-        bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
-        loadingFinished: () => void,
-    ) => Promise<void>;
+    retrieveBundles: () => Promise<void>;
     calculateSupportedAmount: (
         amount: BigNumber,
         bundle: BundleInfo,
@@ -35,17 +32,9 @@ export interface StakingApi {
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;
-    retrieveStakesForWallet: (
-        address: string,
-        bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
-        loadingFinished: () => void,
-    ) => Promise<void>;
-    stakedAmount: (
-        bundle: BundleInfo,
-        address: string,
-    ) => Promise<BigNumber>;
     unstake: (
         bundle: BundleInfo,
+        nftId: string,
         max: boolean,
         unstakeAmount: BigNumber,
         beforeTrxCallback?: (address: string) => void,

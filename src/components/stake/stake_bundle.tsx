@@ -1,3 +1,4 @@
+import { Grid } from "@mui/material";
 import { BigNumber } from "ethers";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
@@ -13,7 +14,13 @@ interface StakeBundleProps {
 
 export default function StakeBundle(props: StakeBundleProps) {
     return (<>
-        <BundleDetails bundle={props.bundle} />
-        <StakeBundleForm stakingApi={props.stakingApi} bundle={props.bundle} stake={props.stake} formDisabled={props.formDisabled} />
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid item xs={12} md={6}>
+                <BundleDetails bundle={props.bundle}  currency={props.stakingApi.currency()} decimals={props.stakingApi.currencyDecimals()} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <StakeBundleForm stakingApi={props.stakingApi} bundle={props.bundle} stake={props.stake} formDisabled={props.formDisabled} />
+            </Grid>
+        </Grid>
     </>);
 }

@@ -4,15 +4,11 @@ import { BundleInfo } from '../../backend/bundle_info';
 
 export interface StakingState {
     step: number;
-    bundles: BundleInfo[];
-    isLoadingBundles: boolean;
     stakeingBundle: BundleInfo | null;
 }
 
 const initialState: StakingState = {
     step: 0,
-    bundles: [],
-    isLoadingBundles: false,
     stakeingBundle: null,
 }
 
@@ -32,21 +28,6 @@ export const stakingSlice = createSlice({
         setStep: (state, action: PayloadAction<number>) => {
             state.step = action.payload;
         },
-        add: (state, action: PayloadAction<BundleInfo>) => {
-            const hasBundle = state.bundles.find((bundle) => bundle.id === action.payload.id) !== undefined;
-            if (! hasBundle) {
-                state.bundles.push(action.payload);
-            }
-        },
-        reset: (state) => {
-            state.bundles = [];
-        },
-        startLoading: (state) => {
-            state.isLoadingBundles = true;
-        },
-        finishLoading: (state) => {
-            state.isLoadingBundles = false;
-        },
         bundleSelected: (state, action: PayloadAction<BundleInfo|null>) => {
             state.step = 2;
             state.stakeingBundle = action.payload;
@@ -58,7 +39,6 @@ export const stakingSlice = createSlice({
 export const { 
     resetForm,
     setStep, 
-    add, reset, startLoading, finishLoading,
     bundleSelected 
 } = stakingSlice.actions
 

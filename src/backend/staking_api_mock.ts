@@ -1,9 +1,8 @@
 import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
-import { SnackbarMessage, OptionsObject, SnackbarKey } from "notistack";
+import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import { delay } from "../utils/delay";
 import { BundleInfo, BundleState } from "./bundle_info";
-import { hasBalance } from "./erc20";
 import { StakingApi } from "./staking_api";
 
 const BUNDLES = [
@@ -55,11 +54,7 @@ export default function stakingApiMock(
         minStakedAmount: (): BigNumber => { return parseEther("1000"); },
         maxStakedAmount: (): BigNumber => { return parseEther("100000"); },
         retrieveBundles: async (
-            bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
-            loadingFinished: () => void,
         ): Promise<void> => {
-            BUNDLES.forEach(async (bundle) => bundleRetrieved(bundle));
-            loadingFinished();
             return Promise.resolve();
         },
         calculateSupportedAmount(amount, bundle) {
@@ -79,15 +74,7 @@ export default function stakingApiMock(
             await delay(2000);
             return Promise.resolve(true);
         },
-        async retrieveStakesForWallet(address: string, bundleRetrieved: ((bundle: BundleInfo) => Promise<void>), loadingFinished: () => void) {
-            BUNDLES.forEach(async (bundle) => bundleRetrieved(bundle));
-            loadingFinished();
-            return Promise.resolve();
-        },
-        stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-            return Promise.resolve(parseEther("10000"));
-        },
-        async unstake(bundle: BundleInfo, max:boolean, unstakeAmount: BigNumber) {
+        async unstake(bundle: BundleInfo, nftdId: string, max: boolean, unstakeAmount: BigNumber) {
             enqueueSnackbar(`Unstake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${formatEther(unstakeAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);
