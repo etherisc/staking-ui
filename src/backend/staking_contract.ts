@@ -2,10 +2,11 @@ import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers"
 import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
 import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
-import { add, addAmountToMyStakes, addNftId, clearNftIds } from "../redux/slices/stakes";
+import { add, addAmountToMyStakes, addNftId, clearNftIds, setUnclaimedRewards } from "../redux/slices/stakes";
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
+import { InstanceInfo } from "./instance_info";
 
 /** get from https://github.com/etherisc/registry-contracts/blob/develop/contracts/registry/ChainRegistryV01.sol#L27 */
 const OBJECT_TYPE_UNDEFINED = 0;
@@ -46,7 +47,7 @@ export default class StakingContract {
         this.walletAddress = await this.signer.getAddress();
     }
 
-    async getAllInstanceInfos() {
+    async getAllInstanceInfos(): Promise<InstanceInfo[]> {
         console.log("getAllInstanceInfos", this.chainIdB32);
         const instanceInfos = [];
         const numInstances = await this.chainRegistry!.objects(this.chainIdB32, OBJECT_TYPE_INSTANCE);
@@ -55,7 +56,7 @@ export default class StakingContract {
         for (let i = 0; i < numInstances.toNumber(); i++) {
             const nftId = await this.chainRegistry!["getNftId(bytes5,uint8,uint256)"](this.chainIdB32, OBJECT_TYPE_INSTANCE, i);
             const { instanceId, registry, displayName } = await this.chainRegistry!.decodeInstanceData(nftId);
-            instanceInfos.push({ instanceId , displayName, chainId: this.chainId!, registry, nftId});
+            instanceInfos.push({ instanceId , displayName, chainId: this.chainId!, registry, nftId} as InstanceInfo);
         }
         return instanceInfos;
     }
@@ -84,17 +85,18 @@ export default class StakingContract {
     }
 
     /**
-     * Get bundle details (except amount staked by current wallet)
+     * Get bundle details (except amount staked by current wallet and unclaimed rewards)
      * @param bundleNftId 
-     * @param instanceId 
-     * @param instanceName 
-     * @param chainId 
-     * @param registry 
+     * @param instanceInfos list of all instances that are available on the current chain
      * @returns 
      */
-    async getBundleInfo(bundleNftId: BigNumber, instanceId: string, instanceName: string, chainId: number, registry: string): Promise<BundleInfo> {
+    async getBundleInfo(bundleNftId: BigNumber, instanceInfos: InstanceInfo[] ): Promise<BundleInfo> {
         console.log("decodeBundleData");
-        const { token } = await this.chainRegistry!.decodeBundleData(bundleNftId);
+        const { instanceId, token } = await this.chainRegistry!.decodeBundleData(bundleNftId);
+        const instance = instanceInfos.find(i => i.instanceId === instanceId);
+        if (!instance) {
+            throw new Error("instance not found");
+        }
         console.log("getBundleInfo", bundleNftId.toNumber());
         const { riskpoolId, bundleId, displayName, bundleState, expiryAt } = await this.staking!.getBundleInfo(bundleNftId);
 
@@ -109,10 +111,10 @@ export default class StakingContract {
 
         return {
             id: `${instanceId}-${bundleId}`,
-            chainId: chainId,
+            chainId: instance.chainId,
             instanceId: instanceId,
-            instanceName: instanceName,
-            registry: registry,
+            instanceName: instance.displayName,
+            registry: instance.registry,
             riskpoolId: riskpoolId.toNumber(),
             bundleId: bundleId.toNumber(),
             bundleName: displayName,
@@ -121,6 +123,7 @@ export default class StakingContract {
             myStakedAmount: myStakedAmount.toString(),
             myStakedNfsIds: [],
             stakedAmount: stakedAmount.toString(),
+            unclaimedReward: BigNumber.from(0).toString(),
             mySupportingAmount: mySupportingAmount.toString(),
             supportingAmount: supportedAmount.toString(),
             supportingToken: tokenSymbol,
@@ -138,30 +141,57 @@ export default class StakingContract {
     /**
      * Fetch all bundles from the blockchain and add them to the redux store
      */
-    async fetchBundlesBundles(
-    ): Promise<void> {
+    async fetchBundles(): Promise<void> {
         const instanceInfos = await this.getAllInstanceInfos();
         const dispatch = store.dispatch;
+        const bundles = [];
 
-        // loop over instances and get bundles
-        for (const instanceInfo of instanceInfos) {
-            const instanceId = instanceInfo.instanceId;
-            const bundleNftIds = await this.getBundleNftIds();
-
-            for (const bundleNftId of bundleNftIds) {
-                const bundleInfo = await this.getBundleInfo(bundleNftId, instanceId, instanceInfo.displayName, instanceInfo.chainId, instanceInfo.registry);
-                console.log("bundleInfo", bundleInfo);
-                dispatch(add(bundleInfo));
-            }
+        // loop over all bundles
+        const bundleNftIds = await this.getBundleNftIds();
+        
+        for (const bundleNftId of bundleNftIds) {
+            const bundleInfo = await this.getBundleInfo(bundleNftId, instanceInfos);
+            console.log("bundleInfo", bundleInfo);
+            dispatch(add(bundleInfo));
+            bundles.push(bundleInfo);
         }
-
+        
         dispatch(clearNftIds());
         const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
         console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
         for (const nftId of bundleStakeNftIds) {
             const { target, stakeBalance } = await this.staking!.getInfo(nftId);
+            const bundleInfo = bundles.find(bundle => bundle.nftId === target.toString());
+            const supportingAmount = await this.calculateSupportedAmount(stakeBalance, bundleInfo!.token); 
+            // console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
+            dispatch(addAmountToMyStakes({ 
+                stakeNftId: nftId.toString(), 
+                target: target.toString(), 
+                amount: stakeBalance.toString(), 
+                supportingAmount: supportingAmount.toString()
+            }));
+            dispatch(addNftId({ nftId: nftId.toString(), stakedAmount: stakeBalance.toString(), targetNftId: target.toString()}));
+        }
+    }
+
+    async updateBundle(bundle: BundleInfo): Promise<void> {
+        const dispatch = store.dispatch;
+        const bundleInfo = await this.getBundleInfo(BigNumber.from(bundle.nftId), [{ instanceId: bundle.instanceId, displayName: bundle.instanceName, chainId: this.chainId, registry: bundle.registry} as InstanceInfo]);
+        console.log("bundleInfo", bundleInfo);
+        dispatch(add(bundleInfo));
+        
+        const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
+        console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
+        for (const nftId of bundleStakeNftIds) {
+            const { target, stakeBalance, rewardBalance } = await this.staking!.getInfo(nftId);
             console.log("bundleStakeNftIds", nftId.toNumber(), target.toString(), formatEther(stakeBalance));
-            dispatch(addAmountToMyStakes({ stakeNftId: nftId.toString(), target: target.toString(), amountToAdd: stakeBalance.toString()}));
+            const supportingAmount = await this.calculateSupportedAmount(stakeBalance, bundle.token); 
+            dispatch(addAmountToMyStakes({ 
+                stakeNftId: nftId.toString(), 
+                target: target.toString(), 
+                amount: stakeBalance.toString(), 
+                supportingAmount: supportingAmount.toString()
+            }));
             dispatch(addNftId({ nftId: nftId.toString(), stakedAmount: stakeBalance.toString(), targetNftId: target.toString()}));
         }
     }
@@ -319,6 +349,50 @@ export default class StakingContract {
 
     async getStakingWallet(): Promise<string> {
         return await this.staking.getStakingWallet();
+    }
+
+    async claimRewards(bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<[ContractTransaction, ContractReceipt]> {
+        console.log("claimRewards", bundle);
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.staking.address);
+        }
+        try {
+            let tx;
+
+            const bundleStakeNftId = BigNumber.from(bundle.myStakedNfsIds[0]);
+            console.log("unstaking from nft", bundleStakeNftId.toNumber());
+            tx = await this.staking.claimRewards(bundleStakeNftId);
+            
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.staking.address);
+            }
+            const receipt = await tx.wait();
+            // console.log(receipt);
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while unstaking: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
+    }
+
+    async fetchUnclaimedRewards(bundle: BundleInfo): Promise<void> {
+        // console.log("fetchUnclaimedRewards", bundle);
+        const dispatch = store.dispatch;
+        const bundleStakeNftId = bundle.myStakedNfsIds.map(id => BigNumber.from(id));
+        const unclaimedRewards = await bundleStakeNftId.map(async (id) => {
+            const stakeInfo = await this.staking.getInfo(id);
+            const rewardIncrement = await this.staking.calculateRewardsIncrement(stakeInfo);
+            const { rewardBalance } = stakeInfo;
+            console.log("unclaimed rewards", formatEther(rewardBalance), formatEther(rewardIncrement), stakeInfo);
+            return rewardBalance.add(rewardIncrement);
+        }).reduce(async (accP, curP) => {
+            return (await accP).add(await curP);
+        }, Promise.resolve(BigNumber.from(0)));
+        dispatch(setUnclaimedRewards({ bundleId: bundle.bundleId, unclaimedReward: unclaimedRewards.toString()}));
     }
 
 }

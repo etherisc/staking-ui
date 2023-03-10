@@ -57,6 +57,9 @@ export default function stakingApiMock(
         ): Promise<void> => {
             return Promise.resolve();
         },
+        updateBundle(bundle: BundleInfo): Promise<void> {
+            return Promise.resolve();
+        },
         calculateSupportedAmount(amount, bundle) {
             console.log(amount);
             return Promise.resolve(amount.mul(10));
@@ -87,6 +90,11 @@ export default function stakingApiMock(
         },
         async getStakeUsage(bundle: BundleInfo) {
             return Promise.resolve({ usage: 0.5, lockedCapital: BigNumber.from(1000)});
+        },
+        async claimRewards() {
+            return Promise.resolve(true);
+        },
+        async fetchUnclaimedRewards() {
         },
     }
 }

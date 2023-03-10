@@ -162,10 +162,24 @@ export default function BundleStakes(props: BundleStakesProps) {
             },
             sortComparator: (v1: BundleInfo, v2: BundleInfo) => v1?.expiryAt - v2?.expiryAt,
         },
+        { 
+            field: 'actions', 
+            headerName: t('table.header.actions'), 
+            flex: 0.45,
+            sortable: false,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
+                params.row,
+            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
+                if (props.buildActions) {
+                    return props.buildActions(params.value!);
+                }
+                return (<></>);
+            }
+        }
     ];
 
     if (props.showStakeUsage !== undefined && props.showStakeUsage) {
-        columns.push({ 
+        columns.splice(6, 0, { 
             field: 'stakeUsage', 
             headerName: t('table.header.stake_usage'), 
             flex: 0.3,
@@ -184,20 +198,6 @@ export default function BundleStakes(props: BundleStakesProps) {
                             />);
             },
             sortComparator: (v1: [StakeUsage], v2: [StakeUsage], p1: GridSortCellParams, p2: GridSortCellParams) => gridNumberComparator(v1[0], v2[0], p1, p2)
-        });
-    }
-
-    if (props.buildActions !== undefined) {
-        columns.push({ 
-            field: 'actions', 
-            headerName: t('table.header.actions'), 
-            flex: 0.45,
-            sortable: false,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
-                params.row,
-            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
-                return props.buildActions!(params.value!);
-            }
         });
     }
 

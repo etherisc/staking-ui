@@ -1,15 +1,16 @@
 import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
 import { BigNumber } from "ethers";
+import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { bundleSelected, setStep } from "../../redux/slices/staking";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { INPUT_VARIANT } from "../../config/theme";
-import { parse } from "path";
+import { clearSelectedBundle, selectBundle } from "../../redux/slices/stakes";
+import { setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import TermsAndConditions from "../terms_and_conditions";
 
@@ -33,6 +34,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const currency = props.stakingApi.currency();
     const dispatch = useDispatch();
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
+    const router = useRouter();
 
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
     const [ stakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.maxStakedAmount())));
@@ -97,8 +99,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
 
 
     function back() {
-        dispatch(bundleSelected(null));
-        dispatch(setStep(1));
+        dispatch(clearSelectedBundle());
+        router.push("/", undefined, { shallow: true });
     }
 
     const onSubmit: SubmitHandler<IStakeFormValues> = async data => {

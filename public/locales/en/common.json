@@ -75,7 +75,7 @@
       "myAllSupportingAmount": "Supported Capital (Mine/Total)",
       "supportingAmount": "Total Supporting Amount",
       "state": "State",
-      "actions": "Actions",
+      "actions": "",
       "stake_usage": "Usage",
       "expiryAt": "Active until"
     }
@@ -83,12 +83,12 @@
   "choose_bundle": "Please select a bundle",
   "bundle_information": "Selected Bundle",
   "instance_id": "Instance ID",
-  "instance_name": "Name",
-  "bundle_id": "Bundle ID",
-  "bundle_name": "Bundle Name",
+  "instance_name": "Instance Name",
+  "bundle_id": "ID",
+  "bundle_name": "Name",
   "bundle_state": "State",
-  "bundle_id_num": "Bundle ID: {{id}}",
-  "staked_amount_total": "Bundle Total Staked Amount",
+  "bundle_id_num": "ID: {{id}}",
+  "staked_amount_total": "Total Staked Amount",
   "stake_usage": "Stake Usage",
   "locked_capital": "Locked Capital",
   "supported_capital": "Total Supported Capital",
@@ -96,6 +96,9 @@
   "staked_amount": "Total Staked Amount",
   "my_staked_amount": "My Staked Amount",
   "locked_amount": "Locked Amount",
+  "active_until": "Active until",
+  "unclaimed_reward": "Accumulated Rewards",
+  "my_supported_capital": "My Supported Capital",
   "alert": {
     "unstaking_multiple_nfts": "Your stakes are distributed over multiple NFTs. Unstaking must be done in multiple transactions - each being limited to the staked amount on this NFT."
   }

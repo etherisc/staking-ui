@@ -12,6 +12,7 @@ export interface StakingApi {
     minStakedAmount(): BigNumber;
     maxStakedAmount(): BigNumber;
     retrieveBundles: () => Promise<void>;
+    updateBundle(bundle: BundleInfo): Promise<void>;
     calculateSupportedAmount: (
         amount: BigNumber,
         bundle: BundleInfo,
@@ -49,6 +50,12 @@ export interface StakingApi {
      * if between 0 and 1, the staked amount is too low. If > 1, the staked amount is sufficient.
      */
     getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}>;
+    claimRewards(
+        bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<boolean>;
+    fetchUnclaimedRewards(bundle: BundleInfo): Promise<void>;
 }
 
 export function getStakingApi(
