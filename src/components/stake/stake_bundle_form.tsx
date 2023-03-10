@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { INPUT_VARIANT } from "../../config/theme";
-import { selectBundle } from "../../redux/slices/stakes";
+import { clearSelectedBundle, selectBundle } from "../../redux/slices/stakes";
 import { setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import TermsAndConditions from "../terms_and_conditions";
@@ -99,7 +99,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
 
 
     function back() {
-        dispatch(selectBundle(undefined));
+        dispatch(clearSelectedBundle());
         router.push("/", undefined, { shallow: true });
     }
 

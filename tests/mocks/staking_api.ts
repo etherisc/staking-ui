@@ -22,5 +22,6 @@ export function mockStakingApiSimple(): StakingApi {
         getStakeUsage: jest.fn(),
         updateBundle: jest.fn(),
         claimRewards: jest.fn(),
+        fetchUnclaimedRewards: jest.fn(),
     } as StakingApi;
 }

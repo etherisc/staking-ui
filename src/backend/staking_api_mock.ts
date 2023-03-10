@@ -93,6 +93,8 @@ export default function stakingApiMock(
         },
         async claimRewards() {
             return Promise.resolve(true);
-        }
+        },
+        async fetchUnclaimedRewards() {
+        },
     }
 }
