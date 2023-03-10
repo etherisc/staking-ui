@@ -43,7 +43,7 @@ export default function Stakes(props: StakingProps) {
     }, [signer, isConnected, props.stakingApi, dispatch, retrieveStakes]);
 
     function buildActions(bundle: BundleInfo): JSX.Element {
-        return (<><Button onClick={() => dispatch(selectBundle(bundle))}>{t('action.details')}</Button></>);
+        return (<><Button onClick={() => dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))}>{t('action.details')}</Button></>);
     }
 
     return (<>
@@ -55,12 +55,12 @@ export default function Stakes(props: StakingProps) {
             </Button>
         </Box>
 
-        { selectedBundle !== undefined && <ShowBundle 
+        { selectedBundle !== null && <ShowBundle 
             stakingApi={props.stakingApi}
-            bundle={selectedBundle}
+            bundle={bundles[selectedBundle!]}
             />}
 
-        { selectedBundle === undefined && <BundleStakes 
+        { selectedBundle === null && <BundleStakes 
             stakingApi={props.stakingApi}
             bundles={bundles}
             isBundlesLoading={isLoadingBundles}

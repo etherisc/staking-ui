@@ -6,7 +6,7 @@ import { SnackbarKey, useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { selectBundle } from "../../redux/slices/stakes";
+import { clearSelectedBundle, selectBundle } from "../../redux/slices/stakes";
 import { TransactionFailedError } from "../../utils/error";
 import BundleActions from "./bundle_actions";
 import BundleDetails from "./bundle_details";
@@ -82,7 +82,7 @@ export default function ShowBundle(props: ShowBundleProps) {
     return (<>
         <Typography variant="h5" mb={2}>
             <Typography variant="h6" mb={2} component="span">
-                <FontAwesomeIcon icon={faArrowLeft} style={{ cursor: 'pointer' }} onClick={() => dispatch(selectBundle(undefined))} />
+                <FontAwesomeIcon icon={faArrowLeft} style={{ cursor: 'pointer' }} onClick={() => dispatch(clearSelectedBundle())} />
             </Typography>
             &nbsp;
             {t('title_show_bundle')}

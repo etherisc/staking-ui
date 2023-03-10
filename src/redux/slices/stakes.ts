@@ -6,7 +6,7 @@ import { NftInfo } from '../../backend/nft_info';
 
 export interface StakesState {
     bundles: BundleInfo[];
-    selectedBundle: BundleInfo | undefined;
+    selectedBundle: number|null;
     // nft ids of the nfts that are owned by the current connected wallet
     ownedNfts: NftInfo[];
     isLoadingBundles: boolean;
@@ -14,7 +14,7 @@ export interface StakesState {
 
 const initialState: StakesState = {
     bundles: [],
-    selectedBundle: undefined,
+    selectedBundle: null,
     ownedNfts: [],
     isLoadingBundles: false,
 }
@@ -30,9 +30,6 @@ export const stakesSlice = createSlice({
             } else {
                 // replace bundle
                 state.bundles[idx] = action.payload;
-                if (state.selectedBundle?.id === action.payload.id) {
-                    state.selectedBundle = action.payload;
-                }
             }
         },
         addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amount: string, supportingAmount: string}>) => {
@@ -74,8 +71,11 @@ export const stakesSlice = createSlice({
         finishLoading: (state) => {
             state.isLoadingBundles = false;
         },
-        selectBundle: (state, action: PayloadAction<BundleInfo|undefined>) => {
+        selectBundle: (state, action: PayloadAction<number>) => {
             state.selectedBundle = action.payload;
+        },
+        clearSelectedBundle: (state) => {
+            state.selectedBundle = null;
         },
         setUnclaimedRewards: (state, action: PayloadAction<{bundleId: number, unclaimedReward: string}>) => {
             const bundle = state.bundles.find((bundle) => bundle.bundleId === action.payload.bundleId);
@@ -91,7 +91,7 @@ export const {
     add, updateStakeUsage, reset, addAmountToMyStakes,
     addNftId, clearNftIds,
     startLoading, finishLoading,
-    selectBundle, 
+    selectBundle, clearSelectedBundle,
     setUnclaimedRewards,
 } = stakesSlice.actions
 
