@@ -4,9 +4,10 @@
   "action": {
     "stake": "Stake",
     "unstake": "Unstake",
-    "refresh": "Refresh bundles",
+    "refresh": "Refresh risk bundles",
     "claim_rewards": "Claim rewards",
     "details": "Details"
   },
-  "title_show_bundle": "Bundles"
+  "title_show_bundle": "Risk bundle",
+  "fetching_bundle": "Fetching risk bundle data ..."
 }

@@ -33,6 +33,7 @@ export default function Unstake(props: UnstakeProps) {
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
+    const bundles = useSelector((state: RootState) => state.stakes.bundles);
     
     const currency = props.stakingApi.currency();
 
@@ -142,7 +143,7 @@ export default function Unstake(props: UnstakeProps) {
             origin: { y: 0.6 }
         });
         await props.stakingApi.updateBundle(bundle);
-        dispatch(selectBundle(bundle));
+        dispatch(selectBundle(bundles.findIndex(b => b.id === bundle.id)));
         router.push("/");
         updateAccountBalance(signer!, dispatch);
     }

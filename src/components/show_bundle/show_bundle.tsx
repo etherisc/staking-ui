@@ -24,7 +24,7 @@ export default function ShowBundle(props: ShowBundleProps) {
     const currency = props.stakingApi.currency();
     const decimals = props.stakingApi.currencyDecimals();
 
-    if (bundle.myStakedNfsIds.length >= 0) {
+    if (bundle !== undefined && bundle.myStakedNfsIds.length >= 0) {
         props.stakingApi.fetchUnclaimedRewards(bundle);
     }
 
@@ -78,6 +78,9 @@ export default function ShowBundle(props: ShowBundleProps) {
         }
     }
 
+    if (bundle === undefined) {
+        return (<>{t('fetching_bundle')}</>);
+    }
 
     return (<>
         <Typography variant="h5" mb={2}>

@@ -34,6 +34,7 @@ export default function Stake(props: StakeProps) {
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
+    const bundles = useSelector((state: RootState) => state.stakes.bundles);
 
     const currencyDecimals = parseInt(process.env.NEXT_PUBLIC_DIP_DECIMALS ?? '18');
 
@@ -220,7 +221,7 @@ export default function Stake(props: StakeProps) {
         });
         await props.stakingApi.updateBundle(stakingBundle);
         updateAccountBalance(signer!, dispatch);
-        dispatch(selectBundle(stakingBundle));
+        dispatch(selectBundle(bundles.findIndex(b => b.id === stakingBundle.id)));
         router.push("/");
     }
 
