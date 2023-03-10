@@ -6,7 +6,7 @@ import { NftInfo } from '../../backend/nft_info';
 
 export interface StakesState {
     bundles: BundleInfo[];
-    selectedBundle: number|null;
+    selectedBundleIdx: number|null;
     // nft ids of the nfts that are owned by the current connected wallet
     ownedNfts: NftInfo[];
     isLoadingBundles: boolean;
@@ -14,7 +14,7 @@ export interface StakesState {
 
 const initialState: StakesState = {
     bundles: [],
-    selectedBundle: null,
+    selectedBundleIdx: null,
     ownedNfts: [],
     isLoadingBundles: false,
 }
@@ -72,10 +72,10 @@ export const stakesSlice = createSlice({
             state.isLoadingBundles = false;
         },
         selectBundle: (state, action: PayloadAction<number>) => {
-            state.selectedBundle = action.payload;
+            state.selectedBundleIdx = action.payload;
         },
         clearSelectedBundle: (state) => {
-            state.selectedBundle = null;
+            state.selectedBundleIdx = null;
         },
         setUnclaimedRewards: (state, action: PayloadAction<{bundleId: number, unclaimedReward: string}>) => {
             const bundle = state.bundles.find((bundle) => bundle.bundleId === action.payload.bundleId);

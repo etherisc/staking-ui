@@ -24,7 +24,7 @@ export default function Stakes(props: StakingProps) {
     const bundles = useSelector((state: RootState) => state.stakes.bundles);
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
-    const selectedBundle = useSelector((state: RootState) => state.stakes.selectedBundle);
+    const selectedBundleIdx = useSelector((state: RootState) => state.stakes.selectedBundleIdx);
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
         const address = await signer.getAddress();
@@ -55,12 +55,12 @@ export default function Stakes(props: StakingProps) {
             </Button>
         </Box>
 
-        { selectedBundle !== null && <ShowBundle 
+        { selectedBundleIdx !== null && <ShowBundle 
             stakingApi={props.stakingApi}
-            bundle={bundles[selectedBundle!]}
+            bundle={bundles[selectedBundleIdx!]}
             />}
 
-        { selectedBundle === null && <BundleStakes 
+        { selectedBundleIdx === null && <BundleStakes 
             stakingApi={props.stakingApi}
             bundles={bundles}
             isBundlesLoading={isLoadingBundles}
