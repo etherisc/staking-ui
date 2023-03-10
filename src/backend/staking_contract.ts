@@ -6,6 +6,7 @@ import { add, addAmountToMyStakes, addNftId, clearNftIds, setUnclaimedRewards } 
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
+import { InstanceInfo } from "./instance_info";
 
 /** get from https://github.com/etherisc/registry-contracts/blob/develop/contracts/registry/ChainRegistryV01.sol#L27 */
 const OBJECT_TYPE_UNDEFINED = 0;
@@ -46,7 +47,7 @@ export default class StakingContract {
         this.walletAddress = await this.signer.getAddress();
     }
 
-    async getAllInstanceInfos() {
+    async getAllInstanceInfos(): Promise<InstanceInfo[]> {
         console.log("getAllInstanceInfos", this.chainIdB32);
         const instanceInfos = [];
         const numInstances = await this.chainRegistry!.objects(this.chainIdB32, OBJECT_TYPE_INSTANCE);
@@ -55,7 +56,7 @@ export default class StakingContract {
         for (let i = 0; i < numInstances.toNumber(); i++) {
             const nftId = await this.chainRegistry!["getNftId(bytes5,uint8,uint256)"](this.chainIdB32, OBJECT_TYPE_INSTANCE, i);
             const { instanceId, registry, displayName } = await this.chainRegistry!.decodeInstanceData(nftId);
-            instanceInfos.push({ instanceId , displayName, chainId: this.chainId!, registry, nftId});
+            instanceInfos.push({ instanceId , displayName, chainId: this.chainId!, registry, nftId} as InstanceInfo);
         }
         return instanceInfos;
     }
@@ -92,9 +93,13 @@ export default class StakingContract {
      * @param registry 
      * @returns 
      */
-    async getBundleInfo(bundleNftId: BigNumber, instanceId: string, instanceName: string, chainId: number, registry: string): Promise<BundleInfo> {
+    async getBundleInfo(bundleNftId: BigNumber, instanceInfos: InstanceInfo[] ): Promise<BundleInfo> {
         console.log("decodeBundleData");
-        const { token } = await this.chainRegistry!.decodeBundleData(bundleNftId);
+        const { instanceId, token } = await this.chainRegistry!.decodeBundleData(bundleNftId);
+        const instance = instanceInfos.find(i => i.instanceId === instanceId);
+        if (!instance) {
+            throw new Error("instance not found");
+        }
         console.log("getBundleInfo", bundleNftId.toNumber());
         const { riskpoolId, bundleId, displayName, bundleState, expiryAt } = await this.staking!.getBundleInfo(bundleNftId);
 
@@ -109,10 +114,10 @@ export default class StakingContract {
 
         return {
             id: `${instanceId}-${bundleId}`,
-            chainId: chainId,
+            chainId: instance.chainId,
             instanceId: instanceId,
-            instanceName: instanceName,
-            registry: registry,
+            instanceName: instance.displayName,
+            registry: instance.registry,
             riskpoolId: riskpoolId.toNumber(),
             bundleId: bundleId.toNumber(),
             bundleName: displayName,
@@ -146,20 +151,16 @@ export default class StakingContract {
 
         // TODO: filter nfts that are archived or burned (object state)
 
-        // loop over instances and get bundles
-        for (const instanceInfo of instanceInfos) {
-            const instanceId = instanceInfo.instanceId;
-            const bundleNftIds = await this.getBundleNftIds();
-            // FIXME: this will not work for more than 1 instance
-
-            for (const bundleNftId of bundleNftIds) {
-                const bundleInfo = await this.getBundleInfo(bundleNftId, instanceId, instanceInfo.displayName, instanceInfo.chainId, instanceInfo.registry);
-                console.log("bundleInfo", bundleInfo);
-                dispatch(add(bundleInfo));
-                bundles.push(bundleInfo);
-            }
+        // loop over all bundles
+        const bundleNftIds = await this.getBundleNftIds();
+        
+        for (const bundleNftId of bundleNftIds) {
+            const bundleInfo = await this.getBundleInfo(bundleNftId, instanceInfos);
+            console.log("bundleInfo", bundleInfo);
+            dispatch(add(bundleInfo));
+            bundles.push(bundleInfo);
         }
-
+        
         dispatch(clearNftIds());
         const bundleStakeNftIds = await this.getBundleStakeNfts(this.walletAddress);
         console.log("bundleStakeNftIds of this wallet", bundleStakeNftIds.map(nftId => nftId.toNumber()));
@@ -180,7 +181,7 @@ export default class StakingContract {
 
     async updateBundle(bundle: BundleInfo): Promise<void> {
         const dispatch = store.dispatch;
-        const bundleInfo = await this.getBundleInfo(BigNumber.from(bundle.nftId), bundle.instanceId, bundle.instanceName, this.chainId, bundle.registry);
+        const bundleInfo = await this.getBundleInfo(BigNumber.from(bundle.nftId), [{ instanceId: bundle.instanceId, displayName: bundle.instanceName, chainId: this.chainId, registry: bundle.registry} as InstanceInfo]);
         console.log("bundleInfo", bundleInfo);
         dispatch(add(bundleInfo));
         
