@@ -1,13 +1,14 @@
-import { Stepper, Step, StepLabel, Button } from "@mui/material";
+import { Button, Step, StepLabel, Stepper } from "@mui/material";
 import confetti from "canvas-confetti";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { SnackbarKey, useSnackbar } from "notistack";
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import { selectBundle } from "../../redux/slices/stakes";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
@@ -33,6 +34,7 @@ export default function Stake(props: StakeProps) {
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
+    const bundles = useSelector((state: RootState) => state.stakes.bundles);
 
     const currencyDecimals = parseInt(process.env.NEXT_PUBLIC_DIP_DECIMALS ?? '18');
 
@@ -76,7 +78,7 @@ export default function Stake(props: StakeProps) {
                 return;
             }
             dispatch(setStep(6));
-            stakingSuccessful();
+            await stakingSuccessful(stakeingBundle!);
         } finally {
             enableUnloadWarning(false);
         }
@@ -203,7 +205,7 @@ export default function Stake(props: StakeProps) {
         );
     }
 
-    function stakingSuccessful() {
+    async function stakingSuccessful(stakingBundle: BundleInfo) {
         enqueueSnackbar(
             t('staking_success'),
             { 
@@ -217,7 +219,9 @@ export default function Stake(props: StakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
+        await props.stakingApi.updateBundle(stakingBundle);
         updateAccountBalance(signer!, dispatch);
+        dispatch(selectBundle(bundles.findIndex(b => b.id === stakingBundle.id)));
         router.push("/");
     }
 

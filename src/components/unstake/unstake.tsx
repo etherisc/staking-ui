@@ -1,13 +1,14 @@
-import { Stepper, Step, StepLabel, Button, Alert } from "@mui/material";
+import { Alert, Button, Step, StepLabel, Stepper } from "@mui/material";
 import confetti from "canvas-confetti";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { SnackbarKey, useSnackbar } from "notistack";
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import { selectBundle } from "../../redux/slices/stakes";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
@@ -32,6 +33,7 @@ export default function Unstake(props: UnstakeProps) {
     const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
+    const bundles = useSelector((state: RootState) => state.stakes.bundles);
     
     const currency = props.stakingApi.currency();
 
@@ -55,29 +57,30 @@ export default function Unstake(props: UnstakeProps) {
         }
     }, [isConnected, activeStep, dispatch]);
 
-    async function unstake(amount: BigNumber, max: boolean, bundle: BundleInfo) {
+    async function unstake(amount: BigNumber, nftId: string, max: boolean, bundle: BundleInfo) {
         try {
             enableUnloadWarning(true);
             const walletAddress = await signer!.getAddress();
 
             dispatch(setStep(4));
-            const applicationSuccess = await doUnstake(stakeingBundle!, max, amount);
+            const applicationSuccess = await doUnstake(stakeingBundle!, nftId, max, amount);
             if ( ! applicationSuccess) {
                 dispatch(setStep(3));
                 return;
             }
             dispatch(setStep(5));
-            unstakingSuccessful();
+            await unstakingSuccessful(stakeingBundle!);
         } finally {
             enableUnloadWarning(false);
         }
     }
 
-    async function doUnstake(bundle: BundleInfo, max: boolean, unstakeAmount: BigNumber): Promise<boolean> {
+    async function doUnstake(bundle: BundleInfo, nftId: string, max: boolean, unstakeAmount: BigNumber): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
             return await props.stakingApi.unstake(
                 bundle,
+                nftId,
                 max,
                 unstakeAmount,
                 (address: string) => {
@@ -125,7 +128,7 @@ export default function Unstake(props: UnstakeProps) {
         }
     }
 
-    function unstakingSuccessful() {
+    async function unstakingSuccessful(bundle: BundleInfo) {
         enqueueSnackbar(
             t('unstaking_success'),
             { 
@@ -139,6 +142,8 @@ export default function Unstake(props: UnstakeProps) {
             spread: 70,
             origin: { y: 0.6 }
         });
+        await props.stakingApi.updateBundle(bundle);
+        dispatch(selectBundle(bundles.findIndex(b => b.id === bundle.id)));
         router.push("/");
         updateAccountBalance(signer!, dispatch);
     }
