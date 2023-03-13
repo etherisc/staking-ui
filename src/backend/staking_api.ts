@@ -11,10 +11,8 @@ export interface StakingApi {
     currencyDecimals(): number;
     minStakedAmount(): BigNumber;
     maxStakedAmount(): BigNumber;
-    retrieveBundles: (
-        bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
-        loadingFinished: () => void,
-    ) => Promise<void>;
+    retrieveBundles: () => Promise<void>;
+    updateBundle(bundle: BundleInfo): Promise<void>;
     calculateSupportedAmount: (
         amount: BigNumber,
         bundle: BundleInfo,
@@ -35,17 +33,9 @@ export interface StakingApi {
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;
-    retrieveStakesForWallet: (
-        address: string,
-        bundleRetrieved: ((bundle: BundleInfo) => Promise<void>),
-        loadingFinished: () => void,
-    ) => Promise<void>;
-    stakedAmount: (
-        bundle: BundleInfo,
-        address: string,
-    ) => Promise<BigNumber>;
     unstake: (
         bundle: BundleInfo,
+        nftId: string,
         max: boolean,
         unstakeAmount: BigNumber,
         beforeTrxCallback?: (address: string) => void,
@@ -60,6 +50,12 @@ export interface StakingApi {
      * if between 0 and 1, the staked amount is too low. If > 1, the staked amount is sufficient.
      */
     getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}>;
+    claimRewards(
+        bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<boolean>;
+    fetchUnclaimedRewards(bundle: BundleInfo): Promise<void>;
 }
 
 export function getStakingApi(

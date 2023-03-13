@@ -1,18 +1,17 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button } from "@mui/material";
-import { BigNumber, Signer } from "ethers";
+import { Signer } from "ethers";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
-import { ReactFragment, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { add, finishLoading, reset, startLoading } from "../../redux/slices/stakes";
-import { bundleSelected } from "../../redux/slices/staking";
+import { finishLoading, reset, selectBundle, startLoading } from "../../redux/slices/stakes";
 import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 import { Heading1 } from "../heading";
+import ShowBundle from "../show_bundle/show_bundle";
 
 export interface StakingProps {
     stakingApi: StakingApi;
@@ -25,22 +24,14 @@ export default function Stakes(props: StakingProps) {
     const bundles = useSelector((state: RootState) => state.stakes.bundles);
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
-    const router = useRouter();
+    const selectedBundleIdx = useSelector((state: RootState) => state.stakes.selectedBundleIdx);
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
         const address = await signer.getAddress();
         dispatch(startLoading());
         dispatch(reset());
-        props.stakingApi.retrieveStakesForWallet(
-            address,
-            (bundle: BundleInfo) => {
-                dispatch(add(bundle));
-                return Promise.resolve();
-            },
-            () => {
-                dispatch(finishLoading());
-            }
-        );
+        await props.stakingApi.retrieveBundles();
+        dispatch(finishLoading());
     }, [dispatch, props.stakingApi]);
 
     useEffect(() => {
@@ -51,25 +42,8 @@ export default function Stakes(props: StakingProps) {
         }
     }, [signer, isConnected, props.stakingApi, dispatch, retrieveStakes]);
 
-    function stakeBundle(bundle: BundleInfo) {
-        dispatch(bundleSelected(bundle))
-        router.push("/stake?noreset=true", undefined, { shallow: true });
-    }
-
-    function unstakeBundle(bundle: BundleInfo) {
-        dispatch(bundleSelected(bundle))
-        router.push("/unstake?noreset=true", undefined, { shallow: true });
-    }
-
-
     function buildActions(bundle: BundleInfo): JSX.Element {
-        const stakeAction = bundle.stakingSupported ? <Button onClick={() => stakeBundle(bundle)}>{t('action.stake')}</Button> : undefined;
-        const isAllowedToUnstake = bundle.unstakingSupported && BigNumber.from(bundle.myStakedAmount).gt(0);
-        const unstakeAction = isAllowedToUnstake ? <Button onClick={() => unstakeBundle(bundle)}>{t('action.unstake')}</Button> : undefined;
-        return (<>
-            {stakeAction}
-            {unstakeAction}
-        </>);
+        return (<><Button onClick={() => dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))}>{t('action.details')}</Button></>);
     }
 
     return (<>
@@ -81,13 +55,18 @@ export default function Stakes(props: StakingProps) {
             </Button>
         </Box>
 
-        <BundleStakes 
+        { selectedBundleIdx !== null && <ShowBundle 
+            stakingApi={props.stakingApi}
+            bundle={bundles[selectedBundleIdx!]}
+            />}
+
+        { selectedBundleIdx === null && <BundleStakes 
             stakingApi={props.stakingApi}
             bundles={bundles}
             isBundlesLoading={isLoadingBundles}
             disableSelection={true}
             showStakeUsage={true}
             buildActions={buildActions}
-            />
+            />}
     </>);
 }

@@ -10,7 +10,6 @@ import StakingContract from "./staking_contract";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
-    private stakingContractAddress: string;
     private gifStakingApi: StakingContract;
     private gifInstanceService: GifInstanceService;
     private gifStakingApiInitialized = false;
@@ -21,7 +20,6 @@ export class StakingApiSmartContract implements StakingApi {
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
-        this.stakingContractAddress = stakingContractAddress;
         this.gifStakingApi = new StakingContract(signer, stakingContractAddress);
         this.gifInstanceService = new GifInstanceService(signer);
     }
@@ -71,27 +69,18 @@ export class StakingApiSmartContract implements StakingApi {
         return process.env.NEXT_PUBLIC_DIP_MAX_STAKE_AMOUNT ? parseEther(process.env.NEXT_PUBLIC_DIP_MAX_STAKE_AMOUNT) : parseEther("100000");
     }
 
-    async retrieveBundles(
-        bundleRetrieved: (bundle: BundleInfo) => Promise<void>, 
-        loadingFinished: () => void
-    ): Promise<void> {
+    async retrieveBundles(): Promise<void> {
         // console.log("StakingApiSmartContract.retrieveBundles");
-        await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved);
-        loadingFinished();
+        await (await this.getGifStakingApi()).fetchBundles();
     }
 
-    async retrieveStakesForWallet(
-        walletAddress: string, 
-        bundleRetrieved: (bundle: BundleInfo) => Promise<void>, 
-        loadingFinished: () => void
-    ): Promise<void> {
-        console.log("StakingApiSmartContract.retrieveStakesForWallet");
-        await (await this.getGifStakingApi()).getStakleableBundles(bundleRetrieved, walletAddress);
-        loadingFinished();
+    async updateBundle(bundle: BundleInfo): Promise<void> {
+        return await (await this.getGifStakingApi()).updateBundle(bundle);
     }
+
     
     async calculateSupportedAmount(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
-        return (await this.getGifStakingApi()).calculateSupportedAmount(amount, bundle.chainId, bundle.token);
+        return (await this.getGifStakingApi()).calculateSupportedAmount(amount, bundle.token);
     }
 
     async calculateReward(amount: BigNumber, bundle: BundleInfo): Promise<BigNumber> {
@@ -128,12 +117,9 @@ export class StakingApiSmartContract implements StakingApi {
         return receipt.status === 1;
     }
 
-    async stakedAmount(bundle: BundleInfo, address: string): Promise<BigNumber> {
-        return (await this.getGifStakingApi()).stakedAmount(bundle, address);
-    }
-
     async unstake(
         bundle: BundleInfo,
+        nftId: string,
         max: boolean,
         unstakeAmount: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
@@ -141,6 +127,7 @@ export class StakingApiSmartContract implements StakingApi {
     ): Promise<boolean> {
         const [tx, receipt] = await (await this.getGifStakingApi()).unstake(
             bundle,
+            nftId,
             max ? undefined : unstakeAmount, 
             beforeTrxCallback, 
             beforeWaitCallback);
@@ -166,6 +153,18 @@ export class StakingApiSmartContract implements StakingApi {
         }
         const usage = lockedCapital.mul(100).div(supportedAmount).toNumber() / 100;
         return {usage, lockedCapital};
+    }
+
+    async claimRewards(bundle: BundleInfo,
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<boolean> {
+        const [tx, receipt] =  await (await this.getGifStakingApi()).claimRewards(bundle);
+        return receipt.status === 1;
+    }
+
+    async fetchUnclaimedRewards(bundle: BundleInfo): Promise<void> {
+        await (await this.getGifStakingApi()).fetchUnclaimedRewards(bundle);
     }
     
 }

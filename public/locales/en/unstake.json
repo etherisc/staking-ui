@@ -1,7 +1,7 @@
 {
   "page_title": "Unstake {{currency}}",
   "step0": "Connect wallet",
-  "step1": "Select bundle",
+  "step1": "Select risk bundle",
   "step2": "Enter amount",
   "step3": "Unstake",
   "step4": "Confirm payment",
@@ -10,9 +10,9 @@
   },
   "supportedAmount": "Supported Amount",
   "stakedAmount": "Staked Amount",
-  "bundle_information": "Bundle Information",
+  "bundle_information": "Risk bundle Information",
   "instance_id": "Instance ID",
-  "bundle_id": "Bundle ID",
+  "bundle_id": "Risk Bundle ID",
   "bundle_state": "State",
   "approval_info": "To stake, the Staking contract at {{address}} needs permission to transfer {{currency}} {{amount}} to the staking pool. Please confirm this allowance in your wallet app.",
   "approval_wait": "Allowance creating, wait for onchain confirmation",
@@ -21,6 +21,6 @@
   "unstake_wait": "Transaction created, waiting for onchain confirmation",
   "checkbox_unstake_max_amount_label": "Unstake maximum available amount (including all rewards)",
   "unstaking_success": "Unstaking of DIPs was successful",
-  "unstaking_info": "Unstaking is only available on bundles which are expired, closed or burned."
+  "unstaking_info": "Unstaking is only available on risk bundles which are expired, closed or burned."
 }
 

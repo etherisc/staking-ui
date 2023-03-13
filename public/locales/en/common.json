@@ -1,6 +1,7 @@
 {
   "apptitle": "Etherisc DIP Staking",
   "apptitle_short": "DIP Staking",
+  "terms_and_conditions": "By checking this box, I confirm that I have read and agree to the <0>Terms and Conditions</0>.",
   "nav": {
     "link": {
       "stakes": "My Stakes",
@@ -44,7 +45,7 @@
       "required": "This field is required",
       "walletType": "This field must contain a wallet address (0x...)",
       "numberType": "This field must contain an integer number",
-      "amountType": "This field must contain an amount",
+      "amountType": "This field must contain an amount (e.g. 1234.31)",
       "minLength": "This field must be at least {{minLength}} characters",
       "maxLength": "This field must be at most {{maxLength}} characters",
       "min": "This field must be at least {{minValue}}",
@@ -67,29 +68,38 @@
   "table": {
     "header": {
       "instanceId": "Instance",
-      "bundleId": "Bundle",
+      "bundleId": "Risk bundle",
       "myAllStakedAmount": "Staked Amount (Mine/Total)",
       "myStakedAmount": "My Staked Amount",
       "stakedAmount": "Total Staked Amount",
       "myAllSupportingAmount": "Supported Capital (Mine/Total)",
       "supportingAmount": "Total Supporting Amount",
       "state": "State",
-      "actions": "Actions",
+      "actions": "",
       "stake_usage": "Usage",
       "expiryAt": "Active until"
     }
   },
-  "choose_bundle": "Please select a bundle",
-  "bundle_information": "Selected Bundle",
+  "choose_bundle": "Please select a risk bundle",
+  "bundle_information": "Selected risk bundle",
   "instance_id": "Instance ID",
-  "instance_name": "Name",
-  "bundle_id": "Bundle ID",
-  "bundle_name": "Bundle Name",
+  "instance_name": "Instance Name",
+  "bundle_id": "ID",
+  "bundle_name": "Name",
   "bundle_state": "State",
-  "bundle_id_num": "Bundle ID: {{id}}",
-  "staked_amount_total": "Bundle Total Staked Amount",
+  "bundle_id_num": "ID: {{id}}",
+  "staked_amount_total": "Total Staked Amount",
   "stake_usage": "Stake Usage",
   "locked_capital": "Locked Capital",
   "supported_capital": "Total Supported Capital",
-  "no_stakes": "No stakes"
+  "no_stakes": "No stakes",
+  "staked_amount": "Total Staked Amount",
+  "my_staked_amount": "My Staked Amount",
+  "locked_amount": "Locked Amount",
+  "active_until": "Active until",
+  "unclaimed_reward": "Accumulated Rewards",
+  "my_supported_capital": "My Supported Capital",
+  "alert": {
+    "unstaking_multiple_nfts": "Your stakes are distributed over multiple NFTs. Unstaking must be done in multiple transactions - each being limited to the staked amount on this NFT."
+  }
 }

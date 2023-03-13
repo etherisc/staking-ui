@@ -15,7 +15,7 @@ export default function Timestamp(props: TimestampProps) {
         {utctime}
         &nbsp;
         <Tooltip title={localtime}>
-            <Typography color={grey[400]}>
+            <Typography color={grey[400]} component="span">
                 <FontAwesomeIcon icon={faCircleInfo} className="fa" />
             </Typography>
         </Tooltip>

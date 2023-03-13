@@ -1,8 +1,11 @@
-import { LinearProgress } from "@mui/material";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LinearProgress, Typography } from "@mui/material";
 import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridSortCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BundleInfo, BundleState } from "../../backend/bundle_info";
@@ -32,7 +35,7 @@ interface BundleStakesProps {
 
 export default function BundleStakes(props: BundleStakesProps) {
     const { t } = useTranslation(['common']);
-
+    const { enqueueSnackbar } = useSnackbar();
     const [ pageSize, setPageSize ] = useState(10);
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
@@ -64,6 +67,11 @@ export default function BundleStakes(props: BundleStakesProps) {
         return `${tokenSymbol} ${formatCurrency(myValue, tokenDecimals)} / ${tokenSymbol} ${formatCurrency(totalValue, tokenDecimals)}`;    
     }
 
+    function copyToClipboard(value: string) {
+        navigator.clipboard.writeText(value);
+        enqueueSnackbar(t('action.address_copied'),  { autoHideDuration: 2000, variant: 'info' });
+    }
+
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.55, 
@@ -71,7 +79,13 @@ export default function BundleStakes(props: BundleStakesProps) {
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
                     return (<>
-                        <Address address={params.value![1]} iconColor="palette.secondary.main" />
+                        <WithTooltip tooltipText={params.value![0]}>
+                            {params.value![1]}
+                        </WithTooltip>
+                        &nbsp;
+                        <Typography color="secondary.main">
+                            <FontAwesomeIcon icon={faCopy} className="fa cursor-pointer" onClick={() => copyToClipboard(params.value![0])} data-testid="copy-button" />
+                        </Typography>
                     </>);
                 }
                 return (<>
@@ -148,10 +162,24 @@ export default function BundleStakes(props: BundleStakesProps) {
             },
             sortComparator: (v1: BundleInfo, v2: BundleInfo) => v1?.expiryAt - v2?.expiryAt,
         },
+        { 
+            field: 'actions', 
+            headerName: t('table.header.actions'), 
+            flex: 0.45,
+            sortable: false,
+            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
+                params.row,
+            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
+                if (props.buildActions) {
+                    return props.buildActions(params.value!);
+                }
+                return (<></>);
+            }
+        }
     ];
 
     if (props.showStakeUsage !== undefined && props.showStakeUsage) {
-        columns.push({ 
+        columns.splice(6, 0, { 
             field: 'stakeUsage', 
             headerName: t('table.header.stake_usage'), 
             flex: 0.3,
@@ -170,20 +198,6 @@ export default function BundleStakes(props: BundleStakesProps) {
                             />);
             },
             sortComparator: (v1: [StakeUsage], v2: [StakeUsage], p1: GridSortCellParams, p2: GridSortCellParams) => gridNumberComparator(v1[0], v2[0], p1, p2)
-        });
-    }
-
-    if (props.buildActions !== undefined) {
-        columns.push({ 
-            field: 'actions', 
-            headerName: t('table.header.actions'), 
-            flex: 0.45,
-            sortable: false,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
-                params.row,
-            renderCell: (params: GridRenderCellParams<BundleInfo>) => {
-                return props.buildActions!(params.value!);
-            }
         });
     }
 
