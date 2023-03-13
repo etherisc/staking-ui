@@ -23,7 +23,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@mui/icons-material": "^5.11.9",
+    "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
     "@mui/x-data-grid": "^5.17.25",
     "@reduxjs/toolkit": "^1.9.3",
