@@ -1,7 +1,7 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import moment from "moment";
-import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721EnumerableUpgradeable, IERC721EnumerableUpgradeable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
+import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC721Enumerable, IERC721Enumerable__factory, IStaking, IStaking__factory } from "../contracts/registry-contracts";
 import { add, addAmountToMyStakes, addNftId, clearNftIds, setUnclaimedRewards } from "../redux/slices/stakes";
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
@@ -28,7 +28,7 @@ export default class StakingContract {
     private walletAddress: string = "";
     private staking: IStaking;
     private chainRegistry?: IChainRegistry;
-    private chainNft?: IERC721EnumerableUpgradeable;
+    private chainNft?: IERC721Enumerable;
     private knownTokens: Map<string, [string, number]> = new Map();
     private chainId: number = 0;
     private chainIdB32: string = "";
@@ -41,7 +41,8 @@ export default class StakingContract {
     async initialize(): Promise<void> {
         const registryAddress = await this.staking.getRegistry();
         this.chainRegistry = IChainRegistry__factory.connect(registryAddress, this.signer);
-        this.chainNft = IERC721EnumerableUpgradeable__factory.connect(registryAddress, this.signer);
+        const nftAddress = await this.chainRegistry.getNft();
+        this.chainNft = IERC721Enumerable__factory.connect(nftAddress, this.signer);
         this.chainId = await this.signer.getChainId();
         this.chainIdB32 = await this.chainRegistry.toChain(this.chainId);
         this.walletAddress = await this.signer.getAddress();
@@ -54,7 +55,7 @@ export default class StakingContract {
         console.log("numInstances", numInstances.toNumber());
         // loop over instances and get instance id
         for (let i = 0; i < numInstances.toNumber(); i++) {
-            const nftId = await this.chainRegistry!["getNftId(bytes5,uint8,uint256)"](this.chainIdB32, OBJECT_TYPE_INSTANCE, i);
+            const nftId = await this.chainRegistry!.getNftId(this.chainIdB32, OBJECT_TYPE_INSTANCE, i);
             const { instanceId, registry, displayName } = await this.chainRegistry!.decodeInstanceData(nftId);
             instanceInfos.push({ instanceId , displayName, chainId: this.chainId!, registry, nftId} as InstanceInfo);
         }
@@ -78,7 +79,7 @@ export default class StakingContract {
         console.log("numBundles", numBundles.toNumber());
         for (let idx = 0; idx < numBundles.toNumber(); idx++) {
             console.log("idx", idx);
-            const nftId = await this.chainRegistry!["getNftId(bytes5,uint8,uint256)"](this.chainIdB32, OBJECT_TYPE_BUNDLE, idx);
+            const nftId = await this.chainRegistry!.getNftId(this.chainIdB32, OBJECT_TYPE_BUNDLE, idx);
             bundlesNftIds.push(nftId);
         }
         return bundlesNftIds;
