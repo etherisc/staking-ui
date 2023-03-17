@@ -72,6 +72,7 @@ export default function ShowBundle(props: ShowBundleProps) {
                 throw e;
             }
         } finally {
+            await props.stakingApi.updateBundle(bundle);
             if (snackbar !== undefined) {
                 closeSnackbar(snackbar);
             }
