@@ -54,7 +54,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('unclaimed_reward')} value={<>{symbol} {unclaimedRewardStr}
                 <WithTooltip tooltipText={t('unclaimed_reward_tooltip')}><Typography color={grey[500]}><FontAwesomeIcon icon={faCircleInfo} className="fa" /></Typography></WithTooltip></>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
-            <NameValue name={t('locked_amount')} value={<>{symbol} {formatCurrency(lockedAmount, decimals)}</>}/>
+            <NameValue name={t('locked_amount')} value={<>{supportingToken} {formatCurrency(lockedAmount, supportingTokenDecimals)}</>}/>
             <NameValue name={t('supported_capital')} value={<>{supportingToken} {formatCurrency(supportedCapital, supportingTokenDecimals)}</>}/>
             <NameValue name={t('my_supported_capital')} value={<>{supportingToken} {formatCurrency(mySupportedCapital, supportingTokenDecimals)}</>}/>
             <NameValue name={t('active_until')} value={<Timestamp at={expiryAt}/>}/>
