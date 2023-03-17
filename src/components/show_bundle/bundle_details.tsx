@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Grid, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { BigNumber } from "ethers";
-import { formatEther } from "ethers/lib/utils";
+import { formatEther, parseUnits } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
 import { BundleInfo } from "../../backend/bundle_info";
 import { bundleSelected } from "../../redux/slices/staking";
@@ -38,6 +38,11 @@ export default function BundleDetails(props: BundleDetailsProps) {
     const mySupportedCapital = BigNumber.from(props.bundle.mySupportingAmount);
     const expiryAt = props.bundle.expiryAt;
 
+    let unclaimedRewardStr = formatCurrency(unclaimedReward, decimals);
+    if (unclaimedReward.gt(0) && unclaimedReward.lt(parseUnits("0.01", decimals))) {
+        unclaimedRewardStr = "< 0.01";
+    }
+
     return (<>
         <Grid container spacing={1} data-testid="bundle-details">
             <NameValue name={t('instance_id')} value={<Address address={instanceId} iconColor="secondary.main" />}/>
@@ -46,7 +51,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('bundle_name')} value={<>{name}</>}/>
             <NameValue name={t('bundle_state')} value={<>{t('bundle_state_' + state, { ns: 'common'})}</>}/>
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>
-            <NameValue name={t('unclaimed_reward')} value={<>{symbol} {formatCurrency(unclaimedReward, decimals)}
+            <NameValue name={t('unclaimed_reward')} value={<>{symbol} {unclaimedRewardStr}
                 <WithTooltip tooltipText={t('unclaimed_reward_tooltip')}><Typography color={grey[500]}><FontAwesomeIcon icon={faCircleInfo} className="fa" /></Typography></WithTooltip></>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
             <NameValue name={t('locked_amount')} value={<>{symbol} {formatCurrency(lockedAmount, decimals)}</>}/>
