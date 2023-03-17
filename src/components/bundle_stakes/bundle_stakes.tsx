@@ -216,11 +216,11 @@ export default function BundleStakes(props: BundleStakesProps) {
                     sorting: {
                         sortModel: [{ field: 'expiryAt', sort: 'asc' }],
                     },
+                    pagination: {
+                        paginationModel: { pageSize: pageSize, page: 0 },
+                    },
                 }}
-                pageSize={pageSize}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                disableSelectionOnClick={true}
+                disableRowSelectionOnClick={true}
                 disableColumnMenu={true}
                 columnBuffer={8}
                 />
