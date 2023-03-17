@@ -1,4 +1,7 @@
-import { Grid } from "@mui/material";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Grid, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { BigNumber } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
@@ -7,6 +10,7 @@ import { bundleSelected } from "../../redux/slices/staking";
 import { formatCurrency } from "../../utils/numbers";
 import Address from "../address";
 import Timestamp from "../timestamp";
+import WithTooltip from "../with_tooltip";
 
 interface BundleDetailsProps {
     bundle: BundleInfo;
@@ -42,7 +46,8 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('bundle_name')} value={<>{name}</>}/>
             <NameValue name={t('bundle_state')} value={<>{t('bundle_state_' + state, { ns: 'common'})}</>}/>
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>
-            <NameValue name={t('unclaimed_reward')} value={<>{symbol} {formatCurrency(unclaimedReward, decimals)}</>}/>
+            <NameValue name={t('unclaimed_reward')} value={<>{symbol} {formatCurrency(unclaimedReward, decimals)}
+                <WithTooltip tooltipText={t('unclaimed_reward_tooltip')}><Typography color={grey[500]}><FontAwesomeIcon icon={faCircleInfo} className="fa" /></Typography></WithTooltip></>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
             <NameValue name={t('locked_amount')} value={<>{symbol} {formatCurrency(lockedAmount, decimals)}</>}/>
             <NameValue name={t('supported_capital')} value={<>{supportingToken} {formatCurrency(supportedCapital, supportingTokenDecimals)}</>}/>
