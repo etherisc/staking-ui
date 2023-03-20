@@ -108,6 +108,9 @@ dokku proxy:ports-add goerli-staking https:443:3000
 # enable let's encrypt for https certificates
 dokku letsencrypt:enable goerli-staking
 
+# configure backend chain rpc url
+dokku config:set goerli-depeg BACKEND_CHAIN_RPC_URL=<chain rpc url>
+
 # app should be ready now - open in browser
 ```
 
