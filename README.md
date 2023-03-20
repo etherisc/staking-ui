@@ -38,6 +38,10 @@ NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_SYMBOL=USDT
 NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_DECIMALS=6
 ```
 
+### Google analytics
+
+To enable Google Analytics, set the environment variable `NEXT_PUBLIC_GA_MEASUREMENT_ID` to the value you get from your Google Analytics settings.  
+
 ### Faucet 
 
 ```
