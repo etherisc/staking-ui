@@ -62,6 +62,59 @@ open browser at http://localhost:3003
 
 ## Deployment
 
+### Docker
+
+The application can be run in a docker container. The docker image can be build via the provided `Dockerfile`. We do not currently provide a prebuilt docker image as the image includes static instance information that needs to be configured at build time.
+
+The build process requires the following arguments:
+
+- `INSTANCE` - the name of the instance to build the image for. The instance name is used to load the correct configuration from the `.env.INSTANCE` file in the root diretory of the project (see `.env.mumbai` as an example). 
+
+### Dokku
+
+We use [dokku](https://dokku.com/) for deployment. 
+
+With the current setup (dokku repo is added as remote repo called `dokku` to the local git), deployment is triggered by running the following command in the root directory of the project:
+
 ```
-git push dokku develop:main
+git push dokku <branch-to-deploy>:main
 ```
+
+#### Initial instance setup
+
+Replace application name (`goerli-setup`) with whatever fits your need. DNS is expected to be prepared in advance.
+
+```
+# create dokku application 
+dokku apps:create goerli-staking
+
+# add new domain and remove default domain
+dokku domains:add goerli-staking staking.goerli.etherisc.com
+dokku domains:remove goerli-staking goerli-staking.depeg-test.etherisc.com
+
+# configure dokku docker build to load correct instance environment during build
+dokku docker-options:add goerli-staking build --build-arg INSTANCE=goerli
+
+# set correct proxy ports for http and https
+dokku proxy:ports-remove goerli-staking http:80:5000
+dokku proxy:ports-add goerli-staking http:80:3000
+dokku proxy:ports-add goerli-staking https:443:3000
+
+
+# now push deployment via git 
+# 1. add new git remote 'git remote add dokku-goerli dokku@<host>:goerli-staking'
+# 2. 'git push dokku-goerli develop:main'
+
+# enable let's encrypt for https certificates
+dokku letsencrypt:enable goerli-staking
+
+# app should be ready now - open in browser
+```
+
+#### Dokku documentation links: 
+
+- https://dokku.com/docs/deployment/application-deployment/
+- https://dokku.com/docs/advanced-usage/docker-options/
+- https://dokku.com/docs/configuration/domains/
+- https://github.com/dokku/dokku-redis
+
