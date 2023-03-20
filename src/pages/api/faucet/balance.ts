@@ -17,7 +17,7 @@ export default async function handler(
 
     console.log("faucet called for", address);
     const currencyDecimals = 18;
-    const provider = new StaticJsonRpcProvider(process.env.NEXT_PUBLIC_CHAIN_RPC_URL);
+    const provider = new StaticJsonRpcProvider(process.env.BACKEND_CHAIN_RPC_URL);
     const coinSourceSigner: Signer = ethers.Wallet.fromMnemonic(process.env.NEXT_FAUCET_MNEMONIC ?? "").connect(provider);
 
     const erc20 = getErc20Token(process.env.NEXT_PUBLIC_FAUCET_COIN_ADDRESS ?? "", coinSourceSigner!);
