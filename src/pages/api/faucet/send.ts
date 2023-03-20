@@ -18,7 +18,7 @@ export default async function handler(
     console.log("faucet called for", address);
     
     const currency = process.env.NEXT_PUBLIC_FAUCET_SYMBOL;
-    const provider = new StaticJsonRpcProvider(process.env.NEXT_PUBLIC_CHAIN_RPC_URL);
+    const provider = new StaticJsonRpcProvider(process.env.BACKEND_CHAIN_RPC_URL);
     const coinSourceSigner: Signer = ethers.Wallet.fromMnemonic(process.env.NEXT_FAUCET_MNEMONIC ?? "").connect(provider);
 
     if (process.env.NEXT_FAUCET_SEND_ETHERS === "true") {
