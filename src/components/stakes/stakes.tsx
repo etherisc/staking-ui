@@ -45,7 +45,7 @@ export default function Stakes(props: StakingProps) {
 
     function buildActions(bundle: BundleInfo): JSX.Element {
         return (<><Button onClick={() => {
-            ga_event("bundle_details", { category: 'nagigation' });
+            ga_event("bundle_details", { category: 'navigation' });
             dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))
         }}>{t('action.details')}</Button></>);
     }
