@@ -40,7 +40,8 @@ NEXT_PUBLIC_STAKING_SUPPORTING_TOKEN_DECIMALS=6
 
 ### Google analytics
 
-To enable Google Analytics, set the environment variable `NEXT_PUBLIC_GA_MEASUREMENT_ID` to the value you get from your Google Analytics settings.  
+To enable Google Analytics, set the environment variable `NEXT_PUBLIC_GA_MEASUREMENT_ID` to the value you get from your Google Analytics settings.
+Setting the environment variable `NEXT_PUBLIC_GA_ENVIRONMENT_ID` will add a parameter _environment_ with the given value to any events transmitted. 
 
 ### Faucet 
 
