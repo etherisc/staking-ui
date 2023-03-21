@@ -1,21 +1,22 @@
-import '../../styles/globals.css'
-import type { AppProps } from 'next/app'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { faCubesStacked, faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import CssBaseline from '@mui/material/CssBaseline';
-import React, { useReducer } from 'react';
-import Head from 'next/head';
-import { SnackbarProvider } from 'notistack';
-import { appWithTranslation, useTranslation } from 'next-i18next';
-import { getAndUpdateWalletAccount } from '../utils/wallet';
 import { ThemeProvider } from '@mui/material/styles';
-import { etheriscTheme } from '../config/theme';
-import Layout from '../components/layout/layout';
+import { appWithTranslation, useTranslation } from 'next-i18next';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import { GoogleAnalytics } from "nextjs-google-analytics";
+import { SnackbarProvider } from 'notistack';
+import React from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
+import '../../styles/globals.css';
+import Layout from '../components/layout/layout';
+import { etheriscTheme } from '../config/theme';
 import { RootState, store } from '../redux/store';
-import { faRightToBracket, faRightFromBracket, faCubesStacked } from "@fortawesome/free-solid-svg-icons";
+import { getAndUpdateWalletAccount } from '../utils/wallet';
 
 // The following import prevents a Font Awesome icon server-side rendering bug,
 // where the icons flash from a very large icon down to a properly sized one:
@@ -32,6 +33,9 @@ export function App(appProps: AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/favicon.svg" />
       </Head>
+      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== undefined && 
+        <GoogleAnalytics trackPageViews />
+      }
       <ThemeProvider theme={etheriscTheme}>
         <CssBaseline enableColorScheme />
         <Provider store={store}>

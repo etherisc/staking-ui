@@ -13,9 +13,11 @@ import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
 import { TransactionFailedError } from "../../utils/error";
+import { ga_event } from "../../utils/google_analytics";
 import { Heading1 } from "../heading";
 import SelectBundle from "../stake/select_bundle";
 import UnstakeBundle from "./unstake_bundle";
+
 
 interface UnstakeProps {
     stakingApi: StakingApi;
@@ -58,6 +60,7 @@ export default function Unstake(props: UnstakeProps) {
     }, [isConnected, activeStep, dispatch]);
 
     async function unstake(amount: BigNumber, nftId: string, max: boolean, bundle: BundleInfo) {
+        ga_event("trx_start_unstake", { category: 'chain_trx' });
         try {
             enableUnloadWarning(true);
             const walletAddress = await signer!.getAddress();
@@ -65,9 +68,11 @@ export default function Unstake(props: UnstakeProps) {
             dispatch(setStep(4));
             const applicationSuccess = await doUnstake(stakeingBundle!, nftId, max, amount);
             if ( ! applicationSuccess) {
+                ga_event("trx_fail_unstake", { category: 'chain_trx' });
                 dispatch(setStep(3));
                 return;
             }
+            ga_event("trx_success_unstake", { category: 'chain_trx' });
             dispatch(setStep(5));
             await unstakingSuccessful(stakeingBundle!);
         } finally {

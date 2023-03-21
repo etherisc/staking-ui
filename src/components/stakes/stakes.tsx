@@ -9,6 +9,7 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { finishLoading, reset, selectBundle, startLoading } from "../../redux/slices/stakes";
 import { RootState } from "../../redux/store";
+import { ga_event } from "../../utils/google_analytics";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 import { Heading1 } from "../heading";
 import ShowBundle from "../show_bundle/show_bundle";
@@ -43,7 +44,10 @@ export default function Stakes(props: StakingProps) {
     }, [signer, isConnected, props.stakingApi, dispatch, retrieveStakes]);
 
     function buildActions(bundle: BundleInfo): JSX.Element {
-        return (<><Button onClick={() => dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))}>{t('action.details')}</Button></>);
+        return (<><Button onClick={() => {
+            ga_event("bundle_details", { category: 'navigation' });
+            dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))
+        }}>{t('action.details')}</Button></>);
     }
 
     return (<>
