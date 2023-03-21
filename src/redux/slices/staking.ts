@@ -32,6 +32,10 @@ export const stakingSlice = createSlice({
             state.step = 2;
             state.stakeingBundle = action.payload;
         },
+        bundleUnselected: (state) => {
+            state.step = 1;
+            state.stakeingBundle = null;
+        },
     },
 });
 
@@ -39,7 +43,7 @@ export const stakingSlice = createSlice({
 export const { 
     resetForm,
     setStep, 
-    bundleSelected 
+    bundleSelected, bundleUnselected,
 } = stakingSlice.actions
 
 export default stakingSlice.reducer

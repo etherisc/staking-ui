@@ -24,6 +24,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 // Prevent fontawesome from adding its CSS since we did it manually above:
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { removeSigner } from '../utils/chain';
+import { clearSelectedBundle } from '../redux/slices/stakes';
+import { bundleUnselected } from '../redux/slices/staking';
 config.autoAddCss = false; /* eslint-disable import/first */
 
 export function App(appProps: AppProps) {
@@ -85,9 +87,9 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
   }
 
   let items = [
-    [t('nav.link.stakes'), '/', faCubesStacked],
-    [t('nav.link.stake'), '/stake', faRightToBracket],
-    [t('nav.link.unstake'), '/unstake', faRightFromBracket],
+    [t('nav.link.stakes'), '/', () => dispatch(clearSelectedBundle()), faCubesStacked],
+    [t('nav.link.stake'), '/stake', () => dispatch(bundleUnselected()), faRightToBracket],
+    [t('nav.link.unstake'), '/unstake', () => dispatch(bundleUnselected()), faRightFromBracket],
   ];
 
   appProps.pageProps.items = items;
