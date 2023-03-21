@@ -6,10 +6,12 @@ import { SnackbarKey, useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { clearSelectedBundle, selectBundle } from "../../redux/slices/stakes";
+import { clearSelectedBundle } from "../../redux/slices/stakes";
 import { TransactionFailedError } from "../../utils/error";
+import { ga_event } from "../../utils/google_analytics";
 import BundleActions from "./bundle_actions";
 import BundleDetails from "./bundle_details";
+
 
 interface ShowBundleProps {
     stakingApi: StakingApi;
@@ -29,9 +31,10 @@ export default function ShowBundle(props: ShowBundleProps) {
     }
 
     async function claimRewards(bundle: BundleInfo): Promise<boolean> {
+        ga_event("trx_start_claim_rewards", { category: 'chain_trx' });
         let snackbar: SnackbarKey | undefined = undefined;
         try {
-            return await props.stakingApi.claimRewards(
+            const res = await props.stakingApi.claimRewards(
                 bundle,
                 (address: string) => {
                     snackbar = enqueueSnackbar(
@@ -48,8 +51,11 @@ export default function ShowBundle(props: ShowBundleProps) {
                         { variant: "info", persist: true }
                     );
                 });
+            ga_event("trx_success_claim_rewards", { category: 'chain_trx' });
+            return res;
         } catch(e) { 
             if ( e instanceof TransactionFailedError) {
+                ga_event("trx_fail_claim_rewards", { category: 'chain_trx' });
                 console.log("transaction failed", e);
                 if (snackbar !== undefined) {
                     closeSnackbar(snackbar);
@@ -69,6 +75,7 @@ export default function ShowBundle(props: ShowBundleProps) {
                 );
                 return Promise.resolve(false);
             } else {
+                ga_event("trx_fail_other_claim_rewards", { category: 'chain_trx' });
                 throw e;
             }
         } finally {

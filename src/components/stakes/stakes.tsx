@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button } from "@mui/material";
 import { Signer } from "ethers";
 import { useTranslation } from "next-i18next";
+import { event } from "nextjs-google-analytics";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
@@ -43,7 +44,10 @@ export default function Stakes(props: StakingProps) {
     }, [signer, isConnected, props.stakingApi, dispatch, retrieveStakes]);
 
     function buildActions(bundle: BundleInfo): JSX.Element {
-        return (<><Button onClick={() => dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))}>{t('action.details')}</Button></>);
+        return (<><Button onClick={() => {
+            event("bundle_details", { category: 'nagigation' });
+            dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))
+        }}>{t('action.details')}</Button></>);
     }
 
     return (<>

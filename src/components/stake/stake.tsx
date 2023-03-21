@@ -13,6 +13,7 @@ import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
 import { ApprovalFailedError, TransactionFailedError } from "../../utils/error";
+import { ga_event } from "../../utils/google_analytics";
 import { formatCurrency } from "../../utils/numbers";
 import { Heading1 } from "../heading";
 import SelectBundle from "./select_bundle";
@@ -59,6 +60,7 @@ export default function Stake(props: StakeProps) {
     }, [isConnected, activeStep, dispatch]);
 
     async function stake(amount: BigNumber, bundle: BundleInfo) {
+        ga_event("trx_start_stake", { category: 'chain_trx' });
         try {
             enableUnloadWarning(true);
             const walletAddress = await signer!.getAddress() ?? '';
@@ -66,17 +68,21 @@ export default function Stake(props: StakeProps) {
             dispatch(setStep(4));
             const approvalSuccess = await doApproval(walletAddress, amount);
             if ( ! approvalSuccess) {
+                ga_event("trx_fail_stake_approve", { category: 'chain_trx' });
                 dispatch(setStep(3));
                 showAllowanceNotice();
                 return;
             }
+            ga_event("trx_success_stake_approve", { category: 'chain_trx' });
             dispatch(setStep(5));
             const applicationSuccess = await doStake(stakeingBundle!, amount);
             if ( ! applicationSuccess) {
+                ga_event("trx_fail_stake", { category: 'chain_trx' });
                 dispatch(setStep(3));
                 showAllowanceNotice();
                 return;
             }
+            ga_event("trx_success_stake", { category: 'chain_trx' });
             dispatch(setStep(6));
             await stakingSuccessful(stakeingBundle!);
         } finally {
@@ -139,7 +145,7 @@ export default function Stake(props: StakeProps) {
     async function doStake(bundle: BundleInfo, stakedAmount: BigNumber): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
-            return await props.stakingApi.stake(
+            const res = await props.stakingApi.stake(
                 bundle,
                 stakedAmount,
                 (address: string) => {
@@ -157,6 +163,7 @@ export default function Stake(props: StakeProps) {
                         { variant: "info", persist: true }
                     );
                 });
+            return res;
         } catch(e) { 
             if ( e instanceof TransactionFailedError) {
                 console.log("transaction failed", e);
