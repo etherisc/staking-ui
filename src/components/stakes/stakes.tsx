@@ -3,13 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button } from "@mui/material";
 import { Signer } from "ethers";
 import { useTranslation } from "next-i18next";
-import { event } from "nextjs-google-analytics";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { finishLoading, reset, selectBundle, startLoading } from "../../redux/slices/stakes";
 import { RootState } from "../../redux/store";
+import { ga_event } from "../../utils/google_analytics";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 import { Heading1 } from "../heading";
 import ShowBundle from "../show_bundle/show_bundle";
@@ -45,7 +45,7 @@ export default function Stakes(props: StakingProps) {
 
     function buildActions(bundle: BundleInfo): JSX.Element {
         return (<><Button onClick={() => {
-            event("bundle_details", { category: 'nagigation' });
+            ga_event("bundle_details", { category: 'nagigation' });
             dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))
         }}>{t('action.details')}</Button></>);
     }
