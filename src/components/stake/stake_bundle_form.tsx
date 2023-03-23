@@ -12,7 +12,7 @@ import { INPUT_VARIANT } from "../../config/theme";
 import { clearSelectedBundle, selectBundle } from "../../redux/slices/stakes";
 import { setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
-import TermsAndConditions from "../terms_and_conditions";
+import TermsOfService from "../terms_of_service";
 
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
@@ -223,7 +223,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                         />
                                 } 
                                 disabled={props.formDisabled}
-                                label={<TermsAndConditions />}
+                                label={<TermsOfService />}
                                 />
                         } />
                 </Grid>
