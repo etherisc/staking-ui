@@ -101,9 +101,9 @@ dokku domains:remove goerli-staking goerli-staking.depeg-test.etherisc.com
 dokku docker-options:add goerli-staking build --build-arg INSTANCE=goerli
 
 # set correct proxy ports for http and https
-dokku proxy:ports-remove goerli-staking http:80:5000
 dokku proxy:ports-add goerli-staking http:80:3000
 dokku proxy:ports-add goerli-staking https:443:3000
+dokku proxy:ports-remove goerli-staking http:80:5000
 
 
 # now push deployment via git 
