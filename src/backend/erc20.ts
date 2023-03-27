@@ -28,7 +28,7 @@ export async function createDipApproval(
     signer: Signer, 
     beforeApprovalCallback?: (address: string, currency: string, amount: BigNumber) => void,
     beforeWaitCallback?: (address: string, currency: string, amount: BigNumber) => void
-): Promise<[ContractTransaction, ContractReceipt]> {
+): Promise<{ tx: ContractTransaction|undefined, receipt: ContractReceipt|undefined, exists: Boolean }> {
     const dipAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS!;
     console.log(`creating treasury approval for ${amount} on token ${dipAddress}`);
     const dip = getErc20Token(dipAddress, signer);
@@ -37,6 +37,11 @@ export async function createDipApproval(
         beforeApprovalCallback(recipient, symbol, amount);
     }
     try {
+        const allowanceExists = await dip.allowance(await signer.getAddress(), recipient);
+        if (allowanceExists.gte(amount)) {
+            return { exists: true, tx: undefined, receipt: undefined };
+        }
+        
         const tx = await dip.approve(recipient, amount, { gasLimit: 200000 });
         console.log("tx done", tx)
         if (beforeWaitCallback !== undefined) {
@@ -44,10 +49,19 @@ export async function createDipApproval(
         }
         const receipt = await tx.wait();
         console.log("wait done", receipt, tx)
-        return [tx, receipt];
+        return { tx, receipt, exists: false };
     } catch (e) {
         console.log("caught error during approval: ", e);
         // @ts-ignore e.code
         throw new ApprovalFailedError(e.code, e);
     }
+}
+
+/**
+ * Checks weather the given address pair has the expected allowance.
+ */
+export async function hasAllowance(sourceAddress: string, targetAddress: string, amount: BigNumber, tokenAddress: string, signer: Signer): Promise<Boolean> {
+    const token = getErc20Token(tokenAddress, signer);
+    const allowance = await token.allowance(sourceAddress, targetAddress);
+    return allowance.gte(amount);
 }

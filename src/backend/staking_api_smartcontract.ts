@@ -94,13 +94,16 @@ export class StakingApiSmartContract implements StakingApi {
         beforeWaitCallback?: ((address: string, currency: string, amount: BigNumber) => void) | undefined
     ): Promise<boolean> {
         const stakingWallet = await (await this.getGifStakingApi()).getStakingWallet();
-        const [tx, receipt] = await createDipApproval(
+        const { exists, tx, receipt } = await createDipApproval(
             stakingWallet, 
             amount, 
             this.signer, 
             beforeApprovalCallback, 
             beforeWaitCallback);
-        return receipt.status === 1;
+        if (exists) {
+            return true;
+        }
+        return receipt!.status === 1;
     }
 
     async stake(
