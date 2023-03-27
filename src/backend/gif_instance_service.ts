@@ -1,7 +1,7 @@
 import { Signer } from "ethers";
 import { formatBytes32String } from "ethers/lib/utils";
 import { IInstanceService, IInstanceService__factory, IRegistry__factory } from "../contracts/depeg-contracts";
-import { IBundle } from "../contracts/depeg-contracts/dependencies/etherisc/gif-interface@a8c9822/IInstanceService";
+import { IBundle } from "../contracts/depeg-contracts/dependencies/etherisc/gif-interface@3b0002a/IInstanceService";
 
 const GIF_INSTANCE_SERVICE_NAME = "InstanceService";
 

@@ -1,6 +1,6 @@
 {
   "name": "staking-ui",
-  "version": "0.10.1",
+  "version": "0.10.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,7 +11,6 @@
     "lint": "next lint",
     "testLoop": "jest --watch",
     "test": "jest",
-    "typechainGifInterfaceTypes": "typechain --target ethers-v5 --out-dir src/contracts/gif-interface './node_modules/@etherisc/gif-interface/build/**/*json'",
     "typechainDepegTypes": "typechain --target ethers-v5 --out-dir src/contracts/depeg-contracts './node_modules/@etherisc/depeg-contracts/build/contracts/**/*json'",
     "typechainRegistryTypes": "typechain --target ethers-v5 --out-dir src/contracts/registry-contracts './node_modules/@etherisc/registry-contracts/build/contracts/**/*json'"
   },
@@ -49,8 +48,8 @@
     "typescript": "^5.0.2"
   },
   "devDependencies": {
-    "@etherisc/depeg-contracts": "0.0.2-5e0be55",
-    "@etherisc/registry-contracts": "0.0.2-542802e",
+    "@etherisc/depeg-contracts": "0.0.2-950157d",
+    "@etherisc/registry-contracts": "0.0.2-7493c17",
     "@hookform/devtools": "^4.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",

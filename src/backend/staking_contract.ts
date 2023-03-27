@@ -222,7 +222,7 @@ export default class StakingContract {
         const nftBalance = await this.chainNft?.balanceOf(address) || BigNumber.from(0);
         for (let idx = 0; idx < nftBalance.toNumber(); idx++) {
             const nftId = await this.chainNft?.tokenOfOwnerByIndex(address, idx);
-            const { t: objectType } = await this.chainRegistry!.getNftInfo(nftId!);
+            const { objectType } = await this.chainRegistry!.getNftInfo(nftId!);
             if (objectType === OBJECT_TYPE_STAKE) {
                 bundleStakeNftIds.push(nftId!);
             }
