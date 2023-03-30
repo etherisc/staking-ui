@@ -17,9 +17,11 @@ export class StakingApiSmartContract implements StakingApi {
     private dipTokenMetadata?: IERC20Metadata;
     private dipSymbol?: string;
     private dipDecimals?: number;
+    private stakingContractAddress: string;
 
     constructor(signer: Signer, stakingContractAddress: string) {
         this.signer = signer;
+        this.stakingContractAddress = stakingContractAddress;
         this.gifStakingApi = new StakingContract(signer, stakingContractAddress);
         this.gifInstanceService = new GifInstanceService(signer);
     }
@@ -93,9 +95,8 @@ export class StakingApiSmartContract implements StakingApi {
         beforeApprovalCallback?: ((address: string, currency: string, amount: BigNumber) => void) | undefined, 
         beforeWaitCallback?: ((address: string, currency: string, amount: BigNumber) => void) | undefined
     ): Promise<boolean> {
-        const stakingWallet = await (await this.getGifStakingApi()).getStakingWallet();
         const { exists, tx, receipt } = await createDipApproval(
-            stakingWallet, 
+            this.stakingContractAddress, 
             amount, 
             this.signer, 
             beforeApprovalCallback, 
