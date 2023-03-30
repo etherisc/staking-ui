@@ -6,6 +6,7 @@ import { SnackbarKey, useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import useNotifications from "../../hooks/notifications";
 import { clearSelectedBundle } from "../../redux/slices/stakes";
 import { TransactionFailedError } from "../../utils/error";
 import { ga_event } from "../../utils/google_analytics";
@@ -22,6 +23,7 @@ export default function ShowBundle(props: ShowBundleProps) {
     const dispatch = useDispatch();
     const { t } = useTranslation(['stakes', 'common']);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { showPersistentErrorSnackbarWithCopyDetails } = useNotifications();
     const bundle = props.bundle;
     const currency = props.stakingApi.currency();
     const decimals = props.stakingApi.currencyDecimals();
@@ -61,17 +63,9 @@ export default function ShowBundle(props: ShowBundleProps) {
                     closeSnackbar(snackbar);
                 }
 
-                enqueueSnackbar(
+                showPersistentErrorSnackbarWithCopyDetails(
                     t('error.transaction_failed', { ns: 'common', error: e.code }),
-                    { 
-                        variant: "error", 
-                        persist: true,
-                        action: (key) => {
-                            return (
-                                <Button onClick={() => {closeSnackbar(key)}}>{t('action.close', { ns: 'common' })}</Button>
-                            );
-                        }
-                    }
+                    e.reason
                 );
                 return Promise.resolve(false);
             } else {

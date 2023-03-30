@@ -25,7 +25,9 @@
     "continue": "Continue",
     "copy_value": "Copy value to clipboard",
     "select": "Select",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "copy_details": "Copy details",
+    "copy": "Copy"
   },
   "login_select": "Please choose a wallet",
   "warning": {
