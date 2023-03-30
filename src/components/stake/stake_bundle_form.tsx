@@ -230,7 +230,6 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                 <Grid item xs={6}>
                     <Button 
                         fullWidth
-                        type="submit" 
                         variant="outlined" 
                         color="primary"
                         onClick={back}

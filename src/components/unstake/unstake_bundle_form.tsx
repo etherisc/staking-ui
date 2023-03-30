@@ -163,7 +163,6 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
                 <Grid item xs={6}>
                     <Button 
                         fullWidth
-                        type="submit" 
                         variant="outlined" 
                         color="primary"
                         onClick={back}
