@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import useNotifications from "../../hooks/notifications";
 import { selectBundle } from "../../redux/slices/stakes";
 import { resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
@@ -28,6 +29,7 @@ export const REVOKE_INFO_URL = "https://metamask.zendesk.com/hc/en-us/articles/4
 export default function Stake(props: StakeProps) {
     const { t } = useTranslation(['stake', 'common']);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { showPersistentErrorSnackbarWithCopyDetails } = useNotifications();
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -119,17 +121,9 @@ export default function Stake(props: StakeProps) {
                     closeSnackbar(snackbar);
                 }
 
-                enqueueSnackbar(
+                showPersistentErrorSnackbarWithCopyDetails(
                     t('error.approval_failed', { ns: 'common', error: e.code }),
-                    { 
-                        variant: "error", 
-                        persist: true,
-                        action: (key) => {
-                            return (
-                                <Button onClick={() => {closeSnackbar(key)}}>{t('action.close', { ns: 'common' })}</Button>
-                            );
-                        }
-                    }
+                    e.reason
                 );
                 return Promise.resolve(false);
             } else {
@@ -171,17 +165,9 @@ export default function Stake(props: StakeProps) {
                     closeSnackbar(snackbar);
                 }
 
-                enqueueSnackbar(
+                showPersistentErrorSnackbarWithCopyDetails(
                     t('error.transaction_failed', { ns: 'common', error: e.code }),
-                    { 
-                        variant: "error", 
-                        persist: true,
-                        action: (key) => {
-                            return (
-                                <Button onClick={() => {closeSnackbar(key)}}>{t('action.close', { ns: 'common' })}</Button>
-                            );
-                        }
-                    }
+                    e.reason
                 );
                 return Promise.resolve(false);
             } else {
