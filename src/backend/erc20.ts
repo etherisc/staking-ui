@@ -1,6 +1,7 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
 import { ERC20, ERC20__factory } from "../contracts/depeg-contracts";
 import { ApprovalFailedError } from "../utils/error";
+import { formatUnits } from "ethers/lib/utils";
 
 export function getErc20Token(address: string, signer: Signer): ERC20 {
     return ERC20__factory.connect(address, signer);
@@ -48,7 +49,14 @@ export async function createDipApproval(
             beforeWaitCallback(recipient, symbol, amount); 
         }
         const receipt = await tx.wait();
-        console.log("wait done", receipt, tx)
+        console.log("wait done", receipt, tx);
+
+        // now check if allowance is set and large enough
+        const allowanceAfterApproval = await dip.allowance(await signer.getAddress(), recipient);
+        if (allowanceAfterApproval.lt(amount)) {
+            throw new ApprovalFailedError("ERROR:STT-001:ALLOWANCE_TOO_SMALL", `user created allowance too small: ${formatUnits(allowanceAfterApproval, 18)}`);
+        }
+
         return { tx, receipt, exists: false };
     } catch (e) {
         console.log("caught error during approval: ", e);
