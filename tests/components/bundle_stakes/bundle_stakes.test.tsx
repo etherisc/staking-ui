@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { SnackbarProvider } from 'notistack';
 import userEvent from '@testing-library/user-event';
@@ -107,6 +107,82 @@ describe('When rendering bundle stakes', () => {
         expect(rows[2]).toHaveTextContent("USDT 2,000.00");
         expect(rows[2]).toHaveTextContent("bundle_state_0");
         expect(rows[2]).toHaveTextContent(moment.unix(bundle1ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
+    })
+
+    it('bundles can be filtered to staked bundles', async () => {
+        const stakingApi = mockStakingApiSimple();
+
+        const bundle1ExpirationAt = dayjs().add(28, "day").unix();
+        const bundle2ExpirationAt = dayjs().add(-5, "day").unix();
+
+        const bundles = [
+            {
+                id: "0x1234-1",
+                instanceId: "0x123456790abcdefgh",
+                riskpoolId: 42,
+                bundleId: 1,
+                bundleName: "Bundle 1",
+                myStakedAmount: parseEther("0").toString(),
+                stakedAmount: parseEther("20000").toString(),
+                mySupportingAmount: parseUnits("100", 6).toString(),
+                supportingAmount: parseUnits("0", 6).toString(),
+                myStakedNfsIds: [] as string[],
+                supportingToken: "USDT",
+                supportingTokenDecimals: 6,
+                state: 0,
+                expiryAt: bundle1ExpirationAt,
+            } as BundleInfo,
+            {
+                id: "0x1234-2",
+                instanceId: "0x123456790abcdefgh",
+                riskpoolId: 42,
+                bundleId: 2,
+                bundleName: "Bundle 2",
+                myStakedAmount: parseEther("3000").toString(),
+                stakedAmount: parseEther("40000").toString(),
+                mySupportingAmount: parseUnits("300", 6).toString(),
+                supportingAmount: parseUnits("4000", 6).toString(),
+                myStakedNfsIds: ["1", "2"],
+                supportingToken: "USDT",
+                supportingTokenDecimals: 6,
+                state: 0,
+                expiryAt: bundle2ExpirationAt,
+            } as BundleInfo,
+        ] as Array<BundleInfo>;
+
+        renderWithProviders(
+            <SnackbarProvider>
+                <BundleStakes
+                    stakingApi={stakingApi}
+                    bundles={bundles}
+                    isBundlesLoading={false}
+                    />
+            </SnackbarProvider>
+        );
+
+        await waitFor(async () => 
+            expect(await screen.findAllByRole("row")).toHaveLength(3)
+        );
+        
+        const rows = await screen.findAllByRole("row");
+
+        // row 0 is header
+        expect(rows[1]).toHaveTextContent("Bundle 2");
+        expect(rows[2]).toHaveTextContent("0x1234…efgh");
+        
+        // now click filter switch
+        await act(async () => {
+            const filterButton = (await screen.findByTestId("show-my-stakes-switch"));
+            fireEvent.click(filterButton);
+        });
+        await waitFor(async () => {
+            const ia = (await screen.findByTestId("show-my-stakes-switch")).querySelector("input");
+            return expect(ia?.checked).toBe(true);
+        });
+
+        const filteredRows = await screen.findAllByRole("row");
+        expect(filteredRows).toHaveLength(2);
+        expect(filteredRows[1]).toHaveTextContent("Bundle 2");
     })
 
 })

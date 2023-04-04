@@ -221,6 +221,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                                 value={showMyStakes} 
                                 onChange={handleShowMyStakesChanged}
                                 sx={{ ml: 1 }}
+                                data-testid="show-my-stakes-switch"
                                 />} 
                         label={t('action.show_my_staked_bundles')} />
                 </Box>
