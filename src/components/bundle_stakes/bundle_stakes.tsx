@@ -1,6 +1,6 @@
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LinearProgress, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridSortCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
@@ -101,11 +101,12 @@ export default function BundleStakes(props: BundleStakesProps) {
                 if (params.value![1] === undefined || params.value![1] === null || params.value![1] === '') {
                     return (<>{params.value![0]}</>);
                 }
-                return (<>
-                    <WithTooltip tooltipText={t('bundle_id_num', { id: params.value![0]})}>
+                const tooltipText = (<>{t('bundle_id_num', { id: params.value![0]})} | {params.value![1]}</>);
+                return (<Box sx={{ overflow: 'hidden' }}>
+                    <WithTooltip tooltipText={tooltipText} withEllipsis={true} >
                         {params.value![1]}
                     </WithTooltip>
-                </>);
+                </Box>);
             },
             sortComparator: (v1: [number, string], v2: [number, string]) => {
                 if (v1[1] !== '' && v2[1] !== '') {
