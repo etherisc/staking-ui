@@ -78,15 +78,16 @@ export default function BundleStakes(props: BundleStakesProps) {
             valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.instanceId, params.row.instanceName ],
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
-                    return (<>
-                        <WithTooltip tooltipText={params.value![0]}>
-                            {params.value![1]}
-                        </WithTooltip>
-                        &nbsp;
-                        <Typography color="secondary.main">
+                    const tooltip = (<>{params.value![0]} &nbsp;
+                        <Typography color="secondary.main" component="span" sx={{ flexShrink: 0}}>
                             <FontAwesomeIcon icon={faCopy} className="fa cursor-pointer" onClick={() => copyToClipboard(params.value![0])} data-testid="copy-button" />
                         </Typography>
                     </>);
+                    return (<Box sx={{ overflow: 'hidden' }}>
+                        <WithTooltip tooltipText={tooltip} withEllipsis={true}>
+                            {params.value![1]}
+                        </WithTooltip>
+                    </Box>);
                 }
                 return (<>
                     <Address address={params.value![0]} iconColor="secondary.main" />
