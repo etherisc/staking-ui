@@ -27,7 +27,8 @@
     "select": "Select",
     "refresh": "Refresh",
     "copy_details": "Copy details",
-    "copy": "Copy"
+    "copy": "Copy",
+    "show_my_staked_bundles": "Show only my stakes"
   },
   "login_select": "Please choose a wallet",
   "warning": {

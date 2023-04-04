@@ -50,6 +50,7 @@ describe('When rendering bundle stakes', () => {
                 stakedAmount: parseEther("20000").toString(),
                 mySupportingAmount: parseUnits("100", 6).toString(),
                 supportingAmount: parseUnits("2000", 6).toString(),
+                myStakedNfsIds: ["3", "4"],
                 supportingToken: "USDT",
                 supportingTokenDecimals: 6,
                 state: 0,
@@ -65,6 +66,7 @@ describe('When rendering bundle stakes', () => {
                 stakedAmount: parseEther("40000").toString(),
                 mySupportingAmount: parseUnits("300", 6).toString(),
                 supportingAmount: parseUnits("4000", 6).toString(),
+                myStakedNfsIds: ["1", "2"],
                 supportingToken: "USDT",
                 supportingTokenDecimals: 6,
                 state: 0,
@@ -105,7 +107,6 @@ describe('When rendering bundle stakes', () => {
         expect(rows[2]).toHaveTextContent("USDT 2,000.00");
         expect(rows[2]).toHaveTextContent("bundle_state_0");
         expect(rows[2]).toHaveTextContent(moment.unix(bundle1ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
-
     })
 
 })

@@ -1,7 +1,7 @@
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, LinearProgress, Typography } from "@mui/material";
-import { DataGrid, GridColDef, gridNumberComparator, GridRenderCellParams, GridSortCellParams, GridValueFormatterParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { Box, FormControlLabel, LinearProgress, Switch, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, GridValueFormatterParams, GridValueGetterParams, gridNumberComparator } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
@@ -36,10 +36,17 @@ interface BundleStakesProps {
 export default function BundleStakes(props: BundleStakesProps) {
     const { t } = useTranslation(['common']);
     const { enqueueSnackbar } = useSnackbar();
-    const [ pageSize, setPageSize ] = useState(10);
+    
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
+
+    const [ showMyStakes, setShowMyStakes ] = useState(false);
+
+
+    function handleShowMyStakesChanged(event: React.ChangeEvent<HTMLInputElement>) {
+        setShowMyStakes(!showMyStakes);
+    }
 
     // retrieve the stake usage data for each bundle (when the props define that stake usage should be displayed)
     useEffect(() => {
@@ -203,6 +210,25 @@ export default function BundleStakes(props: BundleStakesProps) {
         });
     }
 
+    function GridToolbar() {
+        return (
+            <GridToolbarContainer >
+                <Box sx={{ flexGrow: 1 }}>
+                    <FormControlLabel 
+                        control={
+                            <Switch
+                                defaultChecked={showMyStakes}
+                                value={showMyStakes} 
+                                onChange={handleShowMyStakesChanged}
+                                sx={{ ml: 1 }}
+                                />} 
+                        label={t('action.show_my_staked_bundles')} />
+                </Box>
+                {/* aligned right beyond here */}
+            </GridToolbarContainer>
+        );
+    }
+
     const loadingBar = props.isBundlesLoading ? <LinearProgress /> : null;
 
     return (
@@ -211,7 +237,7 @@ export default function BundleStakes(props: BundleStakesProps) {
 
             <DataGrid 
                 autoHeight
-                rows={props.bundles} 
+                rows={props.bundles.filter((bundle) => ! showMyStakes || bundle.myStakedNfsIds.length > 0)} 
                 columns={columns} 
                 getRowId={(row) => row.id}
                 initialState={{
@@ -219,12 +245,15 @@ export default function BundleStakes(props: BundleStakesProps) {
                         sortModel: [{ field: 'expiryAt', sort: 'asc' }],
                     },
                     pagination: {
-                        paginationModel: { pageSize: pageSize, page: 0 },
+                        paginationModel: { pageSize: 10, page: 0 },
                     },
                 }}
                 disableRowSelectionOnClick={true}
                 disableColumnMenu={true}
                 columnBuffer={8}
+                components={{
+                    Toolbar: GridToolbar,
+                }}
                 />
         </>
     );

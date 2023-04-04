@@ -1,5 +1,4 @@
 import { Box, Tooltip, Typography } from "@mui/material";
-import { width } from "@mui/system";
 
 export default function WithTooltip(props: any) {
     const { tooltipText, children, typographyVariant, withEllipsis } = props;
@@ -12,7 +11,7 @@ export default function WithTooltip(props: any) {
     }
 
     return (<>
-        <Tooltip title={tooltipText} enterDelay={700} leaveDelay={200} sx={{ display: 'block'}}>
+        <Tooltip title={tooltipText} enterDelay={700} leaveDelay={200}>
             <Typography variant={ typographyVariant || 'body2' } component="span">
                 {content}
             </Typography>
