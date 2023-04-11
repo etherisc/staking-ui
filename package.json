@@ -24,7 +24,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.11.15",
-    "@mui/x-data-grid": "^6.0.4",
+    "@mui/x-data-grid": "^6.1.0",
     "@reduxjs/toolkit": "^1.9.3",
     "@walletconnect/web3-provider": "^1.8.0",
     "abi-coder": "^4.1.1",
