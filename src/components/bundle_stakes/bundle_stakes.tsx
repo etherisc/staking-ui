@@ -154,7 +154,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 const bundle = params.value;
                 // active and locked bundles with expiration date in the past are considered expired
                 if ((bundle.state === 0 || bundle.state === 1)&& dayjs.unix(bundle.expiryAt).isBefore(dayjs())) {
-                    return t(`bundle_state_expired}`, { ns: 'common'});
+                    return t(`bundle_state_expired`, { ns: 'common'});
                 }
                 return t(`bundle_state_${bundle.state}`, { ns: 'common'});
             }
