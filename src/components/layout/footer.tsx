@@ -1,7 +1,6 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { palette } from '@mui/system';
 import React from 'react';
 import { DOT } from '../../utils/chars';
 import ChainData from './chain_data';
@@ -12,6 +11,7 @@ import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import { addTokenToWallet } from '../../utils/wallet';
 
 export default function Footer() {
+    const theme = useTheme();
 
     function addDipToWallet() {
         const symbol = process.env.NEXT_PUBLIC_FAUCET_SYMBOL ?? 'DIP';
@@ -20,21 +20,28 @@ export default function Footer() {
     }
 
     return (
-        <footer>
+        <footer style={{ marginTop: 'auto', marginBottom: 0 }}>
             <Container maxWidth={false} sx={{
-                position: "fixed",
+                marginTop: '32px', 
+                paddingTop: 0.6,
+                paddingBottom: 0.6,
                 bottom: 0,
                 left: 0,
                 right: 0,
-                bgcolor: "HSL(214, 27%, 92%)",
+                bgcolor: theme.palette.grey[200],
             }}>
                 <Container 
-                    maxWidth="lg" 
+                    maxWidth={false}
                     sx={{ mr: 'auto', ml: 'auto', py: 1, display: { 'xs': 'none', 'md': 'flex' } }} 
                     color="palette.secondary.dark"
                     >
                     <Box 
-                        sx={{ display: { 'xs': 'none', 'md': 'flex' }, ml: '0', mr: 'auto' }} 
+                        sx={{ 
+                            display: { 'xs': 'none', 'md': 'flex' }, 
+                            ml: '0', 
+                            mr: 'auto', 
+                            verticalAlign: 'middle', 
+                        }} 
                         justifySelf="left"
                         >
                         <Typography variant="body2" sx={{ fontSize: '10px', ml: 1 }}  color="palette.priary.dark">
