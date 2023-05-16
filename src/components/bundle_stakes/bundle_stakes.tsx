@@ -268,11 +268,9 @@ export default function BundleStakes(props: BundleStakesProps) {
                 disableRowSelectionOnClick={true}
                 disableColumnMenu={true}
                 columnBuffer={8}
-                components={{
-                    Toolbar: GridToolbar,
-                }}
                 slots={{
                     noRowsOverlay: NoRowsOverlay,
+                    toolbar: GridToolbar,
                 }}
                 />
         </>
