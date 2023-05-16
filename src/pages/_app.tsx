@@ -26,24 +26,43 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import { removeSigner } from '../utils/chain';
 import { clearSelectedBundle } from '../redux/slices/stakes';
 import { bundleUnselected } from '../redux/slices/staking';
+import { nanoid } from '@reduxjs/toolkit';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache'
+import { encodeBase64 } from '../utils/base64';
 config.autoAddCss = false; /* eslint-disable import/first */
 
 export function App(appProps: AppProps) {
+  const production = process.env.NODE_ENV === 'production';
+  const nonce = encodeBase64(nanoid());
+  const cache = createCache({
+    key: 'my-prefix-key',
+    nonce: nonce,
+    prepend: true,
+  });
+  const csp = 
+    "default-src 'self';" 
+    + "style-src 'self' 'unsafe-inline'; "
+    + `script-src 'nonce-${nonce}' 'self' ${production ? '' : "'unsafe-eval'"}; `;
+
   return (
     <React.Fragment>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <meta httpEquiv="Content-Security-Policy" content={csp}/>
         <link rel="shortcut icon" href="/favicon.svg" />
       </Head>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== undefined && 
         <GoogleAnalytics trackPageViews />
       }
-      <ThemeProvider theme={etheriscTheme}>
-        <CssBaseline enableColorScheme />
-        <Provider store={store}>
-          <AppWithBlockchainConnection {...appProps} />
-        </Provider>
-      </ThemeProvider>
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={etheriscTheme}>
+          <CssBaseline enableColorScheme />
+          <Provider store={store}>
+            <AppWithBlockchainConnection {...appProps} />
+          </Provider>
+        </ThemeProvider>
+      </CacheProvider>
     </React.Fragment>
   );
 }
