@@ -1,13 +1,13 @@
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, FormControlLabel, LinearProgress, Switch, Typography } from "@mui/material";
+import { Alert, Box, Container, FormControlLabel, LinearProgress, Switch, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, GridValueFormatterParams, GridValueGetterParams, gridNumberComparator } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
-import { useTranslation } from "next-i18next";
+import { Trans, useTranslation } from "next-i18next";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { updateStakeUsage } from "../../redux/slices/stakes";
@@ -19,6 +19,7 @@ import Address from "../address";
 import Timestamp from "../timestamp";
 import WithTooltip from "../with_tooltip";
 import StakeUsageIndicator from "./stake_usage_indicator";
+import { RootState } from "../../redux/store";
 
 interface BundleStakesProps {
     stakingApi: StakingApi;
@@ -40,6 +41,7 @@ export default function BundleStakes(props: BundleStakesProps) {
     const currency = props.stakingApi.currency();
     const currencyDecimals = props.stakingApi.currencyDecimals();
     const dispatch = useDispatch();
+    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
 
     const [ showMyStakes, setShowMyStakes ] = useState(false);
 
@@ -230,6 +232,20 @@ export default function BundleStakes(props: BundleStakesProps) {
         );
     }
 
+    function NoRowsOverlay() {
+        if (! isConnected) {
+            return (<Container maxWidth={false} sx={{ height: 1, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                <Alert variant="standard" severity="info">
+                    <Trans i18nKey="alert.no_wallet_connected" t={t} />
+                </Alert>
+            </Container>);
+        }
+        
+        return (<Container maxWidth={false} sx={{ height: 1, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                <Trans i18nKey="alert.no_bundles_to_stake" t={t} />
+            </Container>);
+    }
+
     const loadingBar = props.isBundlesLoading ? <LinearProgress /> : null;
 
     return (
@@ -254,6 +270,9 @@ export default function BundleStakes(props: BundleStakesProps) {
                 columnBuffer={8}
                 components={{
                     Toolbar: GridToolbar,
+                }}
+                slots={{
+                    noRowsOverlay: NoRowsOverlay,
                 }}
                 />
         </>
