@@ -35,7 +35,7 @@
     "eslint": "^8.41.0",
     "eslint-config-next": "^13.4.6",
     "ethers": "^5.7.2",
-    "i18next": "^22.5.0",
+    "i18next": "^22.5.1",
     "moment": "^2.29.4",
     "next": "^13.4.6",
     "next-i18next": "^13.2.2",
