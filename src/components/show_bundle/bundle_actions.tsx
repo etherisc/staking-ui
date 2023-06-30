@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { bundleSelected } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
+import dayjs from "dayjs";
 
 interface BundleDetailsProps {
     bundle: BundleInfo;
@@ -19,7 +20,10 @@ export default function BundleActions(props: BundleDetailsProps) {
     const ownedNfts = useSelector((state: RootState) => state.stakes.ownedNfts);
 
     const bundle = props.bundle;
-    const isStakingAllowed = bundle.stakingSupported;
+    const isStakingAllowed = 
+        bundle.stakingSupported 
+        && (bundle.state === 0 || bundle.state === 1)
+        && bundle.expiryAt > dayjs().unix();
     const isUnstakingAllowed = 
         bundle.unstakingSupported &&
         // Check if there is at least one NFT that is staked
