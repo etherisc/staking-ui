@@ -6,8 +6,10 @@ export interface ChainState {
     chainId: string,
     isConnected: boolean,
     isExpectedChain: boolean,
-    provider?: providers.Web3Provider | undefined,
+    provider?: providers.JsonRpcProvider | undefined,
     signer?: Signer | undefined,
+    // the connection was made through walletconnect
+    isWalletConnect: boolean,
     blockNumber: number,
     blockTime: number,
 }
@@ -18,6 +20,7 @@ const initialState: ChainState = {
     isExpectedChain: true,
     provider: undefined,
     signer: undefined,
+    isWalletConnect: false,
     blockNumber: 0,
     blockTime: 0,
 }

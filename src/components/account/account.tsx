@@ -8,14 +8,21 @@ import Logout from "./logout";
 import { reconnectWallets } from "../../utils/wallet";
 import Login from "./login";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { RootState, store } from "../../redux/store";
+import { useWalletClient } from "wagmi";
+import { getEthersSigner } from "../../utils/walletconnect";
+import { CHAIN_ID } from "../../config/walletconnect";
+import { getAndUpdateBlock, getChainState, setAccountRedux } from "../../utils/chain";
+import { connectChain, disconnectChain } from "../../redux/slices/chain";
+import { JsonRpcSigner } from "@ethersproject/providers";
 
 export default function Account() {
     const dispatch = useDispatch();
     const signer = useSelector((state: RootState) => state.chain.signer);
-    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
+    const { isConnected, isWalletConnect } = useSelector((state: RootState) => state.chain);
     const address = useSelector((state: RootState) => state.account.address);
-    
+    const { data: walletClient } = useWalletClient();
+
     const [ loggedIn, setLoggedIn ] = useState(false);
 
     useEffect(() => {
@@ -31,6 +38,34 @@ export default function Account() {
         reconnectWallets(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+
+    // handle wallet connect connection state (login/logout)
+    useEffect(() => {
+        console.log("walletClient changed", walletClient);
+        async function login() {
+            console.log("wallet connect login");
+            const signer = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
+            if (signer === undefined) {
+                return;
+            }
+            const provider = signer.provider;
+            dispatch(connectChain(await getChainState(provider, true)));
+            setAccountRedux(signer, dispatch);
+
+            provider.on("block", (blockNumber: number) => {
+                getAndUpdateBlock(dispatch, provider, blockNumber);
+            });
+        }
+
+        if (walletClient !== undefined && ! loggedIn) {
+            login();
+        } else if (walletClient === undefined && loggedIn && isWalletConnect) {
+            console.log("wallet connect logout")
+            dispatch(disconnectChain());
+        }
+    }, [walletClient, loggedIn, dispatch, isWalletConnect]);
+    
 
     if (! loggedIn) {
         return (
@@ -62,3 +97,4 @@ export default function Account() {
 
     return (<>{account}</>);
 }
+
