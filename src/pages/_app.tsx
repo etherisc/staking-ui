@@ -23,9 +23,12 @@ import { getAndUpdateWalletAccount } from '../utils/wallet';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 // Prevent fontawesome from adding its CSS since we did it manually above:
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { removeSigner } from '../utils/chain';
+import { Web3Modal } from '@web3modal/react';
+import { WagmiConfig } from 'wagmi';
+import { WALLET_CONNECT_PROJECT_ID, ethereumClient, wagmiConfig } from '../config/walletconnect';
 import { clearSelectedBundle } from '../redux/slices/stakes';
 import { bundleUnselected } from '../redux/slices/staking';
+import { removeSigner } from '../utils/chain';
 config.autoAddCss = false; /* eslint-disable import/first */
 
 export function App(appProps: AppProps) {
@@ -97,7 +100,10 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
 
   return (
     <SnackbarProvider maxSnack={3} anchorOrigin={{ horizontal: "center", vertical: "top" }}>
-      <Layout {...appProps} />
+      <WagmiConfig config={wagmiConfig}>
+        <Layout {...appProps} />
+      </WagmiConfig>
+      <Web3Modal projectId={WALLET_CONNECT_PROJECT_ID} ethereumClient={ethereumClient} />
     </SnackbarProvider>
   );
 }

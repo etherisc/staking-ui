@@ -1,4 +1,4 @@
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { providers, Signer } from "ethers";
 import { resetAccount, setAccount, updateBalance } from "../redux/slices/account";
@@ -6,7 +6,7 @@ import { ChainState, connectChain, disconnectChain, setBlock, updateSigner as up
 import { expectedChain } from "./const";
 import { toHex } from "./numbers";
 
-export async function getChainState(provider: Web3Provider): Promise<ChainState> {
+export async function getChainState(provider: JsonRpcProvider, isWalletConnect?: boolean): Promise<ChainState> {
     const signer = provider.getSigner(); 
     const network = await provider.getNetwork();
     const chainId = toHex(network.chainId);
@@ -19,13 +19,14 @@ export async function getChainState(provider: Web3Provider): Promise<ChainState>
         isExpectedChain: chainId === expectedChain,
         provider: provider,
         signer: signer,
+        isWalletConnect: isWalletConnect ?? false,
         blockNumber: blockNumber,
         blockTime: blockTime,
     } as ChainState;
 }
 
 
-export async function getAndUpdateBlock(dispatch: Dispatch<AnyAction>, provider: providers.Web3Provider, blockNumber: number) {
+export async function getAndUpdateBlock(dispatch: Dispatch<AnyAction>, provider: providers.JsonRpcProvider, blockNumber: number) {
     const blockTime = (await provider.getBlock(blockNumber)).timestamp;
     dispatch(setBlock([blockNumber, blockTime ]));
 }
