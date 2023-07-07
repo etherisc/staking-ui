@@ -32,7 +32,7 @@
     "@web3modal/react": "^2.6.2",
     "abi-coder": "^4.1.1",
     "canvas-confetti": "^1.6.0",
-    "dayjs": "^1.11.8",
+    "dayjs": "^1.11.9",
     "eslint": "^8.43.0",
     "eslint-config-next": "^13.4.7",
     "ethers": "^5.7.2",
