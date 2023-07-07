@@ -8,7 +8,7 @@
 		// Append -bullseye or -buster to pin to an OS version.
 		// Use -bullseye variants on local on arm64/Apple Silicon.
 		"args": { 
-			"VARIANT": "18-bullseye"
+			"VARIANT": "18-bookworm"
 		}
 	},
 
@@ -21,6 +21,7 @@
 				"dbaeumer.vscode-eslint",
 				"github.vscode-pull-request-github",
 				"github.copilot",
+				"github.copilot-chat",
 				"mhutchie.git-graph",
 				"eamodio.gitlens",
 				"gruntfuggly.todo-tree",
