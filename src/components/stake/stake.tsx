@@ -123,7 +123,8 @@ export default function Stake(props: StakeProps) {
 
                 showPersistentErrorSnackbarWithCopyDetails(
                     t('error.approval_failed', { ns: 'common', error: e.code }),
-                    e.reason
+                    e.reason,
+                    "stake",
                 );
                 return Promise.resolve(false);
             } else {
@@ -167,7 +168,8 @@ export default function Stake(props: StakeProps) {
 
                 showPersistentErrorSnackbarWithCopyDetails(
                     t('error.transaction_failed', { ns: 'common', error: e.code }),
-                    e.reason
+                    e.reason,
+                    "stake",
                 );
                 return Promise.resolve(false);
             } else {
