@@ -1,6 +1,7 @@
 import { StakingApi } from "../../backend/staking_api";
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Heading1 } from "../heading";
+import StakingData from "./staking_data";
 
 interface StakingDashboardProps {
     stakingApi: StakingApi;
@@ -28,5 +29,6 @@ export default function StakingDashboard(props: StakingDashboardProps) {
     return (<>
         <Heading1>Staking Dashboard</Heading1>
         
+        <StakingData />
     </>);
 }
