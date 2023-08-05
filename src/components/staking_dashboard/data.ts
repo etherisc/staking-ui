@@ -22,45 +22,52 @@ export async function fetchStakeInfo(signer: Signer) {
     store.dispatch(setNumber(numStakes.toNumber()));
 
     const bundles: Map<number, any> = new Map<number, any>();
+    const promises = [];
 
     for (let idx = 0; idx < numStakes.toNumber(); idx++) {
-        const stakeId = await registryContract.getNftId(chainIdB32, OBJECT_STAKE, idx);
-        const infoRaw = await staking.getInfo(stakeId);
-        const rewardsIncrement = await staking.calculateRewardsIncrement(infoRaw);
-
-        const bundle_nft = infoRaw.target;
-        let bundleId, displayName, expiryAt;
-
-        if (bundle_nft.toNumber() in bundles) {
-            bundleId = bundles.get(bundle_nft.toNumber())?.bundleId;
-            displayName = bundles.get(bundle_nft.toNumber())?.displayName;
-            expiryAt = bundles.get(bundle_nft.toNumber())?.expiryAt;
-        } else {
-            const bundleInfo = await registryContract.decodeBundleData(bundle_nft);
-            bundleId = bundleInfo.bundleId;
-            displayName = bundleInfo.displayName;
-            expiryAt = bundleInfo.expiryAt;
-            bundles.set(bundle_nft.toNumber(), bundleInfo);
-        }
-
-        const stakeData = {
-            id: infoRaw.id.toString(),
-            target: infoRaw.target.toString(),
-            stakeBalance: infoRaw.stakeBalance.toString(),
-            rewardBalance: infoRaw.rewardBalance.toString(),
-            createdAt: infoRaw.createdAt,
-            updatedAt: infoRaw.updatedAt,
-            version: infoRaw.version,
-            rewardTotalNow: infoRaw.rewardBalance.add(rewardsIncrement).toString(),
-            bundleId: bundleId.toString(),
-            bundleName: displayName,
-            bundleExpiryAt: expiryAt.toString(),
-            stakeOwner: await registryContract.ownerOf(stakeId),
-            stakingStarted: infoRaw.createdAt,
-            unstakingAfter: expiryAt.toString(),
-        } as StakeData;
-        store.dispatch(addStakeData(stakeData));
+        promises.push(fetchStakeInfoForIndex(idx, bundles, registryContract, staking, chainIdB32));
     }
 
+    await Promise.all(promises);
+
     store.dispatch(finishLoading());
+}
+
+async function fetchStakeInfoForIndex(idx: number, bundles: Map<number, any>, registryContract: any, staking: any, chainIdB32: string) {
+    const stakeId = await registryContract.getNftId(chainIdB32, OBJECT_STAKE, idx);
+    const infoRaw = await staking.getInfo(stakeId);
+    const rewardsIncrement = await staking.calculateRewardsIncrement(infoRaw);
+
+    const bundle_nft = infoRaw.target;
+    let bundleId, displayName, expiryAt;
+
+    if (bundle_nft.toNumber() in bundles) {
+        bundleId = bundles.get(bundle_nft.toNumber())?.bundleId;
+        displayName = bundles.get(bundle_nft.toNumber())?.displayName;
+        expiryAt = bundles.get(bundle_nft.toNumber())?.expiryAt;
+    } else {
+        const bundleInfo = await registryContract.decodeBundleData(bundle_nft);
+        bundleId = bundleInfo.bundleId;
+        displayName = bundleInfo.displayName;
+        expiryAt = bundleInfo.expiryAt;
+        bundles.set(bundle_nft.toNumber(), bundleInfo);
+    }
+
+    const stakeData = {
+        id: infoRaw.id.toString(),
+        target: infoRaw.target.toString(),
+        stakeBalance: infoRaw.stakeBalance.toString(),
+        rewardBalance: infoRaw.rewardBalance.toString(),
+        createdAt: infoRaw.createdAt,
+        updatedAt: infoRaw.updatedAt,
+        version: infoRaw.version,
+        rewardTotalNow: infoRaw.rewardBalance.add(rewardsIncrement).toString(),
+        bundleId: bundleId.toString(),
+        bundleName: displayName,
+        bundleExpiryAt: expiryAt.toString(),
+        stakeOwner: await registryContract.ownerOf(stakeId),
+        stakingStarted: infoRaw.createdAt,
+        unstakingAfter: expiryAt.toString(),
+    } as StakeData;
+    store.dispatch(addStakeData(stakeData));
 }
