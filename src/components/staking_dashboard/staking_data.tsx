@@ -35,7 +35,7 @@ export default function StakingData() {
             field: 'stakeOwner', 
             headerName: 'Stake owner',
             valueFormatter: (params: any) => params.value.substring(0, 6) + '...' + params.value.substring(params.value.length - 4),
-            flex: 1,
+            flex: 0.7,
         },
         { 
             field: 'stakeBalance', 
@@ -44,14 +44,8 @@ export default function StakingData() {
             flex: 1,
         },
         { 
-            field: 'rewardBalance', 
-            headerName: 'Reward balance',
-            valueFormatter: (params: any) => currency + ' ' + formatEther(params.value),
-            flex: 1,
-        },
-        { 
             field: 'rewardTotalNow', 
-            headerName: 'Reward total',
+            headerName: 'Accumulated rewards',
             valueFormatter: (params: any) => currency + ' ' + formatEther(params.value),
             flex: 1,
         },
@@ -59,13 +53,19 @@ export default function StakingData() {
             field: 'stakingStarted',
             headerName: 'Started',
             valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
-            flex: 1,
+            flex: 0.8,
+        },
+        { 
+            field: 'updatedAt',
+            headerName: 'Updated',
+            valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
+            flex: 0.8,
         },
         {
             field: 'unstakingAfter',
             headerName: 'Unstaking after',
             valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
-            flex: 1,
+            flex: 0.8,
         }
     ];
 
