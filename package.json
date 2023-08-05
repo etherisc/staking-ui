@@ -16,6 +16,7 @@
     "typechainRegistryTypes": "typechain --target ethers-v5 --out-dir src/contracts/registry-contracts './node_modules/@etherisc/registry-contracts/build/contracts/**/*json'"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.5",

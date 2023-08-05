@@ -3,6 +3,7 @@ import accountReducer from './slices/account';
 import chainReducer from './slices/chain';
 import stakesReducer from './slices/stakes';
 import stakingReducer from './slices/staking';
+import dashboardReducer from './slices/dashboard';
 
 
 // Create the root reducer separately so we can extract the RootState type
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     staking: stakingReducer,
     stakes: stakesReducer,
     account: accountReducer,
+    dashboard: dashboardReducer,
 })
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
