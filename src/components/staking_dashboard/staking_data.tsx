@@ -15,6 +15,7 @@ export default function StakingData() {
     const totalStaked = useSelector((state: RootState) => state.dashboard.totalStaked);
     const totalRewards = useSelector((state: RootState) => state.dashboard.totalRewards);
     const currency = 'DIP';
+    const decimals = 18;
 
     useEffect(() => {
         if (signer && numStakes === 0) {
@@ -40,13 +41,13 @@ export default function StakingData() {
         { 
             field: 'stakeBalance', 
             headerName: 'Stake balance',
-            valueFormatter: (params: any) => currency + ' ' + formatEther(params.value),
+            valueFormatter: (params: any) => formatAmount(params.value, currency, decimals),
             flex: 1,
         },
         { 
             field: 'rewardTotalNow', 
             headerName: 'Accumulated rewards',
-            valueFormatter: (params: any) => currency + ' ' + formatEther(params.value),
+            valueFormatter: (params: any) => formatAmount(params.value, currency, decimals),
             flex: 1,
         },
         { 
