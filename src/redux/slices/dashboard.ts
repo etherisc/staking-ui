@@ -1,21 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { BundleInfo } from '../../backend/bundle_info';
-import { BigNumber } from 'ethers';
-import { NftInfo } from '../../backend/nft_info';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { StakeData } from '../../backend/stake_data';
-import stakes from './stakes';
+import { BigNumber } from 'ethers';
 
 export interface DashboardState {
     numStakes: number;
+    totalStaked: string;
+    totalRewards: string;
     stakes: StakeData[];
-    isLoadingBundles: boolean;
+    isLoadingStakes: boolean;
 }
 
 const initialState: DashboardState = {
     numStakes: 0,
+    totalStaked: BigNumber.from(0).toString(),
+    totalRewards: BigNumber.from(0).toString(),
     stakes: [],
-    isLoadingBundles: false,
+    isLoadingStakes: false,
 }
 
 export const dashboardSlice = createSlice({
@@ -29,20 +30,27 @@ export const dashboardSlice = createSlice({
             const idx = state.stakes.findIndex((stake) => stake.id === action.payload.id);
             if (idx === -1) {
                 state.stakes.push(action.payload);
+                state.totalStaked = BigNumber.from(state.totalStaked).add(action.payload.stakeBalance).toString();  
+                state.totalRewards = BigNumber.from(state.totalRewards).add(action.payload.rewardTotalNow).toString();
             } else {
                 // replace bundle
+                state.totalStaked = BigNumber.from(state.totalStaked).sub(state.stakes[idx].stakeBalance).add(action.payload.stakeBalance).toString();
+                state.totalRewards = BigNumber.from(state.totalRewards).sub(state.stakes[idx].rewardTotalNow).add(action.payload.rewardTotalNow).toString();
                 state.stakes[idx] = action.payload;
+                state.totalStaked = BigNumber.from(state.totalStaked).add(action.payload.stakeBalance).toString();
+                state.totalRewards = BigNumber.from(state.totalRewards).add(action.payload.rewardTotalNow).toString();
             }
+            
         },
         clearStakes: (state) => {
             state.stakes = [];
             state.numStakes = 0;
         },
         startLoading: (state) => {
-            state.isLoadingBundles = true;
+            state.isLoadingStakes = true;
         },
         finishLoading: (state) => {
-            state.isLoadingBundles = false;
+            state.isLoadingStakes = false;
         },
     },
 })

@@ -1,18 +1,16 @@
 'use client';
 
+import { Auth0Provider } from '@auth0/auth0-react';
+import { i18n, useTranslation } from "next-i18next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from "next-i18next";
+import dynamic from 'next/dynamic';
 import Head from "next/head";
-import { i18n } from "next-i18next";
 import { useSnackbar } from "notistack";
 import { useMemo } from "react";
-import Stake from '../components/stake/stake';
-import { getStakingApi } from '../backend/staking_api';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { getStakingApi } from '../backend/staking_api';
 import StakingDashboard from '../components/staking_dashboard/staking_dashboard';
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
-import dynamic from 'next/dynamic';
+import { RootState } from '../redux/store';
 
 function DashboardPage() {
   const { enqueueSnackbar } = useSnackbar();
