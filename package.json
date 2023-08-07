@@ -1,6 +1,6 @@
 {
   "name": "staking-ui",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "private": true,
   "scripts": {
     "postinstall": "$npm_execpath run typechainDepegTypes && $npm_execpath run typechainRegistryTypes",
