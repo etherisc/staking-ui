@@ -3,11 +3,13 @@ import { RootState } from "../../redux/store";
 import { fetchStakeInfoData } from "./dashboard_data_fetch";
 import { useEffect } from "react";
 import { Box, Card, CardContent, Grid, LinearProgress, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
 import { formatAmount } from "../../utils/format";
 import { formatEther, formatUnits } from "ethers/lib/utils";
 import { formatCurrency } from "../../utils/numbers";
 import { BigNumber } from "ethers";
+import moment from "moment";
+import { bigNumberComparator } from "../../utils/bignumber";
 
 export default function StakingData() {
     const signer = useSelector((state: RootState) => state.chain.signer);
@@ -46,32 +48,40 @@ export default function StakingData() {
         { 
             field: 'stakeBalance', 
             headerName: 'Stake balance',
-            valueFormatter: (params: any) => formatAmount(params.value, currency, decimals),
             flex: 1,
+            valueGetter: (params: GridValueGetterParams<any, string>) => BigNumber.from(params.value),
+            renderCell: (params: any) => {
+                return <Box sx={{ textAlign: 'end', width: '100%', px: 1 }}>{formatAmount(params.value, currency, decimals)}</Box>;
+            },
+            sortComparator: (v1: BigNumber, v2: BigNumber) => bigNumberComparator(v1, v2)
         },
         { 
             field: 'rewardTotalNow', 
             headerName: 'Accumulated rewards',
-            valueFormatter: (params: any) => formatAmount(params.value, currency, decimals),
             flex: 1,
+            valueGetter: (params: GridValueGetterParams<any, string>) => BigNumber.from(params.value),
+            renderCell: (params: any) => {
+                return <Box sx={{ textAlign: 'end', width: '100%', px: 1 }}>{formatAmount(params.value, currency, decimals)}</Box>;
+            },
+            sortComparator: (v1: BigNumber, v2: BigNumber) => bigNumberComparator(v1, v2)
         },
         { 
             field: 'stakingStarted',
             headerName: 'Started',
-            valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
-            flex: 0.8,
+            valueFormatter: (params: any) => (moment.unix(params.value)).format('DD/MMM/YYYY'),
+            flex: 0.7,
         },
         { 
             field: 'updatedAt',
             headerName: 'Updated',
-            valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
-            flex: 0.8,
+            valueFormatter: (params: any) => (moment.unix(params.value)).format('DD/MMM/YYYY'),
+            flex: 0.7,
         },
         {
             field: 'unstakingAfter',
             headerName: 'Locked until',
-            valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
-            flex: 0.8,
+            valueFormatter: (params: any) => (moment.unix(params.value)).format('DD/MMM/YYYY'),
+            flex: 0.7,
         }
     ];
 
