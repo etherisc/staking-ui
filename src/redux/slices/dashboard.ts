@@ -9,6 +9,8 @@ export interface DashboardState {
     totalRewards: string;
     stakes: StakeData[];
     isLoadingStakes: boolean;
+    rewardReserves: string;
+    stakingAllowance: string;
 }
 
 const initialState: DashboardState = {
@@ -17,6 +19,8 @@ const initialState: DashboardState = {
     totalRewards: BigNumber.from(0).toString(),
     stakes: [],
     isLoadingStakes: false,
+    rewardReserves: BigNumber.from(0).toString(),
+    stakingAllowance: BigNumber.from(0).toString(),
 }
 
 export const dashboardSlice = createSlice({
@@ -52,6 +56,12 @@ export const dashboardSlice = createSlice({
         finishLoading: (state) => {
             state.isLoadingStakes = false;
         },
+        setRewardReserves: (state, action: PayloadAction<string>) => {
+            state.rewardReserves = action.payload;
+        },
+        setStakingAllowance: (state, action: PayloadAction<string>) => {
+            state.stakingAllowance = action.payload;
+        },
     },
 })
 
@@ -62,6 +72,8 @@ export const {
     clearStakes,
     startLoading,
     finishLoading,
+    setRewardReserves,
+    setStakingAllowance,
 } = dashboardSlice.actions
 
 export default dashboardSlice.reducer

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { fetchStakeInfo } from "./data";
+import { fetchStakeInfoData } from "./dashboard_data_fetch";
 import { useEffect } from "react";
 import { Box, Card, CardContent, Grid, LinearProgress, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -16,12 +16,14 @@ export default function StakingData() {
     const isLoading = useSelector((state: RootState) => state.dashboard.isLoadingStakes);
     const totalStaked = useSelector((state: RootState) => state.dashboard.totalStaked);
     const totalRewards = useSelector((state: RootState) => state.dashboard.totalRewards);
+    const rewardsReserves = useSelector((state: RootState) => state.dashboard.rewardReserves);
+    const stakingAllowance = useSelector((state: RootState) => state.dashboard.stakingAllowance);
     const currency = 'DIP';
     const decimals = 18;
 
     useEffect(() => {
         if (signer && numStakes === 0) {
-            fetchStakeInfo(signer);
+            fetchStakeInfoData(signer);
         }
     }, [signer]);
 
@@ -67,7 +69,7 @@ export default function StakingData() {
         },
         {
             field: 'unstakingAfter',
-            headerName: 'Unstaking after',
+            headerName: 'Locked until',
             valueFormatter: (params: any) => new Date(params.value * 1000).toDateString(),
             flex: 0.8,
         }
@@ -79,7 +81,7 @@ export default function StakingData() {
         {loadingBar}
 
         <Grid container>
-            <Grid item xs={4} sx={{ p: 2 }}>
+            <Grid item xs={12} md={4} sx={{ p: 2 }}>
                 <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -91,7 +93,7 @@ export default function StakingData() {
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={4}  sx={{ p: 2 }}>
+            <Grid item xs={12} md={4} sx={{ p: 2 }}>
                 <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -103,7 +105,7 @@ export default function StakingData() {
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={4}  sx={{ p: 2 }}>
+            <Grid item xs={12} md={4} sx={{ p: 2 }}>
                 <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -111,6 +113,30 @@ export default function StakingData() {
                         </Typography>
                         <Typography variant="h5" component="div">
                             {formatAmount(BigNumber.from(totalRewards), currency, decimals)}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+            <Grid item xs={12} md={4} sx={{ p: 2 }}>
+                <Card sx={{ minWidth: 275 }}>
+                    <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Reward reserves
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            {formatAmount(BigNumber.from(rewardsReserves), currency, decimals)}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+            <Grid item xs={12} md={4} sx={{ p: 2 }}>
+                <Card sx={{ minWidth: 275 }}>
+                    <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                            Staking allowance
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            {formatAmount(BigNumber.from(stakingAllowance), currency, decimals)}
                         </Typography>
                     </CardContent>
                 </Card>

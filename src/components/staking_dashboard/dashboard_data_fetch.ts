@@ -1,13 +1,14 @@
 import { BigNumber, Signer } from "ethers";
-import { IChainRegistry__factory, IStaking__factory } from "../../contracts/registry-contracts";
+import { IChainRegistry__factory, IERC20__factory, IStaking__factory } from "../../contracts/registry-contracts";
 import { store } from "../../redux/store";
-import { addStakeData, finishLoading, setNumber, startLoading } from "../../redux/slices/dashboard";
+import { addStakeData, finishLoading, setNumber, setRewardReserves, setStakingAllowance, startLoading } from "../../redux/slices/dashboard";
 import { StakeData } from "../../backend/stake_data";
+import { Duplex } from "stream";
 
 const OBJECT_STAKE = 10
 
 
-export async function fetchStakeInfo(signer: Signer) {
+export async function fetchStakeInfoData(signer: Signer) {
     store.dispatch(startLoading());
     const stakingContractAddress = process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS || "";
     const staking = IStaking__factory.connect(stakingContractAddress, signer);
@@ -20,6 +21,15 @@ export async function fetchStakeInfo(signer: Signer) {
     const numStakes = await registryContract.objects(chainIdB32, OBJECT_STAKE);
     console.log("numStakes", numStakes);
     store.dispatch(setNumber(numStakes.toNumber()));
+
+    const rewardReserves = await staking.rewardReserves();
+    store.dispatch(setRewardReserves(rewardReserves.toString()));
+
+    const stakingWallet = await staking.getStakingWallet();
+    const dipAddress = process.env.NEXT_PUBLIC_DIP_ADDRESS || "";
+    const dip = IERC20__factory.connect(dipAddress, signer);
+    const stakingAllowance = await dip.allowance(stakingWallet, stakingContractAddress);
+    store.dispatch(setStakingAllowance(stakingAllowance.toString()));
 
     const bundles: Map<number, any> = new Map<number, any>();
     const promises = [];
