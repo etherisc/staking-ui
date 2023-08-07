@@ -2,10 +2,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { fetchStakeInfo } from "./data";
 import { useEffect } from "react";
-import { Box, LinearProgress } from "@mui/material";
+import { Box, Card, CardContent, Grid, LinearProgress, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { formatAmount } from "../../utils/format";
 import { formatEther, formatUnits } from "ethers/lib/utils";
+import { formatCurrency } from "../../utils/numbers";
+import { BigNumber } from "ethers";
 
 export default function StakingData() {
     const signer = useSelector((state: RootState) => state.chain.signer);
@@ -29,7 +31,8 @@ export default function StakingData() {
 
     const columns = [
         { 
-            field: 'id', headerName: 'NFT ID', flex: 0.6, },
+            field: 'id', headerName: 'NFT ID', flex: 0.6, 
+        },
         { field: 'target', headerName: 'Bundle ID', flex: 0.6, },
         { field: 'bundleName', headerName: 'Bundle name', flex: 0.8 },
         { 
@@ -75,11 +78,44 @@ export default function StakingData() {
     return (<>
         {loadingBar}
 
-        <Box sx={{ mb: 1 }}>
-            <div>Total stakes: {numStakes}</div>
-            <div>Total staked: {currency} {formatEther(totalStaked)}</div>
-            <div>Total rewards: {currency} {formatEther(totalRewards)}</div>
-        </Box>
+        <Grid container>
+            <Grid item xs={4} sx={{ p: 2 }}>
+                <Card sx={{ minWidth: 275 }}>
+                    <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Total stakes
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                        {numStakes}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+            <Grid item xs={4}  sx={{ p: 2 }}>
+                <Card sx={{ minWidth: 275 }}>
+                    <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Total staked
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            {formatAmount(BigNumber.from(totalStaked), currency, decimals)}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+            <Grid item xs={4}  sx={{ p: 2 }}>
+                <Card sx={{ minWidth: 275 }}>
+                    <CardContent>
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Accumulated rewards
+                        </Typography>
+                        <Typography variant="h5" component="div">
+                            {formatAmount(BigNumber.from(totalRewards), currency, decimals)}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+        </Grid>
 
         <DataGrid 
             autoHeight
