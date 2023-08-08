@@ -2,15 +2,9 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/typescript-node
 {
 	"name": "staking-ui",
-	"build": {
-		"dockerfile": "Dockerfile",
-		// Update 'VARIANT' to pick a Node version: 18, 16, 14.
-		// Append -bullseye or -buster to pin to an OS version.
-		// Use -bullseye variants on local on arm64/Apple Silicon.
-		"args": { 
-			"VARIANT": "18-bookworm"
-		}
-	},
+	"dockerComposeFile": "docker-compose.yaml",
+    "service": "webapp",
+    "workspaceFolder": "/workspaces/staking-ui",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -32,6 +26,7 @@
 				"csstools.postcss",
 				"vscodeshift.mui-snippets",
 				"mikestead.dotenv",
+				"vscode-icons-team.vscode-icons",
 			]
 		}
 	},
@@ -41,7 +36,7 @@
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [3100],
+	"forwardPorts": [3100, "redis:6379"],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "sudo chown node node_modules && touch node_modules/.metadata_never_index && npm install ",
@@ -52,7 +47,7 @@
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
 	},
 
-	"mounts": [
-		"source=staking-ui-node_modules,target=/workspaces/staking-ui/node_modules,type=volume"
-	]
+	// "mounts": [
+	// 	"source=staking-ui-node_modules,target=/workspaces/staking-ui/node_modules,type=volume"
+	// ]
 }
