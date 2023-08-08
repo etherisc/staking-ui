@@ -3,23 +3,26 @@ import { BigNumber } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { BundleInfo } from "../../backend/bundle_info";
+import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { bundleSelected } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import dayjs from "dayjs";
 
-interface BundleDetailsProps {
+interface BundleActionsProps {
     bundle: BundleInfo;
     claimRewards: (bundle: BundleInfo) => Promise<boolean>
 }
 
-export default function BundleActions(props: BundleDetailsProps) {
+export default function BundleActions(props: BundleActionsProps) {
     const { t } = useTranslation('stakes');
     const dispatch = useDispatch();
-    const router = useRouter();
-    const ownedNfts = useSelector((state: RootState) => state.stakes.ownedNfts);
 
     const bundle = props.bundle;
+
+    const router = useRouter();
+    const ownedNfts = useSelector((state: RootState) => state.stakes.ownedNfts);
+    const hasStakeInBundle = ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && BigNumber.from(nft.stakedAmount).gt(0)).length > 0;
+
     const isStakingAllowed = 
         bundle.stakingSupported 
         && (bundle.state === 0 || bundle.state === 1)
@@ -27,7 +30,10 @@ export default function BundleActions(props: BundleDetailsProps) {
     const isUnstakingAllowed = 
         bundle.unstakingSupported &&
         // Check if there is at least one NFT that is staked
-        ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && BigNumber.from(nft.stakedAmount).gt(0)).length > 0;
+        hasStakeInBundle;
+    const isRestakingAllowed =
+        hasStakeInBundle 
+        && (bundle.state === BundleState.CLOSED || bundle.state === BundleState.BURNED)
     // any unclaimed rewards left
     const isClaimRewardsAllowed = bundle.myStakedNfsIds.length > 0 && BigNumber.from(bundle.unclaimedReward).gt(0);
     
@@ -43,6 +49,11 @@ export default function BundleActions(props: BundleDetailsProps) {
 
     async function claimRewards() {
         await props.claimRewards(bundle);
+    }
+
+    async function restake() {
+        dispatch(bundleSelected(bundle))
+        router.push("/restake?noreset=true", undefined, { shallow: true });
     }
 
 
@@ -70,6 +81,14 @@ export default function BundleActions(props: BundleDetailsProps) {
                 sx={{ minWidth: '12rem' }}
                 disabled={!isClaimRewardsAllowed}
                 >{t('action.claim_rewards')}</Button>
+        </Grid>
+        <Grid item xs={12}>
+            <Button 
+                onClick={restake}
+                variant="contained" 
+                sx={{ minWidth: '12rem' }}
+                disabled={!isRestakingAllowed}
+                >{t('action.restake')}</Button>
         </Grid>
     </Grid>);
 }
