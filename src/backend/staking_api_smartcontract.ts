@@ -7,10 +7,12 @@ import { GifInstanceService } from "./gif_instance_service";
 import { StakingApi } from "./staking_api";
 import StakingContract from "./staking_contract";
 import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from "../contracts/registry-contracts";
+import StakingGasless from "./staking_gasless";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
     private gifStakingApi: StakingContract;
+    private stakingGasless?: StakingGasless;
     private gifInstanceService: GifInstanceService;
     private gifStakingApiInitialized = false;
     private dipToken?: IERC20;
@@ -29,6 +31,7 @@ export class StakingApiSmartContract implements StakingApi {
     async getGifStakingApi(): Promise<StakingContract> {
         if (! this.gifStakingApiInitialized) {
             await this.gifStakingApi.initialize();
+            this.stakingGasless = new StakingGasless(this.signer);
         }
         return this.gifStakingApi;
     }
@@ -110,15 +113,24 @@ export class StakingApiSmartContract implements StakingApi {
     async stake(
         bundle: BundleInfo,
         stakedAmount: BigNumber, 
+        gasless: boolean,
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<boolean> {
-        const [tx, receipt] = await (await this.getGifStakingApi()).stake(
-            bundle,
-            stakedAmount, 
-            beforeTrxCallback, 
-            beforeWaitCallback);
-        return receipt.status === 1;
+        if (gasless) {
+            return await this.stakingGasless!.stakeGasless(
+                bundle,
+                stakedAmount, 
+                beforeTrxCallback, 
+                beforeWaitCallback);
+        } else {
+            const [tx, receipt] = await (await this.getGifStakingApi()).stake(
+                bundle,
+                stakedAmount, 
+                beforeTrxCallback, 
+                beforeWaitCallback);
+            return receipt.status === 1;
+        }
     }
 
     async restake(

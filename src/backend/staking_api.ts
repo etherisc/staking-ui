@@ -30,6 +30,7 @@ export interface StakingApi {
     stake: (
         bundle: BundleInfo,
         stakedAmount: BigNumber,
+        gasless: boolean,
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;

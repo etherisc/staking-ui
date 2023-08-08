@@ -9,7 +9,7 @@ interface StakeBundleProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
     formDisabled: boolean;
-    stake: (amount: BigNumber, bundle: BundleInfo) => void;
+    stake: (amount: BigNumber, bundle: BundleInfo, gasless: boolean) => void;
 }
 
 export default function StakeBundle(props: StakeBundleProps) {
