@@ -102,6 +102,7 @@
   "active_until": "Active until",
   "unclaimed_reward": "Accumulated Rewards",
   "unclaimed_reward_tooltip": "All unclaimed DIP rewards that have accumulated for stakes on this risk bundle since staking started or the last claim.",
+  "reward_rate": "Reward Rate",
   "my_supported_capital": "My Supported Capital",
   "alert": {
     "unstaking_multiple_nfts": "Your stakes are distributed over multiple NFTs. Unstaking must be done in multiple transactions - each being limited to the staked amount on this NFT.",
