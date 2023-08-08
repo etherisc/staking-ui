@@ -12,6 +12,7 @@ import BundleStakes from "../bundle_stakes/bundle_stakes";
 interface SelectBundleProps {
     stakingApi: StakingApi;
     displayBundle?: (bundle: BundleInfo) => boolean;
+    bundleSelected: (bundle: BundleInfo) => void;
 }
 
 export default function SelectBundle(props: SelectBundleProps) {
@@ -47,7 +48,7 @@ export default function SelectBundle(props: SelectBundleProps) {
                 buildActions={(bundle: BundleInfo) => 
                     <Button 
                         variant="text"
-                        onClick={() => dispatch(bundleSelected(bundle))}
+                        onClick={() => props.bundleSelected(bundle)}
                         >
                         {t('action.select', { ns: "common" })}
                     </Button>
