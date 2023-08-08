@@ -58,14 +58,14 @@ export default function Restake(props: RestakeProps) {
         }
     }, [isConnected, activeStep, dispatch]);
 
-    async function restake(amount: BigNumber, bundle: BundleInfo) {
+    async function restake() {
         ga_event("trx_start_restake", { category: 'chain_trx' });
         try {
             enableUnloadWarning(true);
             const walletAddress = await signer!.getAddress() ?? '';
 
             dispatch(setStep(4));
-            const newBundleId = "3"; // TODO: get real value
+            const newBundleId = restakingBundle!.bundleId; 
             const applicationSuccess = await doRestake(stakeingBundle!, newBundleId);
             if ( ! applicationSuccess) {
                 ga_event("trx_fail_restake", { category: 'chain_trx' });
@@ -80,30 +80,28 @@ export default function Restake(props: RestakeProps) {
         }
     }
 
-    async function doRestake(bundle: BundleInfo, newBundeId: string): Promise<boolean> {
+    async function doRestake(bundle: BundleInfo, newBundleId: number): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
-            // TODO: implement restake
-            // const res = await props.stakingApi.restake(
-            //     bundle,
-            //     newBundleId,
-            //     (address: string) => {
-            //         snackbar = enqueueSnackbar(
-            //             t('restake_info', { address }),
-            //             { variant: "warning", persist: true }
-            //         );
-            //     },
-            //     () => {
-            //         if (snackbar !== undefined) {
-            //             closeSnackbar(snackbar);
-            //         }
-            //         snackbar = enqueueSnackbar(
-            //             t('restake_wait'),
-            //             { variant: "info", persist: true }
-            //         );
-            //     });
-            // return res;
-            return true;
+            const res = await props.stakingApi.restake(
+                bundle,
+                newBundleId,
+                (address: string) => {
+                    snackbar = enqueueSnackbar(
+                        t('restake_info', { address }),
+                        { variant: "warning", persist: true }
+                    );
+                },
+                () => {
+                    if (snackbar !== undefined) {
+                        closeSnackbar(snackbar);
+                    }
+                    snackbar = enqueueSnackbar(
+                        t('restake_wait'),
+                        { variant: "info", persist: true }
+                    );
+                });
+            return res;
         } catch(e) { 
             if ( e instanceof TransactionFailedError) {
                 console.log("transaction failed", e);
@@ -181,7 +179,7 @@ export default function Restake(props: RestakeProps) {
                 stakingApi={props.stakingApi}
                 currentBundle={stakeingBundle!}
                 restakeBundle={restakingBundle!}
-                stake={restake}
+                restake={restake}
                 />;
         }
     }, [activeStep]);

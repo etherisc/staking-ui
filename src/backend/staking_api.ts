@@ -33,6 +33,12 @@ export interface StakingApi {
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;
+    restake: (
+        bundle: BundleInfo,
+        newBundleId: number,
+        beforeTrxCallback?: (address: string) => void,
+        beforeWaitCallback?: (address: string) => void
+    ) => Promise<boolean>;
     unstake: (
         bundle: BundleInfo,
         nftId: string,

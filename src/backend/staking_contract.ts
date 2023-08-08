@@ -330,6 +330,52 @@ export default class StakingContract {
         }
     }
 
+    async restake(
+        bundle: BundleInfo,
+        newBundleId: number, 
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<[ContractTransaction, ContractReceipt]> {
+        return [{} as ContractTransaction, { status: 1 } as ContractReceipt];
+        // TODO: implement when smart contract is ready
+        // if (beforeTrxCallback !== undefined) {
+        //     beforeTrxCallback(this.staking.address);
+        // }
+        // try {
+        //     console.log("restake", bundle, newBundleId);
+        //     const stakeNftIds = await this.findAllStakeNfts(BigNumber.from(bundle.nftId));
+        //     let tx = await this.staking.restake(stakeNftIds[0], newBundleId);
+
+        //     if (beforeWaitCallback !== undefined) {
+        //         beforeWaitCallback(this.staking.address);
+        //     }
+
+        //     const receipt = await tx.wait();
+        //     // console.log(receipt);
+
+        //     // if a new stake was created (stakeNftIds.length === 0), then extract the nft id from the receipt
+        //     if (stakeNftIds.length === 0) {
+        //         console.log(receipt.events);
+        //         const event = receipt.events?.find(e => e.event === "LogStakingNewStake");
+        //         if (event !== undefined) {
+        //             console.log(event);
+        //             const stakeNftId = event.args?.id;
+        //             if (stakeNftId === undefined) {
+        //                 throw new Error("stake nft id not found in receipt");
+        //             }
+        //             console.log("new stake created", stakeNftId?.toString());
+        //             store.dispatch(addNftId(stakeNftId));
+        //         }
+        //     }
+
+        //     return [tx, receipt];
+        // } catch (e) {
+        //     console.log("caught error while staking: ", e);
+        //     // @ts-ignore e.code
+        //     throw new TransactionFailedError(e.code, e);
+        // }
+    }
+
     async unstake(
         bundle: BundleInfo,
         nftId: string,

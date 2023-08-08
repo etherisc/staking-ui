@@ -18,7 +18,7 @@ interface RestakeBundleFormProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
     formDisabled: boolean;
-    stake: (amount: BigNumber, bundle: BundleInfo) => void;
+    restake: () => void;
 }
 
 type IRestakeFormValues = {
@@ -82,7 +82,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
 
         if (values.stakedAmount && errors.stakedAmount === undefined) {
             const stakedAmount = parseEther(values.stakedAmount);
-            props.stake(stakedAmount, props.bundle)
+            props.restake();
         }
     }
 
@@ -166,7 +166,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                         color="primary"
                         disabled={!formState.isValid || props.formDisabled }
                         >
-                        {t('action.stake')}
+                        {t('action.restake')}
                     </Button>
                 </Grid>
             </Grid>
