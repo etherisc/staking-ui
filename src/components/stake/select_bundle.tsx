@@ -23,8 +23,6 @@ export default function SelectBundle(props: SelectBundleProps) {
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
 
-    const [ selectedBundle, setSelectedBundle ] = useState<BundleInfo | undefined>(undefined);
-
     useEffect(() => {
         async function getBundles() {
             await props.stakingApi.retrieveBundles();
@@ -46,7 +44,6 @@ export default function SelectBundle(props: SelectBundleProps) {
                 stakingApi={props.stakingApi}
                 bundles={bundles.filter(bundle => props.displayBundle === undefined || props.displayBundle(bundle))} 
                 isBundlesLoading={isLoadingBundles}
-                onBundleSelected={setSelectedBundle}
                 buildActions={(bundle: BundleInfo) => 
                     <Button 
                         variant="text"
