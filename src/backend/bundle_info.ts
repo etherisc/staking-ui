@@ -27,6 +27,7 @@ export type BundleInfo = {
     unstakingSupported: boolean;
     lockedAmount: string | undefined;
     stakeUsage: StakeUsage;
+    rewardRate: number;
 }
 
 export enum BundleState {

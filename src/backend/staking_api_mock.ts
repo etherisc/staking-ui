@@ -85,9 +85,6 @@ export default function stakingApiMock(
         async hasDipBalance(amount: BigNumber): Promise<boolean> {
             return true;
         },
-        async getRewardRate() {
-            return Promise.resolve(0.1);
-        },
         async getStakeUsage(bundle: BundleInfo) {
             return Promise.resolve({ usage: 0.5, lockedCapital: BigNumber.from(1000)});
         },

@@ -142,10 +142,6 @@ export class StakingApiSmartContract implements StakingApi {
         return (await this.dipToken!.balanceOf(await this.signer.getAddress())).gte(amount);
     }
 
-    async getRewardRate(): Promise<number> {
-        return (await this.getGifStakingApi()).getRewardRate();
-    }
-
     async getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}> {
         const supportedAmount = BigNumber.from(bundle.supportingAmount);
         const { lockedCapital } = await this.gifInstanceService.getBundle(bundle.registry, bundle.bundleId);

@@ -110,6 +110,9 @@ export default class StakingContract {
         const stakingSupported = await this.staking!.isStakingSupported(bundleNftId);
         const unstakingSupported = await this.staking!.isUnstakingSupported(bundleNftId);
 
+        // TODO: get target specific reward rate
+        const rewardRate = await this.getRewardRate();
+
         return {
             id: `${instanceId}-${bundleId}`,
             chainId: instance.chainId,
@@ -136,6 +139,7 @@ export default class StakingContract {
             lockedAmount: undefined,
             stakeUsage: undefined,
             policies: 0,
+            rewardRate: rewardRate,
         } as BundleInfo;
     }
 
