@@ -65,7 +65,8 @@ export default function ShowBundle(props: ShowBundleProps) {
 
                 showPersistentErrorSnackbarWithCopyDetails(
                     t('error.transaction_failed', { ns: 'common', error: e.code }),
-                    e.reason
+                    e.reason,
+                    "claim_rewards",
                 );
                 return Promise.resolve(false);
             } else {

@@ -114,7 +114,8 @@ export default function Unstake(props: UnstakeProps) {
 
                 showPersistentErrorSnackbarWithCopyDetails(
                     t('error.transaction_failed', { ns: 'common', error: e.code }),
-                    e.reason
+                    e.reason,
+                    "unstake",
                 );
                 return Promise.resolve(false);
             } else {
