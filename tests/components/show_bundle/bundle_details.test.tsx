@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import dayjs from 'dayjs';
-import { BigNumber } from 'ethers';
 import { parseEther, parseUnits } from 'ethers/lib/utils';
 import { SnackbarProvider } from 'notistack';
 import { BundleInfo } from '../../../src/backend/bundle_info';
