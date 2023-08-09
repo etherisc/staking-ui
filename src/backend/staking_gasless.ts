@@ -86,7 +86,7 @@ export default class StakingGasless {
             signature,
         };
 
-        const res = await fetch("/api/stake", {
+        const res = await fetch("/api/feeless/stake", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
