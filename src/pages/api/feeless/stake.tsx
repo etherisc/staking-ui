@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { redisClient } from "../../../utils/redis";
 import { getPendingStakeRepository } from "../../../utils/feeless/pending_stake";
 
-export const STREAM_KEY = process.env.REDIS_QUEUE_STREAM_KEY ?? "application:signatures";
+export const STREAM_KEY = process.env.REDIS_QUEUE_STREAM_KEY ?? "feeless:signatures";
 
 /**
  * GET request will return all pending application transactions. 
