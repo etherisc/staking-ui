@@ -96,7 +96,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                         control={control}
                         render={({ field }) => 
                             <TextField 
-                                label={t('stakedAmount')}
+                                label={t('restakedAmount')}
                                 fullWidth
                                 variant={INPUT_VARIANT}
                                 {...field} 

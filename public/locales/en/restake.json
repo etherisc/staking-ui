@@ -8,7 +8,7 @@
   "action": {
     "restake": "Restake"
   },
-  "stakedAmount": "Staked Amount",
+  "restakedAmount": "Restake Amount",
   "restake_info": "Please confirm restaking on contract {{address}}",
   "restake_wait": "Transaction created, waiting for onchain confirmation",
   "restaking_success": "Restaking of DIPs successful. It can take up to 5 minutes for the applications to refresh and your stakes to be accurately reflected.",
