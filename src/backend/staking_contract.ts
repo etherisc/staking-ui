@@ -351,8 +351,6 @@ export default class StakingContract {
             const receipt = await tx.wait();
             // console.log(receipt);
 
-            // TODO: refresh old and new bundle in store
-
             return [tx, receipt];
         } catch (e) {
             console.log("caught error while staking: ", e);
