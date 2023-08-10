@@ -53,6 +53,9 @@ export const stakesSlice = createSlice({
         },
         reset: (state) => {
             state.bundles = [];
+            state.selectedBundleIdx = null;
+            state.ownedNfts = [];
+            state.isLoadingBundles = false;
         },
         addNftId: (state, action: PayloadAction<NftInfo>) => {
             const nftIdx = state.ownedNfts.findIndex((n) => n.nftId === action.payload.nftId);
