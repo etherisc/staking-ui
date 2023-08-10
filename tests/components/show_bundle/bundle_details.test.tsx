@@ -22,6 +22,7 @@ describe('When displaying the bundle detail component', () => {
     it('all bundle data is correctly formatted', async () => {
         const bundle = {
             id: "0x1234-1",
+            nftId: "76594322",
             instanceId: "0x123456790abcdefgh",
             instanceName: "Instance 1",
             riskpoolId: 42,
@@ -52,7 +53,7 @@ describe('When displaying the bundle detail component', () => {
 
         expect(screen.getByText('0x1234…efgh')).toBeInTheDocument();
         expect(screen.getByText('Instance 1')).toBeInTheDocument();
-        expect(screen.getByText('43')).toBeInTheDocument();
+        expect(screen.getByText('43 (76594322)')).toBeInTheDocument();
         expect(screen.getByText('Bundle 1')).toBeInTheDocument();
         expect(screen.getByText('bundle_state_0')).toBeInTheDocument();
         expect(screen.getByText('DIP 17,543.00')).toBeInTheDocument();
