@@ -3,7 +3,7 @@
   "version": "1.0.15",
   "private": true,
   "scripts": {
-    "postinstall": "$npm_execpath run typechainDepegTypes && $npm_execpath run typechainRegistryTypes",
+    "postinstall": "$npm_execpath run typechainRegistryTypes && $npm_execpath run typechainGifInterfaceTypes",
     "dev": "next dev",
     "prebuild": "./extract_version.sh",
     "build": "next build",
@@ -12,8 +12,8 @@
     "lint": "next lint",
     "testLoop": "jest --watch",
     "test": "jest",
-    "typechainDepegTypes": "typechain --target ethers-v5 --out-dir src/contracts/depeg-contracts './node_modules/@etherisc/depeg-contracts/build/contracts/**/*json'",
-    "typechainRegistryTypes": "typechain --target ethers-v5 --out-dir src/contracts/registry-contracts './node_modules/@etherisc/registry-contracts/build/contracts/**/*json'"
+    "typechainRegistryTypes": "typechain --target ethers-v5 --out-dir src/contracts/registry-contracts './node_modules/@etherisc/registry-contracts/build/contracts/**/*json'",
+    "typechainGifInterfaceTypes": "typechain --target ethers-v5 --out-dir src/contracts/gif-interface-contracts './node_modules/@etherisc/gif-interface/build/contracts/**/*json'"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.0",
@@ -54,8 +54,8 @@
     "wagmi": "^1.3.9"
   },
   "devDependencies": {
-    "@etherisc/depeg-contracts": "1.1.0",
-    "@etherisc/registry-contracts": "1.1.0",
+    "@etherisc/registry-contracts": "1.1.2-0b7c399",
+    "@etherisc/gif-interface": "2.0.0-rc.1-0",
     "@hookform/devtools": "^4.3.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
