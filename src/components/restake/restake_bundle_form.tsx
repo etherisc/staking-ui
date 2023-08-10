@@ -1,17 +1,15 @@
 import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, TextField } from "@mui/material";
-import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { INPUT_VARIANT } from "../../config/theme";
 import { clearSelectedBundle } from "../../redux/slices/stakes";
 import { setStep } from "../../redux/slices/staking";
-import { RootState } from "../../redux/store";
 import TermsOfService from "../terms_of_service";
 
 interface RestakeBundleFormProps {
@@ -31,7 +29,6 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
     const { t } = useTranslation(['restake', 'common']);
     const currency = props.stakingApi.currency();
     const dispatch = useDispatch();
-    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const router = useRouter();
 
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
@@ -42,7 +39,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
         reValidateMode: "onChange",
         defaultValues: {
             stakedAmount: parseFloat(formatEther(props.bundle.myStakedAmount)).toFixed(0),
-            rewardRate: "",
+            rewardRate: (props.bundle.rewardRate * 100).toFixed(2),
             termsAndConditions: false,
         }
     });
@@ -55,22 +52,6 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
             dispatch(setStep(3));
         }
     }, [formState.isValid, dispatch]);
-
-
-    useEffect(() => {
-        async function getRewardRate() {
-            if (isConnected) {
-                const rewardRate = await props.stakingApi.getRewardRate();
-                console.log("Reward rate", rewardRate);
-                setValue("rewardRate", (rewardRate * 100).toFixed(2));
-            } else {
-                console.log("clearing reward rate");
-                setValue("rewardRate", "");
-            }
-        } 
-        getRewardRate();
-    }, [isConnected, props.stakingApi, setValue]);
-
 
     function back() {
         dispatch(clearSelectedBundle());
