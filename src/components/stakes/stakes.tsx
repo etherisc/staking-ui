@@ -28,7 +28,7 @@ export default function Stakes(props: StakingProps) {
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
     const selectedBundleIdx = useSelector((state: RootState) => state.stakes.selectedBundleIdx);
-    const showBundleAction = useSelector((state: RootState) => state.stakes.showBundleAction);
+    const showBundleAction = useSelector((state: RootState) => state.stakes.bundleAction);
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
         const address = await signer.getAddress();

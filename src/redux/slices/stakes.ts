@@ -10,8 +10,8 @@ export interface StakesState {
     // nft ids of the nfts that are owned by the current connected wallet
     ownedNfts: NftInfo[];
     isLoadingBundles: boolean;
-    // the operation that is being executed in the show bundle screen
-    showBundleAction: BundleAction;
+    // the operation that is being executed in the bundle screen
+    bundleAction: BundleAction;
 }
 
 
@@ -26,7 +26,7 @@ const initialState: StakesState = {
     selectedBundleIdx: null,
     ownedNfts: [],
     isLoadingBundles: false,
-    showBundleAction: BundleAction.None,
+    bundleAction: BundleAction.None,
 }
 
 export const stakesSlice = createSlice({
@@ -89,6 +89,7 @@ export const stakesSlice = createSlice({
         },
         clearSelectedBundle: (state) => {
             state.selectedBundleIdx = null;
+            state.bundleAction = BundleAction.None;
         },
         setUnclaimedRewards: (state, action: PayloadAction<{bundleId: number, unclaimedReward: string}>) => {
             const bundle = state.bundles.find((bundle) => bundle.bundleId === action.payload.bundleId);
@@ -97,7 +98,7 @@ export const stakesSlice = createSlice({
             }
         },
         setBundleAction: (state, action: PayloadAction<BundleAction>) => {
-            state.showBundleAction = action.payload;
+            state.bundleAction = action.payload;
         },
     },
 })
