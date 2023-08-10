@@ -23,6 +23,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
     const symbol = props.currency;
     const decimals = props.decimals;
     const id = props.bundle.bundleId;
+    const nftId = props.bundle.nftId;
     const name = props.bundle.bundleName;
     const state = props.bundle.state;
     const instanceId = props.bundle.instanceId;
@@ -47,7 +48,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
         <Grid container spacing={1} data-testid="bundle-details">
             <NameValue name={t('instance_id')} value={<Address address={instanceId} iconColor="secondary.main" />}/>
             <NameValue name={t('instance_name')} value={<>{instanceName}</>}/>
-            <NameValue name={t('bundle_id')} value={<>{id}</>}/>
+            <NameValue name={t('bundle_id')} value={<>{id} ({nftId})</>}/>
             <NameValue name={t('bundle_name')} value={<>{name}</>}/>
             <NameValue name={t('bundle_state')} value={<>{t('bundle_state_' + state, { ns: 'common'})}</>}/>
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>

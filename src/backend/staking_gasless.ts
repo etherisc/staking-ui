@@ -1,10 +1,10 @@
 import { BigNumber, Signer } from "ethers";
+import { formatBytes32String, formatUnits } from "ethers/lib/utils";
+import { nanoid } from "nanoid";
+import { StakingV03__factory } from "../contracts/registry-contracts";
+import { TransactionFailedError } from "../utils/error";
 import { toHex } from "../utils/numbers";
 import { BundleInfo } from "./bundle_info";
-import { CoPresentSharp } from "@mui/icons-material";
-import { nanoid } from "nanoid";
-import { formatBytes32String } from "ethers/lib/utils";
-import { TransactionFailedError } from "../utils/error";
 
 export default class StakingGasless {
     private stakingProductAddress: string | undefined;
@@ -33,37 +33,33 @@ export default class StakingGasless {
         if (beforeTrxCallback !== undefined) {
             beforeTrxCallback("");
         }
+
+        const messageHelperAddress = await StakingV03__factory.connect(this.stakingProductAddress!, this.signer).getMessageHelperAddress();
         
         const domain = {
-            chainId: this.chainId, // TODO: verify
-            name: 'EtheriscStaking', // TODO: verify
-            verifyingContract: this.stakingProductAddress, // TODO: verify
-            version: '1', // TODO: verify
+            chainId: this.chainId, 
+            name: 'EtheriscStaking', 
+            verifyingContract: messageHelperAddress, 
+            version: '1', 
         };
 
         const types = {
-            // TODO: implement 
             Stake: [
-            //     { name: 'wallet', type: 'address' },
-            //     { name: 'protectedBalance', type: 'uint256' },   
-            //     { name: 'duration', type: 'uint256' },
-            //     { name: 'bundleId', type: 'uint256' },
+                { name: 'target', type: 'uint96' },
+                { name: 'dipAmount', type: 'uint256' },
                 { name: 'signatureId', type: 'bytes32' },
             ],
         }
 
         const signatureId = nanoid();
         const message = {
-            // TODO: implement 
-            // wallet: walletAddress,
-            // protectedBalance: formatUnits(protectedAmount, 0),
-            // duration: coverageDurationSeconds,
-            // bundleId: bundleId,
+            target: bundle.nftId,
+            dipAmount: formatUnits(stakedAmount, 0),
             signatureId: formatBytes32String(signatureId), 
         };
 
-        const policyHolderAddress = await this.signer.getAddress();
-        console.log("sending sign request", policyHolderAddress, domain, types, message);
+        const ownerAddress = await this.signer.getAddress();
+        console.log("sending sign request", ownerAddress, domain, types, message);
         let signature;
 
         try {
@@ -76,12 +72,9 @@ export default class StakingGasless {
         }
 
         const data = {
-            // TODO: implement
-            // policyHolder: policyHolderAddress,
-            // protectedWallet: walletAddress,
-            // protectedBalance: protectedAmount.toString(),
-            // duration: coverageDurationSeconds,
-            // bundleId,
+            owner: ownerAddress,
+            targetNftId: bundle.nftId,
+            dipAmount: stakedAmount.toString(),
             signatureId,
             signature,
         };
