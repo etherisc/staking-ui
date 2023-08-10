@@ -7,6 +7,7 @@ import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { bundleSelected } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import dayjs from "dayjs";
+import { BundleAction, setBundleAction } from "../../redux/slices/stakes";
 
 interface BundleActionsProps {
     bundle: BundleInfo;
@@ -53,7 +54,7 @@ export default function BundleActions(props: BundleActionsProps) {
 
     async function restake() {
         dispatch(bundleSelected(bundle))
-        router.push("/restake?noreset=true", undefined, { shallow: true });
+        dispatch(setBundleAction(BundleAction.Restake))
     }
 
 

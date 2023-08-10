@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { INPUT_VARIANT } from "../../config/theme";
-import { clearSelectedBundle } from "../../redux/slices/stakes";
+import { BundleAction, clearSelectedBundle, setBundleAction } from "../../redux/slices/stakes";
 import { setStep } from "../../redux/slices/staking";
 import TermsOfService from "../terms_of_service";
 import { BigNumber } from "ethers";
@@ -56,8 +56,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
     }, [formState.isValid, dispatch]);
 
     function back() {
-        dispatch(clearSelectedBundle());
-        router.push("/", undefined, { shallow: true });
+        dispatch(setBundleAction(BundleAction.None));
     }
 
     const onSubmit: SubmitHandler<IRestakeFormValues> = async data => {

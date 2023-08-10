@@ -26,7 +26,7 @@ interface BundleStakesProps {
     bundles: Array<BundleInfo>;
     isBundlesLoading: boolean;
     onBundleSelected?: (bundle: BundleInfo) => void;
-    disableSelection?: boolean;
+    hideShowMyStakes?: boolean;
     showStakeUsage?: boolean;
     /**
      * Build the actions to be displayed for each bundle.
@@ -270,7 +270,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                 columnBuffer={8}
                 slots={{
                     noRowsOverlay: NoRowsOverlay,
-                    toolbar: GridToolbar,
+                    toolbar: !props.hideShowMyStakes ? GridToolbar : undefined,
                 }}
                 />
         </>

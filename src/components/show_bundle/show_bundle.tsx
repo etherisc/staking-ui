@@ -1,6 +1,6 @@
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import { SnackbarKey, useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";

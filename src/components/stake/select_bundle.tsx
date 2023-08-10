@@ -13,6 +13,9 @@ interface SelectBundleProps {
     stakingApi: StakingApi;
     displayBundle?: (bundle: BundleInfo) => boolean;
     bundleSelected: (bundle: BundleInfo) => void;
+    suppressFetching?: boolean;
+    hideShowMyStakes?: boolean;
+    additionalComponents?: JSX.Element;
 }
 
 export default function SelectBundle(props: SelectBundleProps) {
@@ -30,6 +33,10 @@ export default function SelectBundle(props: SelectBundleProps) {
             dispatch(finishLoading());
         }
 
+        if (props.suppressFetching) {
+            return;
+        }
+
         if (isConnected) {
             dispatch(startLoading());
             dispatch(reset());
@@ -45,6 +52,7 @@ export default function SelectBundle(props: SelectBundleProps) {
                 stakingApi={props.stakingApi}
                 bundles={bundles.filter(bundle => props.displayBundle === undefined || props.displayBundle(bundle))} 
                 isBundlesLoading={isLoadingBundles}
+                hideShowMyStakes={props.hideShowMyStakes}
                 buildActions={(bundle: BundleInfo) => 
                     <Button 
                         variant="text"
@@ -54,6 +62,7 @@ export default function SelectBundle(props: SelectBundleProps) {
                     </Button>
                 }
                 />
+            { props.additionalComponents }
         </>
     );
 }

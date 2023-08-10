@@ -6,7 +6,8 @@
   "step3": "Restake",
   "step4": "Confirm payment",
   "action": {
-    "restake": "Restake"
+    "restake": "Restake",
+    "abort_bundle_selection": "Cancel bundle selection"
   },
   "restakedAmount": "Restake Amount",
   "restake_info": "Please confirm restaking on contract {{address}}",
