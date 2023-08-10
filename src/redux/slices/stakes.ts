@@ -14,9 +14,11 @@ export interface StakesState {
     showBundleAction: BundleAction;
 }
 
+
 export enum BundleAction {
     None,
     Restake,
+    ShowDetails
 }
 
 const initialState: StakesState = {

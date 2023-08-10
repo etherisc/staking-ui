@@ -162,8 +162,9 @@ export default function Restake(props: RestakeProps) {
                     <Button 
                         variant="text" 
                         color="primary"
-                        onClick={() => dispatch(setBundleAction(BundleAction.None))}
-                        >
+                        onClick={() => {
+                            dispatch(setBundleAction(BundleAction.ShowDetails));
+                        }}>
                         {t('action.abort_bundle_selection')}
                     </Button>
                 </Box>}

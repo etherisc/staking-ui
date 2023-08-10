@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import useNotifications from "../../hooks/notifications";
-import { clearSelectedBundle } from "../../redux/slices/stakes";
+import { BundleAction, clearSelectedBundle, setBundleAction } from "../../redux/slices/stakes";
 import { TransactionFailedError } from "../../utils/error";
 import { ga_event } from "../../utils/google_analytics";
 import BundleActions from "./bundle_actions";
@@ -88,7 +88,10 @@ export default function ShowBundle(props: ShowBundleProps) {
     return (<>
         <Typography variant="h5" mb={2}>
             <Typography variant="h6" mb={2} component="span">
-                <FontAwesomeIcon icon={faArrowLeft} style={{ cursor: 'pointer' }} onClick={() => dispatch(clearSelectedBundle())} />
+                <FontAwesomeIcon icon={faArrowLeft} style={{ cursor: 'pointer' }} onClick={() => {
+                        dispatch(clearSelectedBundle());
+                        dispatch(setBundleAction(BundleAction.None));
+                    }} />
             </Typography>
             &nbsp;
             {t('title_show_bundle')}

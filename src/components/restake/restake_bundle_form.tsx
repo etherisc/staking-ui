@@ -56,7 +56,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
     }, [formState.isValid, dispatch]);
 
     function back() {
-        dispatch(setBundleAction(BundleAction.None));
+        dispatch(setBundleAction(BundleAction.ShowDetails));
     }
 
     const onSubmit: SubmitHandler<IRestakeFormValues> = async data => {
