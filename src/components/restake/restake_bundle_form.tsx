@@ -18,7 +18,7 @@ interface RestakeBundleFormProps {
     bundle: BundleInfo;
     restakeBundle: BundleInfo;
     formDisabled: boolean;
-    restake: (stakeNftId: BigNumber, newBundleNftId: BigNumber) => void;
+    restake: (stakeNftId: BigNumber, oldBundleNftId: BigNumber, newBundleNftId: BigNumber) => void;
 }
 
 type IRestakeFormValues = {
@@ -66,7 +66,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
         if (values.stakedAmount && errors.stakedAmount === undefined) {
             const stakeNftId = props.bundle.myStakedNfsIds[0];
             const newBundleNftId = props.restakeBundle.nftId;
-            props.restake( BigNumber.from(stakeNftId), BigNumber.from(newBundleNftId));
+            props.restake( BigNumber.from(stakeNftId), BigNumber.from(props.bundle.nftId), BigNumber.from(newBundleNftId));
         }
     }
 

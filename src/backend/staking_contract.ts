@@ -332,6 +332,7 @@ export default class StakingContract {
 
     async restake(
         stakeNftId: BigNumber,
+        oldBundleNftId: BigNumber, 
         newBundleNftId: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined

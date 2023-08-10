@@ -10,7 +10,7 @@ interface RestakeBundleProps {
     currentBundle: BundleInfo;
     restakeBundle: BundleInfo;
     formDisabled: boolean;
-    restake: (stakeNftId: BigNumber, newBundleNftId: BigNumber) => void;
+    restake: (stakeNftId: BigNumber, oldBundleNftId: BigNumber, newBundleNftId: BigNumber) => void;
 }
 
 export default function RestakeBundle(props: RestakeBundleProps) {
