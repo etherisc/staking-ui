@@ -10,7 +10,7 @@ interface RestakeBundleProps {
     currentBundle: BundleInfo;
     restakeBundle: BundleInfo;
     formDisabled: boolean;
-    restake: () => void;
+    restake: (stakeNftId: BigNumber, newBundleNftId: BigNumber) => void;
 }
 
 export default function RestakeBundle(props: RestakeBundleProps) {
@@ -20,7 +20,7 @@ export default function RestakeBundle(props: RestakeBundleProps) {
                 <BundleDetails bundle={props.restakeBundle}  currency={props.stakingApi.currency()} decimals={props.stakingApi.currencyDecimals()} />
             </Grid>
             <Grid item xs={12} md={6}>
-                <RestakeBundleForm stakingApi={props.stakingApi} bundle={props.currentBundle} restake={props.restake} formDisabled={props.formDisabled} />
+                <RestakeBundleForm stakingApi={props.stakingApi} bundle={props.currentBundle} restakeBundle={props.restakeBundle} restake={props.restake} formDisabled={props.formDisabled} />
             </Grid>
         </Grid>
     </>);

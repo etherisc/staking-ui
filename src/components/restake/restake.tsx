@@ -58,7 +58,7 @@ export default function Restake(props: RestakeProps) {
         }
     }, [isConnected, activeStep, dispatch]);
 
-    async function restake() {
+    async function restake( stakeNftId: BigNumber, newBundleNftId: BigNumber) {
         ga_event("trx_start_restake", { category: 'chain_trx' });
         try {
             enableUnloadWarning(true);
@@ -66,7 +66,7 @@ export default function Restake(props: RestakeProps) {
 
             dispatch(setStep(4));
             const newBundleId = restakingBundle!.bundleId; 
-            const applicationSuccess = await doRestake(stakeingBundle!, newBundleId);
+            const applicationSuccess = await doRestake(stakeNftId, newBundleNftId);
             if ( ! applicationSuccess) {
                 ga_event("trx_fail_restake", { category: 'chain_trx' });
                 dispatch(setStep(3));
@@ -80,12 +80,12 @@ export default function Restake(props: RestakeProps) {
         }
     }
 
-    async function doRestake(bundle: BundleInfo, newBundleId: number): Promise<boolean> {
+    async function doRestake( stakeNftId: BigNumber, newBundleNftId: BigNumber): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
             const res = await props.stakingApi.restake(
-                bundle,
-                newBundleId,
+                stakeNftId,
+                newBundleNftId,
                 (address: string) => {
                     snackbar = enqueueSnackbar(
                         t('restake_info', { address }),

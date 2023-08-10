@@ -11,12 +11,14 @@ import { INPUT_VARIANT } from "../../config/theme";
 import { clearSelectedBundle } from "../../redux/slices/stakes";
 import { setStep } from "../../redux/slices/staking";
 import TermsOfService from "../terms_of_service";
+import { BigNumber } from "ethers";
 
 interface RestakeBundleFormProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
+    restakeBundle: BundleInfo;
     formDisabled: boolean;
-    restake: () => void;
+    restake: (stakeNftId: BigNumber, newBundleNftId: BigNumber) => void;
 }
 
 type IRestakeFormValues = {
@@ -62,8 +64,9 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
         const values = getValues();
 
         if (values.stakedAmount && errors.stakedAmount === undefined) {
-            const stakedAmount = parseEther(values.stakedAmount);
-            props.restake();
+            const stakeNftId = props.bundle.myStakedNfsIds[0];
+            const newBundleNftId = props.restakeBundle.nftId;
+            props.restake( BigNumber.from(stakeNftId), BigNumber.from(newBundleNftId));
         }
     }
 

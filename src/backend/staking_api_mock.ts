@@ -77,8 +77,8 @@ export default function stakingApiMock(
             await delay(2000);
             return Promise.resolve(true);
         },
-        async restake(bundle: BundleInfo, newBundleId: number) {
-            enqueueSnackbar(`Restake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${newBundleId}`,  { autoHideDuration: 3000, variant: 'info' });
+        async restake(stakeNftId: BigNumber, newBundleNftId: BigNumber) {
+            enqueueSnackbar(`Restake mocked (${stakeNftId}, ${newBundleNftId}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);
         },
