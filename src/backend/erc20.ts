@@ -1,7 +1,7 @@
 import { BigNumber, ContractReceipt, ContractTransaction, Signer } from "ethers";
-import { ERC20, ERC20__factory } from "../contracts/depeg-contracts";
 import { ApprovalFailedError } from "../utils/error";
 import { formatUnits } from "ethers/lib/utils";
+import { ERC20, ERC20__factory } from "../contracts/registry-contracts";
 
 export function getErc20Token(address: string, signer: Signer): ERC20 {
     return ERC20__factory.connect(address, signer);

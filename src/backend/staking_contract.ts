@@ -109,6 +109,7 @@ export default class StakingContract {
 
         const stakingSupported = await this.staking!.isStakingSupported(bundleNftId);
         const unstakingSupported = await this.staking!.isUnstakingSupported(bundleNftId);
+        const rewardRate = await this.getRewardRate(bundleNftId);
 
         return {
             id: `${instanceId}-${bundleId}`,
@@ -136,6 +137,7 @@ export default class StakingContract {
             lockedAmount: undefined,
             stakeUsage: undefined,
             policies: 0,
+            rewardRate: rewardRate,
         } as BundleInfo;
     }
 
@@ -363,10 +365,10 @@ export default class StakingContract {
         }
     }
 
-    async getRewardRate(): Promise<number> {
-        const rewardRateRaw = await this.staking.rewardRate();
-        const rateDecimals = await (await this.staking.rateDecimals()).toNumber();  // 18
-        console.log(rateDecimals);
+    async getRewardRate(nftId: BigNumber): Promise<number> {
+        const rewardRateRaw = await this.staking.getTargetRewardRate(nftId);
+        const rateDecimals = (await this.staking.rateDecimals()).toNumber();  // 18
+        // console.log(rateDecimals);
         // ethers bignumber doesn't handle fractionals, thats why we need to do this manually
         // 42000000000000000 * 10000 --> 42r0000000000000000000
         // 420000000000000000000 / 10^18 --> 42000

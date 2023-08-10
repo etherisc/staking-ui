@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import dayjs from 'dayjs';
-import { BigNumber } from 'ethers';
 import { parseEther, parseUnits } from 'ethers/lib/utils';
 import { SnackbarProvider } from 'notistack';
 import { BundleInfo } from '../../../src/backend/bundle_info';
@@ -39,6 +37,7 @@ describe('When displaying the bundle detail component', () => {
             supportingTokenDecimals: 6,
             state: 0,
             expiryAt: 1694349476,
+            rewardRate: 0.1234,
         } as BundleInfo;
 
         const baseDom = render(
@@ -59,6 +58,7 @@ describe('When displaying the bundle detail component', () => {
         expect(screen.getByText('DIP 17,543.00')).toBeInTheDocument();
         expect(screen.getByText('DIP 23,654.00')).toBeInTheDocument();
         expect(screen.getByText('DIP 3.71')).toBeInTheDocument();
+        expect(screen.getByText('12.34 %')).toBeInTheDocument();
         expect(screen.getByText('USDT 2,345.00')).toBeInTheDocument();
         expect(screen.getByText('USDT 1,754.30')).toBeInTheDocument();
         expect(screen.getByText('USDT 2,365.40')).toBeInTheDocument();

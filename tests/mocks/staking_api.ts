@@ -1,6 +1,5 @@
 import { parseEther } from "ethers/lib/utils";
 import { StakingApi } from "../../src/backend/staking_api";
-import { getChainState } from "../../src/utils/chain";
 
 export function mockStakingApiSimple(): StakingApi {
     return {
@@ -18,7 +17,6 @@ export function mockStakingApiSimple(): StakingApi {
         stakedAmount: jest.fn(),
         unstake: jest.fn(),
         hasDipBalance: jest.fn(),
-        getRewardRate: jest.fn(),
         getStakeUsage: jest.fn(),
         updateBundle: jest.fn(),
         claimRewards: jest.fn(),

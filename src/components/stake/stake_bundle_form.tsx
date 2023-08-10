@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { INPUT_VARIANT } from "../../config/theme";
-import { clearSelectedBundle, selectBundle } from "../../redux/slices/stakes";
+import { clearSelectedBundle } from "../../redux/slices/stakes";
 import { setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import TermsOfService from "../terms_of_service";
@@ -45,7 +45,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         defaultValues: {
             stakedAmount: undefined,
             supportedAmount: undefined,
-            rewardRate: "",
+            rewardRate: (props.bundle.rewardRate * 100).toFixed(2),
             expectedReward: "",
             termsAndConditions: false,
         }
@@ -82,21 +82,6 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             setValue("expectedReward", "");
         }
     }, [errors, setValue, getValues, props.bundle, props.stakingApi]);
-
-    useEffect(() => {
-        async function getRewardRate() {
-            if (isConnected) {
-                const rewardRate = await props.stakingApi.getRewardRate();
-                console.log("Reward rate", rewardRate);
-                setValue("rewardRate", (rewardRate * 100).toFixed(2));
-            } else {
-                console.log("clearing reward rate");
-                setValue("rewardRate", "");
-            }
-        } 
-        getRewardRate();
-    }, [isConnected, props.stakingApi, setValue]);
-
 
     function back() {
         dispatch(clearSelectedBundle());

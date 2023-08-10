@@ -1,12 +1,12 @@
 import { BigNumber, Signer } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from "../contracts/depeg-contracts";
 import { StakeUsage } from "../utils/types";
 import { BundleInfo } from "./bundle_info";
 import { createDipApproval } from "./erc20";
 import { GifInstanceService } from "./gif_instance_service";
 import { StakingApi } from "./staking_api";
 import StakingContract from "./staking_contract";
+import { IERC20, IERC20Metadata, IERC20Metadata__factory, IERC20__factory } from "../contracts/registry-contracts";
 
 export class StakingApiSmartContract implements StakingApi {
     private signer: Signer;
@@ -140,10 +140,6 @@ export class StakingApiSmartContract implements StakingApi {
 
     async hasDipBalance(amount: BigNumber): Promise<boolean> {
         return (await this.dipToken!.balanceOf(await this.signer.getAddress())).gte(amount);
-    }
-
-    async getRewardRate(): Promise<number> {
-        return (await this.getGifStakingApi()).getRewardRate();
     }
 
     async getStakeUsage(bundle: BundleInfo): Promise<{usage: StakeUsage, lockedCapital: BigNumber}> {
