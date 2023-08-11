@@ -159,7 +159,7 @@ describe('When rendering the bundle detail actions', () => {
         expect(screen.getByTestId("button-stake")).toBeDisabled();
     })
 
-    it('the Unstake button is enabled for a unstakeable bundle without', async () => {
+    it('the Unstake button is enabled for a unstakeable bundle', async () => {
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -327,6 +327,74 @@ describe('When rendering the bundle detail actions', () => {
         );
 
         expect(screen.getByTestId("button-claim-rewards")).toBeDisabled();
+    })
+
+    it('the Restake button is enabled', async () => {
+        const bundle = {
+            id: "0x1234-1",
+            nftId: "76594322",
+            unclaimedReward: parseEther("3.71").toString(),
+            state: 2,
+            expiryAt: dayjs().add(1, 'day').unix(),
+            myStakedNfsIds: ['1234'],
+            stakingSupported: false,
+            unstakingSupported: true,
+        } as BundleInfo;
+
+        const ownedNfts = [
+            {
+                nftId: '1234',
+                stakedAmount: parseEther("17543").toString(),
+                targetNftId: '76594322',
+            } as NftInfo
+        ];
+
+        const baseDom = renderWithProviders(
+            <SnackbarProvider>
+                <BundleActions
+                    bundle={bundle}
+                    ownedNfts={ownedNfts}
+                    claimRewards={jest.fn()}
+                    />
+            </SnackbarProvider>,
+            {}
+        );
+
+        expect(screen.getByTestId("button-restake")).toBeEnabled();
+    })
+
+    it('the Restake button is disabled for locked bundle', async () => {
+        const bundle = {
+            id: "0x1234-1",
+            nftId: "76594322",
+            unclaimedReward: parseEther("3.71").toString(),
+            state: 1,
+            expiryAt: dayjs().add(1, 'day').unix(),
+            myStakedNfsIds: ['1234'],
+            stakingSupported: false,
+            unstakingSupported: false,
+        } as BundleInfo;
+
+        const ownedNfts = [
+            {
+                nftId: '1234',
+                stakedAmount: parseEther("17543").toString(),
+                targetNftId: '76594322',
+            } as NftInfo
+        ];
+
+        const baseDom = renderWithProviders(
+            <SnackbarProvider>
+                <BundleActions
+                    bundle={bundle}
+                    ownedNfts={ownedNfts}
+                    claimRewards={jest.fn()}
+                    />
+            </SnackbarProvider>,
+            {}
+        );
+
+        expect(screen.getByTestId("button-restake")).toBeDisabled();
     })
 
 });

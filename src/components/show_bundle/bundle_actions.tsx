@@ -20,22 +20,19 @@ export default function BundleActions(props: BundleActionsProps) {
     const { t } = useTranslation('stakes');
     const dispatch = useDispatch();
     const router = useRouter();
-    const ownedNfts = useSelector((state: RootState) => state.stakes.ownedNfts);
-
     const bundle = props.bundle;
 
-    const hasStakeInBundle = ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && BigNumber.from(nft.stakedAmount).gt(0)).length > 0;
+    const hasStakeInBundle = props.ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && BigNumber.from(nft.stakedAmount).gt(0)).length > 0;
 
     const isStakingAllowed = 
         bundle.stakingSupported 
         && (bundle.state === 0 || bundle.state === 1)
         && bundle.expiryAt > dayjs().unix();
     const isUnstakingAllowed = 
-        bundle.unstakingSupported &&
-        // Check if there is at least one NFT that is staked
-        hasStakeInBundle;
+        bundle.unstakingSupported && hasStakeInBundle;
     const isRestakingAllowed =
-        hasStakeInBundle 
+        bundle.unstakingSupported 
+        && hasStakeInBundle 
         && (bundle.state === BundleState.CLOSED || bundle.state === BundleState.BURNED);
     // any unclaimed rewards left
     const isClaimRewardsAllowed = bundle.myStakedNfsIds.length > 0 && BigNumber.from(bundle.unclaimedReward).gt(0);
@@ -94,6 +91,7 @@ export default function BundleActions(props: BundleActionsProps) {
                 variant="contained" 
                 sx={{ minWidth: '12rem' }}
                 disabled={!isRestakingAllowed}
+                data-testid="button-restake"
                 >{t('action.restake')}</Button>
         </Grid>
     </Grid>);
