@@ -2,12 +2,9 @@ import { Schema, Repository } from "redis-om";
 import { redisClient } from "../redis";
 
 export interface PendingRestake {
-    // TODO: add other fields
-    // policyHolder: string;
-    // protectedWallet: string;
-    // protectedBalance: string;
-    // duration: number;
-    // bundleId: number;
+    owner: string;
+    stakeNftId: string;
+    targetNftId: string;
     signatureId: string;
     signature: string;
     transactionHash: string;
@@ -15,12 +12,9 @@ export interface PendingRestake {
 }
 
 export const PENDING_RESTAKE_SCHEMA = new Schema('PendingRestake', {
-    // TODO: add other fields
-    // policyHolder: { type: 'string', sortable: true },
-    // protectedWallet: { type: 'string', sortable: true  },
-    // protectedBalance: { type: 'string', sortable: true  },
-    // duration: { type: 'number' },
-    // bundleId: { type: 'number' },
+    owner: { type: 'string', sortable: true },
+    stakeNftId: { type: 'string', sortable: true },
+    targetNftId: { type: 'string', sortable: true },
     signatureId: { type: 'string', sortable: true },
     signature: { type: 'string' },
     transactionHash: { type: 'string', sortable: true },

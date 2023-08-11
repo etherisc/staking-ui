@@ -37,7 +37,8 @@ export interface StakingApi {
     restake: (
         stakeNftId: BigNumber,
         oldBundleNftId: BigNumber, 
-        newBundleNftId: BigNumber, 
+        newTargetNftId: BigNumber, 
+        gasless: boolean,
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;

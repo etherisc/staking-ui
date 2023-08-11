@@ -50,8 +50,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     const signatureId = bodyData.signatureId as string;
     const signature = bodyData.signature as string;
 
-    // TODO: add other fields
-    if (!signatureId || !signature) {
+    if (!owner || !targetNftId || !dipAmount || !signatureId || !signature) {
         res.status(400).send("Missing required fields");
         return;
     }

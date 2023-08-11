@@ -332,8 +332,8 @@ export default class StakingContract {
 
     async restake(
         stakeNftId: BigNumber,
-        oldBundleNftId: BigNumber, 
-        newBundleNftId: BigNumber, 
+        oldTargetNftId: BigNumber, 
+        newTargetNftId: BigNumber, 
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<[ContractTransaction, ContractReceipt]> {
@@ -341,8 +341,8 @@ export default class StakingContract {
             beforeTrxCallback(this.staking.address);
         }
         try {
-            console.log("restake", stakeNftId, newBundleNftId);
-            let tx = await this.staking.restake(stakeNftId, newBundleNftId);
+            console.log("restake", stakeNftId, newTargetNftId);
+            let tx = await this.staking.restake(stakeNftId, newTargetNftId);
 
             if (beforeWaitCallback !== undefined) {
                 beforeWaitCallback(this.staking.address);

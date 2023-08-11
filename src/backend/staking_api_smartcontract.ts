@@ -135,18 +135,27 @@ export class StakingApiSmartContract implements StakingApi {
 
     async restake(
         stakeNftId: BigNumber,
-        oldBundleNftId: BigNumber, 
-        newBundleNftId: BigNumber, 
+        oldTargetNftId: BigNumber, 
+        newTargetNftId: BigNumber, 
+        gasless: boolean,
         beforeTrxCallback?: ((address: string) => void) | undefined, 
         beforeWaitCallback?: ((address: string) => void) | undefined
     ): Promise<boolean> {
-        const [tx, receipt] = await (await this.getGifStakingApi()).restake(
-            stakeNftId,
-            oldBundleNftId,
-            newBundleNftId, 
-            beforeTrxCallback, 
-            beforeWaitCallback);
-        return receipt.status === 1;
+        if (gasless) {
+            return await this.stakingGasless!.restakeGasless(
+                stakeNftId,
+                newTargetNftId,
+                beforeTrxCallback,
+                beforeWaitCallback);
+        } else {
+            const [tx, receipt] = await (await this.getGifStakingApi()).restake(
+                stakeNftId,
+                oldTargetNftId,
+                newTargetNftId, 
+                beforeTrxCallback, 
+                beforeWaitCallback);
+            return receipt.status === 1;
+        }
     }
 
     async unstake(

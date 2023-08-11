@@ -44,17 +44,13 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     console.log("POST request to /api/restake");
     const bodyData = req.body;
 
-    // TODO: add other fields
-    // const policyHolder = bodyData.policyHolder as string;
-    // const protectedWallet = bodyData.protectedWallet as string;
-    // const protectedBalance = bodyData.protectedBalance as string;
-    // const duration = bodyData.duration as number;
-    // const bundleId = bodyData.bundleId as number;
+    const owner = bodyData.owner as string;
+    const stakeNftId = bodyData.stakeNftId as string;
+    const targetNftId = bodyData.targetNftId as string;
     const signatureId = bodyData.signatureId as string;
     const signature = bodyData.signature as string;
 
-    // TODO: add other fields
-    if (!signatureId || !signature) {
+    if (! owner || !stakeNftId || !targetNftId || !signatureId || !signature) {
         res.status(400).send("Missing required fields");
         return;
     }
@@ -62,12 +58,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     // store pending application in redis
     const repo = await getPendingRestakeRepository();
     await repo.save({
-        // TODO: other fields
-        // policyHolder: policyHolder,
-        // protectedWallet: protectedWallet,
-        // protectedBalance: protectedBalance.toString(),
-        // duration: duration,
-        // bundleId: bundleId,
+        owner: owner,
+        stakeNftId: stakeNftId,
+        targetNftId: targetNftId,
         signatureId: signatureId,
         signature: signature,
         transactionHash: null,
