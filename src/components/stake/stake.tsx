@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import useNotifications from "../../hooks/notifications";
-import { selectBundle } from "../../redux/slices/stakes";
+import { BundleAction, selectBundle, setBundleAction } from "../../redux/slices/stakes";
 import { bundleSelected, resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
@@ -217,7 +217,7 @@ export default function Stake(props: StakeProps) {
         });
         await props.stakingApi.updateBundle(stakingBundle);
         updateAccountBalance(signer!, dispatch);
-        dispatch(selectBundle(bundles.findIndex(b => b.id === stakingBundle.id)));
+        dispatch(setBundleAction(BundleAction.None));
         router.push("/");
     }
 

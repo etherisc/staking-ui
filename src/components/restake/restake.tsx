@@ -132,7 +132,7 @@ export default function Restake(props: RestakeProps) {
         });
         await props.stakingApi.updateBundle(stakingBundle);
         updateAccountBalance(signer!, dispatch);
-        dispatch(selectBundle(bundles.findIndex(b => b.id === stakingBundle.id)));
+        dispatch(setBundleAction(BundleAction.None));
         router.push("/");
     }
 
