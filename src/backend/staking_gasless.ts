@@ -1,7 +1,7 @@
 import { BigNumber, Signer } from "ethers";
 import { formatBytes32String, formatUnits } from "ethers/lib/utils";
 import { nanoid } from "nanoid";
-import { StakingV03__factory } from "../contracts/registry-contracts";
+import { IStaking__factory } from "../contracts/registry-contracts";
 import { TransactionFailedError } from "../utils/error";
 import { toHex } from "../utils/numbers";
 import { BundleInfo } from "./bundle_info";
@@ -34,7 +34,7 @@ export default class StakingGasless {
             beforeTrxCallback("");
         }
 
-        const messageHelperAddress = await StakingV03__factory.connect(this.stakingProductAddress!, this.signer).getMessageHelperAddress();
+        const messageHelperAddress = await IStaking__factory.connect(this.stakingProductAddress!, this.signer).getMessageHelperAddress();
         
         const domain = {
             chainId: this.chainId, 
