@@ -1,4 +1,4 @@
-import { Schema, Repository } from "redis-om";
+import { Repository, Schema } from "redis-om";
 import { redisClient } from "../redis";
 
 export interface PendingRestake {
@@ -12,13 +12,13 @@ export interface PendingRestake {
 }
 
 export const PENDING_RESTAKE_SCHEMA = new Schema('PendingRestake', {
-    owner: { type: 'string', sortable: true },
-    stakeNftId: { type: 'string', sortable: true },
-    targetNftId: { type: 'string', sortable: true },
-    signatureId: { type: 'string', sortable: true },
+    owner: { type: 'string' },
+    stakeNftId: { type: 'string' },
+    targetNftId: { type: 'string' },
+    signatureId: { type: 'string' },
     signature: { type: 'string' },
-    transactionHash: { type: 'string', sortable: true },
-    timestamp: { type: 'date', sortable: true },
+    transactionHash: { type: 'string' },
+    timestamp: { type: 'date' },
 }, {
     dataStructure: 'HASH'
 });

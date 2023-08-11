@@ -1,20 +1,19 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button } from "@mui/material";
+import { Alert, Box, Button } from "@mui/material";
 import { Signer } from "ethers";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
-import { BundleAction, finishLoading, reset, selectBundle, setBundleAction, startLoading } from "../../redux/slices/stakes";
+import { BundleAction, finishLoading, reset, selectBundle, setBundleAction, setPendingFeeless, startLoading } from "../../redux/slices/stakes";
 import { RootState } from "../../redux/store";
 import { ga_event } from "../../utils/google_analytics";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 import { Heading1 } from "../heading";
-import ShowBundle from "../show_bundle/show_bundle";
 import Restake from "../restake/restake";
-import { set } from "react-hook-form";
+import ShowBundle from "../show_bundle/show_bundle";
 
 export interface StakingProps {
     stakingApi: StakingApi;
@@ -29,12 +28,14 @@ export default function Stakes(props: StakingProps) {
     const dispatch = useDispatch();
     const selectedBundleIdx = useSelector((state: RootState) => state.stakes.selectedBundleIdx);
     const showBundleAction = useSelector((state: RootState) => state.stakes.bundleAction);
+    const pendingFeeless = useSelector((state: RootState) => state.stakes.pendingFeeless);
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
         const address = await signer.getAddress();
         dispatch(startLoading());
         dispatch(reset());
         await props.stakingApi.retrieveBundles();
+        await checkForPendingFeelessTx(address);
         dispatch(finishLoading());
     }, [dispatch, props.stakingApi]);
 
@@ -52,6 +53,13 @@ export default function Stakes(props: StakingProps) {
             dispatch(selectBundle(bundles.findIndex((b) => b.id === bundle.id)))
             dispatch(setBundleAction(BundleAction.ShowDetails));
         }}>{t('action.details')}</Button></>);
+    }
+
+    async function checkForPendingFeelessTx(address: string) {
+        const res = await fetch(`/api/feeless/pending?address=${address}`);
+        const body = await res.json();
+        const hasFeeless = body.pendingRestake || body.pendingStake;
+        dispatch(setPendingFeeless(hasFeeless));
     }
 
     console.log("slidx", bundles, selectedBundleIdx, bundles[selectedBundleIdx!]);
@@ -72,6 +80,10 @@ export default function Stakes(props: StakingProps) {
                 {t('action.refresh')}
             </Button>
         </Box>
+
+        { pendingFeeless && <Box sx={{ mb: 2 }}>
+            <Alert severity="info">{t('alert.pending_feeless')}</Alert>
+        </Box>}
 
         { selectedBundleIdx === null && <BundleStakes 
             stakingApi={props.stakingApi}
