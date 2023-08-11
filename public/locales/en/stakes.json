@@ -10,5 +10,8 @@
     "restake": "Restake"
   },
   "title_show_bundle": "Risk bundle",
-  "fetching_bundle": "Fetching risk bundle data ..."
+  "fetching_bundle": "Fetching risk bundle data ...",
+  "alert": {
+    "pending_feeless": "There are pending feeless transactions for this wallet"
+  }
 }

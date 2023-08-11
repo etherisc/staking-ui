@@ -30,13 +30,15 @@ export interface StakingApi {
     stake: (
         bundle: BundleInfo,
         stakedAmount: BigNumber,
+        gasless: boolean,
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;
     restake: (
         stakeNftId: BigNumber,
         oldBundleNftId: BigNumber, 
-        newBundleNftId: BigNumber, 
+        newTargetNftId: BigNumber, 
+        gasless: boolean,
         beforeTrxCallback?: (address: string) => void,
         beforeWaitCallback?: (address: string) => void
     ) => Promise<boolean>;

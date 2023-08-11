@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  redis:
+    image: redis/redis-stack-server:7.0.6-RC9
+    ports:
+      - 6479:6379
+  webapp:
+    # See https://aka.ms/vscode-remote/containers/non-root for details.
+    user: node
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      args:
+        VARIANT: 18-bookworm
+    volumes:
+      - ..:/workspaces/staking-ui:cached
+      - staking-ui-node_modules:/workspaces/staking-ui/node_modules
+      #- $HOME/.ssh/:/home/vscode/.ssh/ # Mount the ssh folder to authenticate with github
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+volumes:
+  staking-ui-node_modules:

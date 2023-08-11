@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Grid, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import { SnackbarKey, useSnackbar } from "notistack";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import useNotifications from "../../hooks/notifications";
 import { BundleAction, clearSelectedBundle, setBundleAction } from "../../redux/slices/stakes";
+import { RootState } from "../../redux/store";
 import { TransactionFailedError } from "../../utils/error";
 import { ga_event } from "../../utils/google_analytics";
 import BundleActions from "./bundle_actions";
@@ -27,6 +28,8 @@ export default function ShowBundle(props: ShowBundleProps) {
     const bundle = props.bundle;
     const currency = props.stakingApi.currency();
     const decimals = props.stakingApi.currencyDecimals();
+
+    const ownedNfts = useSelector((state: RootState) => state.stakes.ownedNfts);
 
     if (bundle !== undefined && bundle.myStakedNfsIds.length >= 0) {
         props.stakingApi.fetchUnclaimedRewards(bundle);
@@ -106,7 +109,7 @@ export default function ShowBundle(props: ShowBundleProps) {
                 <BundleDetails bundle={bundle} currency={currency} decimals={decimals} />
             </Grid>
             <Grid item xs={12} md={6}>
-                <BundleActions bundle={bundle} claimRewards={claimRewards} />
+                <BundleActions bundle={bundle} claimRewards={claimRewards} ownedNfts={ownedNfts} />
             </Grid>
         </Grid>
     </>);

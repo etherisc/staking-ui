@@ -87,7 +87,7 @@
   "bundle_information": "Selected risk bundle",
   "instance_id": "Instance ID",
   "instance_name": "Instance Name",
-  "bundle_id": "ID",
+  "bundle_id": "ID (NFT)",
   "bundle_name": "Name",
   "bundle_state": "State",
   "bundle_id_num": "ID: {{id}}",

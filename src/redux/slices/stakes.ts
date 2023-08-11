@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { BundleInfo } from '../../backend/bundle_info';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
+import { BundleInfo } from '../../backend/bundle_info';
 import { NftInfo } from '../../backend/nft_info';
 
 export interface StakesState {
@@ -12,6 +12,7 @@ export interface StakesState {
     isLoadingBundles: boolean;
     // the operation that is being executed in the bundle screen
     bundleAction: BundleAction;
+    pendingFeeless: boolean;
 }
 
 
@@ -27,6 +28,7 @@ const initialState: StakesState = {
     ownedNfts: [],
     isLoadingBundles: false,
     bundleAction: BundleAction.None,
+    pendingFeeless: false,
 }
 
 export const stakesSlice = createSlice({
@@ -100,6 +102,9 @@ export const stakesSlice = createSlice({
         setBundleAction: (state, action: PayloadAction<BundleAction>) => {
             state.bundleAction = action.payload;
         },
+        setPendingFeeless: (state, action: PayloadAction<boolean>) => {
+            state.pendingFeeless = action.payload;
+        },
     },
 })
 
@@ -111,6 +116,7 @@ export const {
     selectBundle, clearSelectedBundle,
     setUnclaimedRewards,
     setBundleAction,
+    setPendingFeeless,
 } = stakesSlice.actions
 
 export default stakesSlice.reducer

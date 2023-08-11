@@ -72,12 +72,12 @@ export default function stakingApiMock(
             await delay(2000);
             return Promise.resolve(true);
         },
-        async stake(bundle: BundleInfo, stakedAmount: BigNumber) {
-            enqueueSnackbar(`Stake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${formatEther(stakedAmount)}`,  { autoHideDuration: 3000, variant: 'info' });
+        async stake(bundle: BundleInfo, stakedAmount: BigNumber, gasless: boolean) {
+            enqueueSnackbar(`Stake mocked (${bundle.instanceId}, ${bundle.bundleId}, ${formatEther(stakedAmount)}, ${gasless}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);
         },
-        async restake(stakeNftId: BigNumber, oldBundleNftId: BigNumber,  newBundleNftId: BigNumber) {
+        async restake(stakeNftId: BigNumber, oldBundleNftId: BigNumber,  newBundleNftId: BigNumber, gasless: boolean) {
             enqueueSnackbar(`Restake mocked (${stakeNftId}, ${newBundleNftId}`,  { autoHideDuration: 3000, variant: 'info' });
             await delay(2000);
             return Promise.resolve(true);

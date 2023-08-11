@@ -47,7 +47,7 @@ export default function Restake(props: RestakeProps) {
         }
     }, [isConnected, dispatch]);
 
-    async function restake( stakeNftId: BigNumber, oldBundleNftId: BigNumber, newBundleNftId: BigNumber) {
+    async function restake( stakeNftId: BigNumber, oldBundleNftId: BigNumber, newBundleNftId: BigNumber, gasless: boolean) {
         ga_event("trx_start_restake", { category: 'chain_trx' });
         try {
             enableUnloadWarning(true);
@@ -55,7 +55,7 @@ export default function Restake(props: RestakeProps) {
 
             dispatch(setStep(4));
             const newBundleId = restakingBundle!.bundleId; 
-            const applicationSuccess = await doRestake(stakeNftId, oldBundleNftId, newBundleNftId);
+            const applicationSuccess = await doRestake(stakeNftId, oldBundleNftId, newBundleNftId, gasless);
             if ( ! applicationSuccess) {
                 ga_event("trx_fail_restake", { category: 'chain_trx' });
                 dispatch(setStep(3));
@@ -69,13 +69,14 @@ export default function Restake(props: RestakeProps) {
         }
     }
 
-    async function doRestake( stakeNftId: BigNumber, oldBundleNftId: BigNumber, newBundleNftId: BigNumber): Promise<boolean> {
+    async function doRestake( stakeNftId: BigNumber, oldBundleNftId: BigNumber, newBundleNftId: BigNumber, gasless: boolean): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
             const res = await props.stakingApi.restake(
                 stakeNftId,
                 oldBundleNftId,
                 newBundleNftId,
+                gasless,
                 (address: string) => {
                     snackbar = enqueueSnackbar(
                         t('restake_info', { address }),
@@ -131,7 +132,7 @@ export default function Restake(props: RestakeProps) {
         });
         await props.stakingApi.updateBundle(stakingBundle);
         updateAccountBalance(signer!, dispatch);
-        dispatch(selectBundle(bundles.findIndex(b => b.id === stakingBundle.id)));
+        dispatch(setBundleAction(BundleAction.None));
         router.push("/");
     }
 

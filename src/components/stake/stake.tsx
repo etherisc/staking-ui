@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import useNotifications from "../../hooks/notifications";
-import { selectBundle } from "../../redux/slices/stakes";
+import { BundleAction, selectBundle, setBundleAction } from "../../redux/slices/stakes";
 import { bundleSelected, resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
@@ -61,7 +61,7 @@ export default function Stake(props: StakeProps) {
         }
     }, [isConnected, activeStep, dispatch]);
 
-    async function stake(amount: BigNumber, bundle: BundleInfo) {
+    async function stake(amount: BigNumber, bundle: BundleInfo, gasless: boolean) {
         ga_event("trx_start_stake", { category: 'chain_trx' });
         try {
             enableUnloadWarning(true);
@@ -77,7 +77,7 @@ export default function Stake(props: StakeProps) {
             }
             ga_event("trx_success_stake_approve", { category: 'chain_trx' });
             dispatch(setStep(5));
-            const applicationSuccess = await doStake(stakeingBundle!, amount);
+            const applicationSuccess = await doStake(stakeingBundle!, amount, gasless);
             if ( ! applicationSuccess) {
                 ga_event("trx_fail_stake", { category: 'chain_trx' });
                 dispatch(setStep(3));
@@ -137,12 +137,13 @@ export default function Stake(props: StakeProps) {
         }
     }
 
-    async function doStake(bundle: BundleInfo, stakedAmount: BigNumber): Promise<boolean> {
+    async function doStake(bundle: BundleInfo, stakedAmount: BigNumber, gasless: boolean): Promise<boolean> {
         let snackbar: SnackbarKey | undefined = undefined;
         try {
             const res = await props.stakingApi.stake(
                 bundle,
                 stakedAmount,
+                gasless,
                 (address: string) => {
                     snackbar = enqueueSnackbar(
                         t('stake_info', { address }),
@@ -216,7 +217,7 @@ export default function Stake(props: StakeProps) {
         });
         await props.stakingApi.updateBundle(stakingBundle);
         updateAccountBalance(signer!, dispatch);
-        dispatch(selectBundle(bundles.findIndex(b => b.id === stakingBundle.id)));
+        dispatch(setBundleAction(BundleAction.None));
         router.push("/");
     }
 
