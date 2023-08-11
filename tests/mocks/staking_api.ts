@@ -13,6 +13,7 @@ export function mockStakingApiSimple(): StakingApi {
         calculateReward: jest.fn(),
         createApproval: jest.fn(),
         stake: jest.fn(),
+        restake: jest.fn(),
         retrieveStakesForWallet: jest.fn(),
         stakedAmount: jest.fn(),
         unstake: jest.fn(),

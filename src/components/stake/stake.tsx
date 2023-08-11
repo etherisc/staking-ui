@@ -10,7 +10,7 @@ import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import useNotifications from "../../hooks/notifications";
 import { selectBundle } from "../../redux/slices/stakes";
-import { resetForm, setStep } from "../../redux/slices/staking";
+import { bundleSelected, resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";
 import { ApprovalFailedError, TransactionFailedError } from "../../utils/error";
@@ -235,6 +235,7 @@ export default function Stake(props: StakeProps) {
             return <SelectBundle 
                 stakingApi={props.stakingApi}
                 displayBundle={(bundle: BundleInfo) => bundle.stakingSupported}
+                bundleSelected={(bundle: BundleInfo) => dispatch(bundleSelected(bundle))}
                 />;
         } else {
             return <StakeBundle 

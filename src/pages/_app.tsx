@@ -26,7 +26,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import { Web3Modal } from '@web3modal/react';
 import { WagmiConfig } from 'wagmi';
 import { WALLET_CONNECT_PROJECT_ID, ethereumClient, wagmiConfig } from '../config/walletconnect';
-import { clearSelectedBundle } from '../redux/slices/stakes';
+import { BundleAction, clearSelectedBundle, setBundleAction } from '../redux/slices/stakes';
 import { bundleUnselected } from '../redux/slices/staking';
 import { removeSigner } from '../utils/chain';
 config.autoAddCss = false; /* eslint-disable import/first */

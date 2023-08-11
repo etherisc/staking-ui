@@ -330,6 +330,35 @@ export default class StakingContract {
         }
     }
 
+    async restake(
+        stakeNftId: BigNumber,
+        oldBundleNftId: BigNumber, 
+        newBundleNftId: BigNumber, 
+        beforeTrxCallback?: ((address: string) => void) | undefined, 
+        beforeWaitCallback?: ((address: string) => void) | undefined
+    ): Promise<[ContractTransaction, ContractReceipt]> {
+        if (beforeTrxCallback !== undefined) {
+            beforeTrxCallback(this.staking.address);
+        }
+        try {
+            console.log("restake", stakeNftId, newBundleNftId);
+            let tx = await this.staking.restake(stakeNftId, newBundleNftId);
+
+            if (beforeWaitCallback !== undefined) {
+                beforeWaitCallback(this.staking.address);
+            }
+
+            const receipt = await tx.wait();
+            // console.log(receipt);
+
+            return [tx, receipt];
+        } catch (e) {
+            console.log("caught error while staking: ", e);
+            // @ts-ignore e.code
+            throw new TransactionFailedError(e.code, e);
+        }
+    }
+
     async unstake(
         bundle: BundleInfo,
         nftId: string,

@@ -40,7 +40,7 @@ export async function getStaticProps() {
     }
     return {
         props: {
-        ...(await serverSideTranslations('en', ['common', 'stakes'])),   
+        ...(await serverSideTranslations('en', ['common', 'stakes', 'restake'])),   
         },
     }
 }

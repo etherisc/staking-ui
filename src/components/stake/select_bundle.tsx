@@ -12,6 +12,10 @@ import BundleStakes from "../bundle_stakes/bundle_stakes";
 interface SelectBundleProps {
     stakingApi: StakingApi;
     displayBundle?: (bundle: BundleInfo) => boolean;
+    bundleSelected: (bundle: BundleInfo) => void;
+    suppressFetching?: boolean;
+    hideShowMyStakes?: boolean;
+    additionalComponents?: JSX.Element;
 }
 
 export default function SelectBundle(props: SelectBundleProps) {
@@ -23,12 +27,14 @@ export default function SelectBundle(props: SelectBundleProps) {
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
 
-    const [ selectedBundle, setSelectedBundle ] = useState<BundleInfo | undefined>(undefined);
-
     useEffect(() => {
         async function getBundles() {
             await props.stakingApi.retrieveBundles();
             dispatch(finishLoading());
+        }
+
+        if (props.suppressFetching) {
+            return;
         }
 
         if (isConnected) {
@@ -46,16 +52,17 @@ export default function SelectBundle(props: SelectBundleProps) {
                 stakingApi={props.stakingApi}
                 bundles={bundles.filter(bundle => props.displayBundle === undefined || props.displayBundle(bundle))} 
                 isBundlesLoading={isLoadingBundles}
-                onBundleSelected={setSelectedBundle}
+                hideShowMyStakes={props.hideShowMyStakes}
                 buildActions={(bundle: BundleInfo) => 
                     <Button 
                         variant="text"
-                        onClick={() => dispatch(bundleSelected(bundle))}
+                        onClick={() => props.bundleSelected(bundle)}
                         >
                         {t('action.select', { ns: "common" })}
                     </Button>
                 }
                 />
+            { props.additionalComponents }
         </>
     );
 }

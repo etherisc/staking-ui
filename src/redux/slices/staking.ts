@@ -5,11 +5,13 @@ import { BundleInfo } from '../../backend/bundle_info';
 export interface StakingState {
     step: number;
     stakeingBundle: BundleInfo | null;
+    restakingBundle: BundleInfo | null;
 }
 
 const initialState: StakingState = {
     step: 0,
     stakeingBundle: null,
+    restakingBundle: null,
 }
 
 export const stakingSlice = createSlice({
@@ -36,6 +38,11 @@ export const stakingSlice = createSlice({
             state.step = 1;
             state.stakeingBundle = null;
         },
+        // only for restaking 
+        restakingBundleSelected: (state, action: PayloadAction<BundleInfo|null>) => {
+            state.step = 3;
+            state.restakingBundle = action.payload;
+        }
     },
 });
 
@@ -44,6 +51,7 @@ export const {
     resetForm,
     setStep, 
     bundleSelected, bundleUnselected,
+    restakingBundleSelected,
 } = stakingSlice.actions
 
 export default stakingSlice.reducer

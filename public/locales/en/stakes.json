@@ -6,7 +6,8 @@
     "unstake": "Unstake",
     "refresh": "Refresh risk bundles",
     "claim_rewards": "Claim rewards",
-    "details": "Details"
+    "details": "Details",
+    "restake": "Restake"
   },
   "title_show_bundle": "Risk bundle",
   "fetching_bundle": "Fetching risk bundle data ..."

@@ -10,6 +10,15 @@ export interface StakesState {
     // nft ids of the nfts that are owned by the current connected wallet
     ownedNfts: NftInfo[];
     isLoadingBundles: boolean;
+    // the operation that is being executed in the bundle screen
+    bundleAction: BundleAction;
+}
+
+
+export enum BundleAction {
+    None,
+    Restake,
+    ShowDetails
 }
 
 const initialState: StakesState = {
@@ -17,6 +26,7 @@ const initialState: StakesState = {
     selectedBundleIdx: null,
     ownedNfts: [],
     isLoadingBundles: false,
+    bundleAction: BundleAction.None,
 }
 
 export const stakesSlice = createSlice({
@@ -53,6 +63,9 @@ export const stakesSlice = createSlice({
         },
         reset: (state) => {
             state.bundles = [];
+            state.selectedBundleIdx = null;
+            state.ownedNfts = [];
+            state.isLoadingBundles = false;
         },
         addNftId: (state, action: PayloadAction<NftInfo>) => {
             const nftIdx = state.ownedNfts.findIndex((n) => n.nftId === action.payload.nftId);
@@ -76,13 +89,17 @@ export const stakesSlice = createSlice({
         },
         clearSelectedBundle: (state) => {
             state.selectedBundleIdx = null;
+            state.bundleAction = BundleAction.None;
         },
         setUnclaimedRewards: (state, action: PayloadAction<{bundleId: number, unclaimedReward: string}>) => {
             const bundle = state.bundles.find((bundle) => bundle.bundleId === action.payload.bundleId);
             if (bundle) {
                 bundle.unclaimedReward = action.payload.unclaimedReward;
             }
-        }
+        },
+        setBundleAction: (state, action: PayloadAction<BundleAction>) => {
+            state.bundleAction = action.payload;
+        },
     },
 })
 
@@ -93,6 +110,7 @@ export const {
     startLoading, finishLoading,
     selectBundle, clearSelectedBundle,
     setUnclaimedRewards,
+    setBundleAction,
 } = stakesSlice.actions
 
 export default stakesSlice.reducer
