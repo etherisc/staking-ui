@@ -5,11 +5,12 @@ import { grey } from "@mui/material/colors";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
-import { BundleInfo } from "../../backend/bundle_info";
+import { BundleInfo, BundleState } from "../../backend/bundle_info";
 import { formatCurrency } from "../../utils/numbers";
 import Address from "../address";
 import Timestamp from "../timestamp";
 import WithTooltip from "../with_tooltip";
+import dayjs from "dayjs";
 
 interface BundleDetailsProps {
     bundle: BundleInfo;
@@ -44,13 +45,20 @@ export default function BundleDetails(props: BundleDetailsProps) {
         unclaimedRewardStr = "< 0.01";
     }
 
+    function getBundleState(bundle: BundleInfo) {
+        if ((bundle.state === 0 || bundle.state === 1)&& dayjs.unix(bundle.expiryAt).isBefore(dayjs())) {
+            return t(`bundle_state_expired`, { ns: 'common'});
+        }
+        return t('bundle_state_' + state, { ns: 'common'})
+    }
+
     return (<>
         <Grid container spacing={1} data-testid="bundle-details">
             <NameValue name={t('instance_id')} value={<Address address={instanceId} iconColor="secondary.main" />}/>
             <NameValue name={t('instance_name')} value={<>{instanceName}</>}/>
             <NameValue name={t('bundle_id')} value={<>{id} ({nftId})</>}/>
             <NameValue name={t('bundle_name')} value={<>{name}</>}/>
-            <NameValue name={t('bundle_state')} value={<>{t('bundle_state_' + state, { ns: 'common'})}</>}/>
+            <NameValue name={t('bundle_state')} value={<>{getBundleState(props.bundle)}</>}/>
             <NameValue name={t('staked_amount')} value={<>{symbol} {formatCurrency(stakedAmount, decimals)}</>}/>
             <NameValue name={t('unclaimed_reward')} value={<>{symbol} {unclaimedRewardStr}
                 <WithTooltip tooltipText={t('unclaimed_reward_tooltip')}><Typography color={grey[500]} component="span"><FontAwesomeIcon icon={faCircleInfo} className="fa" /></Typography></WithTooltip></>}/>

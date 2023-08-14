@@ -155,6 +155,7 @@ export default function Restake(props: RestakeProps) {
                 suppressFetching={true}
                 displayBundle={(bundle: BundleInfo) => {
                     const hasStakeInBundle = ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && BigNumber.from(nft.stakedAmount).gt(0)).length > 0;
+                    // TODO switch to isStakingAllowed
                     return (bundle.state === BundleState.ACTIVE || bundle.state === BundleState.LOCKED) && ! hasStakeInBundle;
                 }}
                 bundleSelected={(bundle: BundleInfo) => dispatch(restakingBundleSelected(bundle))}

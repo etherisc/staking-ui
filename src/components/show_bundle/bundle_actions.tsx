@@ -31,9 +31,12 @@ export default function BundleActions(props: BundleActionsProps) {
     const isUnstakingAllowed = 
         bundle.unstakingSupported && hasStakeInBundle;
     const isRestakingAllowed =
+        // TODO switch to isStakingAvailable
         bundle.unstakingSupported 
         && hasStakeInBundle 
-        && (bundle.state === BundleState.CLOSED || bundle.state === BundleState.BURNED);
+        // TODO remove this when above is done
+        && ((bundle.state === BundleState.CLOSED || bundle.state === BundleState.BURNED)
+            || ((bundle.state === BundleState.ACTIVE || bundle.state === BundleState.LOCKED) && dayjs.unix(bundle.expiryAt).isBefore(dayjs())));
     // any unclaimed rewards left
     const isClaimRewardsAllowed = bundle.myStakedNfsIds.length > 0 && BigNumber.from(bundle.unclaimedReward).gt(0);
     
