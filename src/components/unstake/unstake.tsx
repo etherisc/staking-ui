@@ -164,7 +164,7 @@ export default function Unstake(props: UnstakeProps) {
                 <Alert severity="info">{t('unstaking_info')}</Alert>
                 <SelectBundle 
                     stakingApi={props.stakingApi}
-                    displayBundle={(bundle: BundleInfo) => bundle.unstakingSupported && BigNumber.from(bundle.myStakedAmount).gt(0) }
+                    displayBundle={(bundle: BundleInfo) => bundle.unstakingAvailable && BigNumber.from(bundle.myStakedAmount).gt(0) }
                     bundleSelected={(bundle: BundleInfo) => dispatch(bundleSelected(bundle))}
                     />
                 </>;

@@ -108,7 +108,7 @@ export default class StakingContract {
         const [tokenSymbol, tokenDecimals] = await this.getToken(token);
 
         const stakingSupported = await this.staking!.isStakingSupported(bundleNftId);
-        const unstakingSupported = await this.staking!.isUnstakingSupported(bundleNftId);
+        const unstakingAvailable = await this.staking!.isUnstakingAvailable(bundleNftId);
         const rewardRate = await this.getRewardRate(bundleNftId);
 
         return {
@@ -133,7 +133,7 @@ export default class StakingContract {
             state: bundleState,
             expiryAt: expiryAt,
             stakingSupported: stakingSupported,
-            unstakingSupported: unstakingSupported,
+            unstakingAvailable: unstakingAvailable,
             lockedAmount: undefined,
             stakeUsage: undefined,
             policies: 0,

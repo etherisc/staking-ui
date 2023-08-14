@@ -159,7 +159,7 @@ describe('When rendering the bundle detail actions', () => {
         expect(screen.getByTestId("button-stake")).toBeDisabled();
     })
 
-    it('the Unstake button is enabled for a unstakeable bundle', async () => {
+    it('the Unstake and Restake button is enabled for a unstakeable bundle', async () => {
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -168,7 +168,7 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingSupported: true,
+            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -191,43 +191,10 @@ describe('When rendering the bundle detail actions', () => {
         );
 
         expect(screen.getByTestId("button-unstake")).toBeEnabled();
+        expect(screen.getByTestId("button-restake")).toBeEnabled();
     })
 
-    it('the Unstake button is disabled for a unstakeable bundle witout nft', async () => {
-        const bundle = {
-            id: "0x1234-1",
-            nftId: "76594322",
-            unclaimedReward: parseEther("3.71").toString(),
-            state: 2,
-            expiryAt: dayjs().add(1, 'day').unix(),
-            myStakedNfsIds: ['1233'],
-            stakingSupported: false,
-            unstakingSupported: true,
-        } as BundleInfo;
-
-        const ownedNfts = [
-            {
-                nftId: '1234',
-                stakedAmount: parseEther("17543").toString(),
-                targetNftId: '76594322',
-            } as NftInfo
-        ];
-
-        const baseDom = renderWithProviders(
-            <SnackbarProvider>
-                <BundleActions
-                    bundle={bundle}
-                    ownedNfts={ownedNfts}
-                    claimRewards={jest.fn()}
-                    />
-            </SnackbarProvider>,
-            {}
-        );
-
-        expect(screen.getByTestId("button-unstake")).toBeDisabled();
-    })
-
-    it('the Unstake button is disabled for a bundle with unstaking disabled', async () => {
+    it('the Unstake and Restake button is disabled for a empty unstakeable bundle', async () => {
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -236,7 +203,42 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingSupported: false,
+            unstakingAvailable: true,
+        } as BundleInfo;
+
+        const ownedNfts = [
+            {
+                nftId: '1234',
+                stakedAmount: parseEther("0").toString(),
+                targetNftId: '76594322',
+            } as NftInfo
+        ];
+
+        const baseDom = renderWithProviders(
+            <SnackbarProvider>
+                <BundleActions
+                    bundle={bundle}
+                    ownedNfts={ownedNfts}
+                    claimRewards={jest.fn()}
+                    />
+            </SnackbarProvider>,
+            {}
+        );
+
+        expect(screen.getByTestId("button-unstake")).toBeDisabled();
+        expect(screen.getByTestId("button-restake")).toBeDisabled();
+    })
+
+    it('the Unstake and Restake button is disabled for a unstakeable bundle witout nft', async () => {
+        const bundle = {
+            id: "0x1234-1",
+            nftId: "76594322",
+            unclaimedReward: parseEther("3.71").toString(),
+            state: 2,
+            expiryAt: dayjs().add(1, 'day').unix(),
+            myStakedNfsIds: ['1233'],
+            stakingSupported: false,
+            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -259,6 +261,42 @@ describe('When rendering the bundle detail actions', () => {
         );
 
         expect(screen.getByTestId("button-unstake")).toBeDisabled();
+        expect(screen.getByTestId("button-restake")).toBeDisabled();
+    })
+
+    it('the Unstake and Restake button is disabled for a bundle with unstaking disabled', async () => {
+        const bundle = {
+            id: "0x1234-1",
+            nftId: "76594322",
+            unclaimedReward: parseEther("3.71").toString(),
+            state: 2,
+            expiryAt: dayjs().add(1, 'day').unix(),
+            myStakedNfsIds: ['1234'],
+            stakingSupported: false,
+            unstakingAvailable: false,
+        } as BundleInfo;
+
+        const ownedNfts = [
+            {
+                nftId: '1234',
+                stakedAmount: parseEther("17543").toString(),
+                targetNftId: '76594322',
+            } as NftInfo
+        ];
+
+        const baseDom = renderWithProviders(
+            <SnackbarProvider>
+                <BundleActions
+                    bundle={bundle}
+                    ownedNfts={ownedNfts}
+                    claimRewards={jest.fn()}
+                    />
+            </SnackbarProvider>,
+            {}
+        );
+
+        expect(screen.getByTestId("button-unstake")).toBeDisabled();
+        expect(screen.getByTestId("button-restake")).toBeDisabled();
     })
 
     it('the Claim rewards button is enabled for a bundle that has an nft and accumulated rewards', async () => {
@@ -270,7 +308,7 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingSupported: true,
+            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -304,7 +342,7 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: [] as string[],
             stakingSupported: false,
-            unstakingSupported: true,
+            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -327,74 +365,6 @@ describe('When rendering the bundle detail actions', () => {
         );
 
         expect(screen.getByTestId("button-claim-rewards")).toBeDisabled();
-    })
-
-    it('the Restake button is enabled', async () => {
-        const bundle = {
-            id: "0x1234-1",
-            nftId: "76594322",
-            unclaimedReward: parseEther("3.71").toString(),
-            state: 2,
-            expiryAt: dayjs().add(1, 'day').unix(),
-            myStakedNfsIds: ['1234'],
-            stakingSupported: false,
-            unstakingSupported: true,
-        } as BundleInfo;
-
-        const ownedNfts = [
-            {
-                nftId: '1234',
-                stakedAmount: parseEther("17543").toString(),
-                targetNftId: '76594322',
-            } as NftInfo
-        ];
-
-        const baseDom = renderWithProviders(
-            <SnackbarProvider>
-                <BundleActions
-                    bundle={bundle}
-                    ownedNfts={ownedNfts}
-                    claimRewards={jest.fn()}
-                    />
-            </SnackbarProvider>,
-            {}
-        );
-
-        expect(screen.getByTestId("button-restake")).toBeEnabled();
-    })
-
-    it('the Restake button is disabled for locked bundle', async () => {
-        const bundle = {
-            id: "0x1234-1",
-            nftId: "76594322",
-            unclaimedReward: parseEther("3.71").toString(),
-            state: 1,
-            expiryAt: dayjs().add(1, 'day').unix(),
-            myStakedNfsIds: ['1234'],
-            stakingSupported: false,
-            unstakingSupported: false,
-        } as BundleInfo;
-
-        const ownedNfts = [
-            {
-                nftId: '1234',
-                stakedAmount: parseEther("17543").toString(),
-                targetNftId: '76594322',
-            } as NftInfo
-        ];
-
-        const baseDom = renderWithProviders(
-            <SnackbarProvider>
-                <BundleActions
-                    bundle={bundle}
-                    ownedNfts={ownedNfts}
-                    claimRewards={jest.fn()}
-                    />
-            </SnackbarProvider>,
-            {}
-        );
-
-        expect(screen.getByTestId("button-restake")).toBeDisabled();
     })
 
 });
