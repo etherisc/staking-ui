@@ -13,6 +13,15 @@ The repository includes a vscode _devcontainer_ that installs all the necessary 
 Create a `.env.local` file in the root directory of the project. Have a look a the `.env.example_local` file for the required environment variables of a setup running again a local ganache chain. The minimum required variables are described below
 Then run the application in dev mode with `npm run dev`.
 
+## Dependencies
+
+### Redis
+
+The application uses redis to store information. The redis modules search and JSON need to enabled. 
+The application expects a environment variables called `REDIS_URL` to be set. The application will use the url`'redis://redis:6379'` if no connection is specified in the `REDIS_URL`.
+
+The docker image `redis/redis-stack` can be used to run a redis instance with the required modules enabled.
+
 ## Configuration
 
 ## General config
@@ -105,6 +114,20 @@ dokku proxy:ports-add goerli-staking http:80:3000
 dokku proxy:ports-add goerli-staking https:443:3000
 dokku proxy:ports-remove goerli-staking http:80:5000
 
+# create redis service
+dokku redis:create staking-mumbai-redis -i redis/redis-stack-server -I 7.0.6-RC8
+
+# now you need to manually enable redissearch and redisjson modules in the redis config (replace 'sstaking-mumbai-redis' below with correct service name)
+vi /var/lib/dokku/services/redis/staking-mumbai-redis/config/redis.conf
+# scroll down to the section 'MODULES' and paste the following two lines (remove the # in front of the lines)
+# loadmodule /opt/redis-stack/lib/redisearch.so
+# loadmodule /opt/redis-stack/lib/rejson.so
+
+# restart redis service
+dokku redis:restart staking-mumbai-redis
+# link the redis service to the app
+dokku redis:link staking-mumbai-redis mumbai-staking
+
 
 # now push deployment via git 
 # 1. add new git remote 'git remote add dokku-goerli dokku@<host>:goerli-staking'
@@ -119,10 +142,21 @@ dokku config:set goerli-depeg BACKEND_CHAIN_RPC_URL=<chain rpc url>
 # app should be ready now - open in browser
 ```
 
+#### Dokku redis debug connection
+
+Example using service _depeg-mumbai-redis_:
+
+1. Expose redis port on dokku `dokku redis:expose depeg-mumbai-redis`
+1. Find the exposed port in the output above or via `dokku redis:info depeg-mumbai-redis`
+1. Open ssh tunnel with dokku redis port forward `ssh -L 6479:localhost:15956 user@host`
+1. Now connect with redis client of choice (e.g. RedisInsight) using `localhost:6479` as host and the password mentioned in redis info
+1. When finished, close the ssh tunnel by logging out of the ssh shell and unexpose the redis port `dokku redis:unexpose depeg-mumbai-redis`
+
 #### Dokku documentation links: 
 
 - https://dokku.com/docs/deployment/application-deployment/
 - https://dokku.com/docs/advanced-usage/docker-options/
 - https://dokku.com/docs/configuration/domains/
 - https://github.com/dokku/dokku-redis
+- https://hub.docker.com/r/redis/redis-stack
 
