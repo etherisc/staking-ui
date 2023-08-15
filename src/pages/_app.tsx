@@ -29,6 +29,7 @@ import { WALLET_CONNECT_PROJECT_ID, ethereumClient, wagmiConfig } from '../confi
 import { BundleAction, clearSelectedBundle, setBundleAction } from '../redux/slices/stakes';
 import { bundleUnselected } from '../redux/slices/staking';
 import { removeSigner } from '../utils/chain';
+import { useRouter } from 'next/router';
 config.autoAddCss = false; /* eslint-disable import/first */
 
 export function App(appProps: AppProps) {
@@ -57,6 +58,7 @@ export default appWithTranslation(App);
 export function AppWithBlockchainConnection(appProps: AppProps) {
   const { t } = useTranslation('common');
   const dispatch = useDispatch();
+  const router = useRouter();
   const provider = useSelector((state: RootState) => state.chain.provider);
 
   if (provider != undefined) {
@@ -90,7 +92,10 @@ export function AppWithBlockchainConnection(appProps: AppProps) {
   }
 
   let items = [
-    [t('nav.link.stakes'), '/', () => dispatch(clearSelectedBundle()), faCubesStacked],
+    [t('nav.link.stakes'), '/', () => { 
+      dispatch(clearSelectedBundle());
+      router.push("/", undefined, { shallow: true });
+    }, faCubesStacked],
     [t('nav.link.stake'), '/stake', () => dispatch(bundleUnselected()), faRightToBracket],
     [t('nav.link.unstake'), '/unstake', () => dispatch(bundleUnselected()), faRightFromBracket],
   ];
