@@ -62,7 +62,7 @@ export default function Stakes(props: StakingProps) {
         dispatch(setPendingFeeless(hasFeeless));
     }
 
-    console.log("slidx", bundles, selectedBundleIdx, bundles[selectedBundleIdx!]);
+    // console.log("slidx", bundles, selectedBundleIdx, bundles[selectedBundleIdx!]);
     if (showBundleAction === BundleAction.Restake) {
         return <Restake stakingApi={props.stakingApi}/>;
     } else if (showBundleAction === BundleAction.ShowDetails) {
