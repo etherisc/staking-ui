@@ -32,8 +32,8 @@ export default function Stakes(props: StakingProps) {
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
         const address = await signer.getAddress();
-        dispatch(startLoading());
         dispatch(reset());
+        dispatch(startLoading());
         await props.stakingApi.retrieveBundles();
         await checkForPendingFeelessTx(address);
         dispatch(finishLoading());
