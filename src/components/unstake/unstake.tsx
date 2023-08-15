@@ -38,6 +38,7 @@ export default function Unstake(props: UnstakeProps) {
     const activeStep = useSelector((state: RootState) => state.staking.step);
     const stakeingBundle = useSelector((state: RootState) => state.staking.stakeingBundle);
     const bundles = useSelector((state: RootState) => state.stakes.bundles);
+    const ownedNfts = useSelector((state: RootState) => state.stakes.ownedNfts);
     
     const currency = props.stakingApi.currency();
 
@@ -164,7 +165,7 @@ export default function Unstake(props: UnstakeProps) {
                 <Alert severity="info">{t('unstaking_info')}</Alert>
                 <SelectBundle 
                     stakingApi={props.stakingApi}
-                    displayBundle={(bundle: BundleInfo) => bundle.unstakingAvailable && BigNumber.from(bundle.myStakedAmount).gt(0) }
+                    displayBundle={(bundle: BundleInfo) => ownedNfts.filter(nft => nft.targetNftId === bundle.nftId && nft.unstakingAvailable === true).length > 0 }
                     bundleSelected={(bundle: BundleInfo) => dispatch(bundleSelected(bundle))}
                     />
                 </>;

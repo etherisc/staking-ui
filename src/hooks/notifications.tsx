@@ -28,7 +28,7 @@ export default function useNotifications() {
         try {
             const body = JSON.stringify({
                 message: message,
-                stack: details?.toString(),
+                stack: details,
                 action: action || 'unknown',
                 client_timestamp : Math.floor(Date.now()),
             });

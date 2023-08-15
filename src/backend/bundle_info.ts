@@ -24,8 +24,6 @@ export type BundleInfo = {
     state: BundleState;
     expiryAt: number;
     stakingSupported: boolean;
-    // field available from V03 onwards
-    unstakingAvailable: boolean;
     lockedAmount: string | undefined;
     stakeUsage: StakeUsage;
     rewardRate: number;

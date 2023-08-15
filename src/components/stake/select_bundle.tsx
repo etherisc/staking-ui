@@ -38,8 +38,8 @@ export default function SelectBundle(props: SelectBundleProps) {
         }
 
         if (isConnected) {
-            dispatch(startLoading());
             dispatch(reset());
+            dispatch(startLoading());
             getBundles();
         } else {
             dispatch(reset());

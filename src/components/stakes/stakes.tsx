@@ -32,8 +32,8 @@ export default function Stakes(props: StakingProps) {
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
         const address = await signer.getAddress();
-        dispatch(startLoading());
         dispatch(reset());
+        dispatch(startLoading());
         await props.stakingApi.retrieveBundles();
         await checkForPendingFeelessTx(address);
         dispatch(finishLoading());
@@ -62,7 +62,7 @@ export default function Stakes(props: StakingProps) {
         dispatch(setPendingFeeless(hasFeeless));
     }
 
-    console.log("slidx", bundles, selectedBundleIdx, bundles[selectedBundleIdx!]);
+    // console.log("slidx", bundles, selectedBundleIdx, bundles[selectedBundleIdx!]);
     if (showBundleAction === BundleAction.Restake) {
         return <Restake stakingApi={props.stakingApi}/>;
     } else if (showBundleAction === BundleAction.ShowDetails) {
