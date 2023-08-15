@@ -168,7 +168,6 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -176,6 +175,7 @@ describe('When rendering the bundle detail actions', () => {
                 nftId: '1234',
                 stakedAmount: parseEther("17543").toString(),
                 targetNftId: '76594322',
+                unstakingAvailable: true,
             } as NftInfo
         ];
 
@@ -203,7 +203,6 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -211,6 +210,7 @@ describe('When rendering the bundle detail actions', () => {
                 nftId: '1234',
                 stakedAmount: parseEther("0").toString(),
                 targetNftId: '76594322',
+                unstakingAvailable: true,
             } as NftInfo
         ];
 
@@ -238,7 +238,6 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1233'],
             stakingSupported: false,
-            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -246,6 +245,7 @@ describe('When rendering the bundle detail actions', () => {
                 nftId: '1234',
                 stakedAmount: parseEther("17543").toString(),
                 targetNftId: '76594322',
+                unstakingAvailable: true,
             } as NftInfo
         ];
 
@@ -273,7 +273,6 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingAvailable: false,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -281,6 +280,7 @@ describe('When rendering the bundle detail actions', () => {
                 nftId: '1234',
                 stakedAmount: parseEther("17543").toString(),
                 targetNftId: '76594322',
+                unstakingAvailable: false
             } as NftInfo
         ];
 
@@ -308,7 +308,6 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: ['1234'],
             stakingSupported: false,
-            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [
@@ -342,7 +341,6 @@ describe('When rendering the bundle detail actions', () => {
             expiryAt: dayjs().add(1, 'day').unix(),
             myStakedNfsIds: [] as string[],
             stakingSupported: false,
-            unstakingAvailable: true,
         } as BundleInfo;
 
         const ownedNfts = [

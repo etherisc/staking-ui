@@ -23,17 +23,13 @@ export default function BundleActions(props: BundleActionsProps) {
     const bundle = props.bundle;
 
     const hasStakeInBundle = props.ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && BigNumber.from(nft.stakedAmount).gt(0)).length > 0;
+    const unstakingAvailable = props.ownedNfts.filter(nft => bundle.myStakedNfsIds.includes(nft.nftId) && nft.unstakingAvailable).length > 0;
 
     const isStakingAllowed = 
         bundle.stakingSupported 
         && (bundle.state === 0 || bundle.state === 1)
         && bundle.expiryAt > dayjs().unix();
-    const isUnstakingAllowed = 
-        bundle.unstakingAvailable 
-        && hasStakeInBundle;
-    const isRestakingAllowed =
-        bundle.unstakingAvailable 
-        && hasStakeInBundle;
+    const isUnstakingAllowed = unstakingAvailable && hasStakeInBundle;
     // any unclaimed rewards left
     const isClaimRewardsAllowed = bundle.myStakedNfsIds.length > 0 && BigNumber.from(bundle.unclaimedReward).gt(0);
     
@@ -90,7 +86,7 @@ export default function BundleActions(props: BundleActionsProps) {
                 onClick={restake}
                 variant="contained" 
                 sx={{ minWidth: '12rem' }}
-                disabled={!isRestakingAllowed}
+                disabled={!isUnstakingAllowed} // restaking is possible when unstaking is allowed
                 data-testid="button-restake"
                 >{t('action.restake')}</Button>
         </Grid>
