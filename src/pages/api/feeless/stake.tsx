@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { redisClient } from "../../../utils/redis";
 import { getPendingStakeRepository } from "../../../utils/feeless/pending_stake";
+import { EntityId } from "redis-om";
 
 export const STREAM_KEY = process.env.REDIS_QUEUE_STREAM_KEY ?? "feeless:signatures";
 
@@ -38,7 +39,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
     // store pending application in redis
     const repo = await getPendingStakeRepository();
-    await repo.save({
+    const savedStake = await repo.save({
         owner: owner,
         targetNftId: targetNftId,
         dipAmount: dipAmount,
@@ -47,15 +48,20 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         transactionHash: null,
         timestamp: new Date(),
     });
-    console.log("created pending stake", signatureId);
+    const entityId = savedStake[EntityId];
+    if (! entityId) {
+        res.status(500).send("Failed to save pending stake");
+        return;
+    }
+    console.log("created pending stake", signatureId, entityId);
 
     // push message to stream (queue)
     const redisId = await redisClient.xAdd(STREAM_KEY, "*", 
     { 
-        "signatureId": signatureId,
+        "entityId": entityId,
         "type": "stake",
     });
-    console.log("added signatureId of stake to queue", redisId, signatureId);
+    console.log("added stake to queue", redisId, entityId, signatureId);
     
     res.status(200).send(redisId);
 }
