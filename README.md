@@ -115,7 +115,7 @@ dokku proxy:ports-add goerli-staking https:443:3000
 dokku proxy:ports-remove goerli-staking http:80:5000
 
 # create redis service
-dokku redis:create staking-mumbai-redis -i redis/redis-stack-server -I 7.0.6-RC8
+dokku redis:create staking-mumbai-redis -i redis/redis-stack-server -I 7.2.0-v0
 
 # now you need to manually enable redissearch and redisjson modules in the redis config (replace 'sstaking-mumbai-redis' below with correct service name)
 vi /var/lib/dokku/services/redis/staking-mumbai-redis/config/redis.conf
