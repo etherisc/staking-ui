@@ -267,6 +267,7 @@ export default function BundleStakes(props: BundleStakesProps) {
                         paginationModel: { pageSize: 10, page: 0 },
                     },
                 }}
+                sortingOrder={['desc', 'asc']}
                 disableRowSelectionOnClick={true}
                 disableColumnMenu={true}
                 columnBuffer={8}
