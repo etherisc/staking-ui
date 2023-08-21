@@ -91,22 +91,21 @@ describe('When rendering bundle stakes', () => {
         const rows = await screen.findAllByRole("row");
 
         // row 0 is header
-
         expect(rows[1]).toHaveTextContent("0x1234…efgh");
-        expect(rows[1]).toHaveTextContent("Bundle 2");
-        expect(rows[1]).toHaveTextContent("DIP 3,000.00");
-        expect(rows[1]).toHaveTextContent("USDT 300.00");
-        expect(rows[1]).toHaveTextContent("USDT 4,000.00");
-        expect(rows[1]).toHaveTextContent("bundle_state_expired");
-        expect(rows[1]).toHaveTextContent(moment.unix(bundle2ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
+        expect(rows[1]).toHaveTextContent("Bundle 1");
+        expect(rows[1]).toHaveTextContent("DIP 1,000.00");
+        expect(rows[1]).toHaveTextContent("USDT 100.00");
+        expect(rows[1]).toHaveTextContent("USDT 2,000.00");
+        expect(rows[1]).toHaveTextContent("bundle_state_0");
+        expect(rows[1]).toHaveTextContent(moment.unix(bundle1ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
 
         expect(rows[2]).toHaveTextContent("0x1234…efgh");
-        expect(rows[2]).toHaveTextContent("Bundle 1");
-        expect(rows[2]).toHaveTextContent("DIP 1,000.00");
-        expect(rows[2]).toHaveTextContent("USDT 100.00");
-        expect(rows[2]).toHaveTextContent("USDT 2,000.00");
-        expect(rows[2]).toHaveTextContent("bundle_state_0");
-        expect(rows[2]).toHaveTextContent(moment.unix(bundle1ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
+        expect(rows[2]).toHaveTextContent("Bundle 2");
+        expect(rows[2]).toHaveTextContent("DIP 3,000.00");
+        expect(rows[2]).toHaveTextContent("USDT 300.00");
+        expect(rows[2]).toHaveTextContent("USDT 4,000.00");
+        expect(rows[2]).toHaveTextContent("bundle_state_expired");
+        expect(rows[2]).toHaveTextContent(moment.unix(bundle2ExpirationAt).utc().format('YYYY-MM-DD HH:mm UTC'));
     })
 
     it('bundles can be filtered to staked bundles', async () => {
@@ -167,8 +166,8 @@ describe('When rendering bundle stakes', () => {
         const rows = await screen.findAllByRole("row");
 
         // row 0 is header
-        expect(rows[1]).toHaveTextContent("Bundle 2");
-        expect(rows[2]).toHaveTextContent("0x1234…efgh");
+        expect(rows[1]).toHaveTextContent("0x1234…efgh");
+        expect(rows[2]).toHaveTextContent("Bundle 2");
         
         // now click filter switch
         await act(async () => {
