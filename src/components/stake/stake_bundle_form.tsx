@@ -155,7 +155,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             <TextField 
                                 label={t('supportedAmount')}
                                 fullWidth
-                                disabled={props.formDisabled}
+                                disabled={true}
                                 variant="outlined"
                                 {...field} 
                                 InputProps={{
@@ -174,7 +174,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             <TextField 
                                 label={t('reward_rate')}
                                 fullWidth
-                                disabled={props.formDisabled}
+                                disabled={true}
                                 variant="outlined"
                                 {...field} 
                                 InputProps={{
@@ -193,7 +193,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             <TextField 
                                 label={t('expected_reward')}
                                 fullWidth
-                                disabled={props.formDisabled}
+                                disabled={true}
                                 variant="outlined"
                                 {...field} 
                                 InputProps={{

@@ -90,8 +90,9 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                             <TextField 
                                 label={t('restakedAmount')}
                                 fullWidth
-                                variant={INPUT_VARIANT}
+                                variant="outlined"
                                 {...field} 
+                                disabled={true}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">{currency}</InputAdornment>,
                                     readOnly: true
@@ -114,6 +115,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                                 label={t('reward_rate')}
                                 fullWidth
                                 variant="outlined"
+                                disabled={true}
                                 {...field} 
                                 InputProps={{
                                     endAdornment: <InputAdornment position="end">%</InputAdornment>,
