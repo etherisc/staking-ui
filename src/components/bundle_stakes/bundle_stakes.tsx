@@ -159,8 +159,8 @@ export default function BundleStakes(props: BundleStakesProps) {
                     return t(`bundle_state_expired`, { ns: 'common'});
                 }
                 return t(`bundle_state_${bundle.state}`, { ns: 'common'});
-            }
-            
+            },
+            sortComparator: (v1: BundleInfo, v2: BundleInfo) => v1.state - v2.state,
         },
         { 
             field: 'expiryAt', headerName: t('table.header.expiryAt'), flex: 0.7,
@@ -171,7 +171,9 @@ export default function BundleStakes(props: BundleStakesProps) {
                 }
                 return (<Timestamp at={params.value!.expiryAt} />);
             },
-            sortComparator: (v1: BundleInfo, v2: BundleInfo) => v1?.expiryAt - v2?.expiryAt,
+            sortComparator: (v1: BundleInfo, v2: BundleInfo) => {
+                return v2?.expiryAt - v1?.expiryAt;
+            }
         },
         { 
             field: 'actions', 
