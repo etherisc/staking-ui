@@ -14,7 +14,7 @@ interface StakeBundleProps {
 
 export default function StakeBundle(props: StakeBundleProps) {
     return (<>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid container spacing={2} sx={{ mt: 2, maxWidth: 'lg' }}>
             <Grid item xs={12} md={6}>
                 <BundleDetails bundle={props.bundle}  currency={props.stakingApi.currency()} decimals={props.stakingApi.currencyDecimals()} />
             </Grid>

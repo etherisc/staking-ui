@@ -30,6 +30,9 @@ export const etheriscTheme = createTheme({
             contrastText: "#fff"
         },
     },
+    typography: {
+        fontSize: 16,
+    },
 });
 
 export const INPUT_VARIANT = 'filled';

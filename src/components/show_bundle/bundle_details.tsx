@@ -52,7 +52,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
         return t('bundle_state_' + state, { ns: 'common'})
     }
 
-    return (<>
+    return (
         <Grid container spacing={1} data-testid="bundle-details">
             <NameValue name={t('instance_id')} value={<Address address={instanceId} iconColor="secondary.main" />}/>
             <NameValue name={t('instance_name')} value={<>{instanceName}</>}/>
@@ -69,7 +69,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
             <NameValue name={t('my_supported_capital')} value={<>{supportingToken} {formatCurrency(mySupportedCapital, supportingTokenDecimals)}</>}/>
             <NameValue name={t('active_until')} value={<Timestamp at={expiryAt}/>}/>
         </Grid>
-    </>);
+    );
 }
 
 function NameValue(props: { name: string, value: JSX.Element }) {
