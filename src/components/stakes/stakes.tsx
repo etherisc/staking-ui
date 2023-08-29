@@ -7,6 +7,7 @@ import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import useNotifications from "../../hooks/notifications";
 import { BundleAction, finishLoading, reset, selectBundle, setBundleAction, setPendingFeeless, startLoading } from "../../redux/slices/stakes";
 import { RootState } from "../../redux/store";
 import { ga_event } from "../../utils/google_analytics";
@@ -29,14 +30,25 @@ export default function Stakes(props: StakingProps) {
     const selectedBundleIdx = useSelector((state: RootState) => state.stakes.selectedBundleIdx);
     const showBundleAction = useSelector((state: RootState) => state.stakes.bundleAction);
     const pendingFeeless = useSelector((state: RootState) => state.stakes.pendingFeeless);
+    const { showPersistentErrorSnackbarWithCopyDetails } = useNotifications();
 
     const retrieveStakes = useCallback(async (signer: Signer) => {
-        const address = await signer.getAddress();
-        dispatch(reset());
-        dispatch(startLoading());
-        await props.stakingApi.retrieveBundles();
-        await checkForPendingFeelessTx(address);
-        dispatch(finishLoading());
+        try {
+            const address = await signer.getAddress();
+            dispatch(reset());
+            dispatch(startLoading());
+            await props.stakingApi.retrieveBundles();
+            await checkForPendingFeelessTx(address);
+            dispatch(finishLoading());
+        } catch (e) {
+            if (e instanceof Error) {
+                showPersistentErrorSnackbarWithCopyDetails(
+                    t('error.blockchain_fetch_failed', { ns: 'common', error: e.message }),
+                    e.message,
+                    "stake_approval",
+                );
+            }
+        }
     }, [dispatch, props.stakingApi]);
 
     useEffect(() => {

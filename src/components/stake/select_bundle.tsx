@@ -1,11 +1,11 @@
 import { Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
+import useNotifications from "../../hooks/notifications";
 import { finishLoading, reset, startLoading } from "../../redux/slices/stakes";
-import { bundleSelected } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import BundleStakes from "../bundle_stakes/bundle_stakes";
 
@@ -26,6 +26,7 @@ export default function SelectBundle(props: SelectBundleProps) {
     const bundles = useSelector((state: RootState) => state.stakes.bundles);
     const isLoadingBundles = useSelector((state: RootState) => state.stakes.isLoadingBundles);
     const dispatch = useDispatch();
+    const { showPersistentErrorSnackbarWithCopyDetails } = useNotifications();
 
     useEffect(() => {
         async function getBundles() {
@@ -37,12 +38,22 @@ export default function SelectBundle(props: SelectBundleProps) {
             return;
         }
 
-        if (isConnected) {
-            dispatch(reset());
-            dispatch(startLoading());
-            getBundles();
-        } else {
-            dispatch(reset());
+        try {
+            if (isConnected) {
+                dispatch(reset());
+                dispatch(startLoading());
+                getBundles();
+            } else {
+                dispatch(reset());
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                showPersistentErrorSnackbarWithCopyDetails(
+                    t('error.blockchain_fetch_failed', { ns: 'common', error: e.message }),
+                    e.message,
+                    "stake_approval",
+                );
+            }
         }
     }, [signer, isConnected, props.stakingApi, dispatch]);
 

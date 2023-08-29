@@ -44,6 +44,7 @@
     "approval_failed": "Setting allowance permission in wallet app failed. Reason: {{error}}",
     "transaction_failed": "The blockchain transaction failed. Reason: {{error}}",
     "allowance_revoke_notice": "Due to the failed transaction, there might be a pending allowance on your wallet. For more information on this, please have a look",
+    "blockchain_fetch_failed": "Unable to fetch data from blockchain",
     "field": {
       "required": "This field is required",
       "walletType": "This field must contain a wallet address (0x...)",

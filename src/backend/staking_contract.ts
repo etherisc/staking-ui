@@ -8,6 +8,7 @@ import { TransactionFailedError } from "../utils/error";
 import { BundleInfo } from "./bundle_info";
 import { InstanceInfo } from "./instance_info";
 import { NftInfo, NftType } from "./nft_info";
+import { ErrorReply } from "redis";
 
 /** get from https://github.com/etherisc/registry-contracts/blob/develop/contracts/registry/ChainRegistryV01.sol#L27 */
 const OBJECT_TYPE_UNDEFINED = 0;
