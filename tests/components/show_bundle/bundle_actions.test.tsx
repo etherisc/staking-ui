@@ -26,7 +26,17 @@ jest.mock('next/router', () => ({
     useRouter: jest.fn()
 }))
 
+const OLD_ENV = process.env;
 describe('When rendering the bundle detail actions', () => {
+    beforeEach(() => {
+        jest.resetModules() // Most important - it clears the cache
+        process.env = { ...OLD_ENV }; // Make a copy
+    });
+
+    afterAll(() => {
+        process.env = OLD_ENV; // Restore old environment
+    });
+
     it('the Stake button is enabled for a stakeable bundle', async () => {
         const bundle = {
             id: "0x1234-1",
@@ -160,6 +170,8 @@ describe('When rendering the bundle detail actions', () => {
     })
 
     it('the Unstake and Restake button is enabled for a unstakeable bundle', async () => {
+        process.env.NEXT_PUBLIC_FEATURE_RESTAKING = 'true';
+
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -194,7 +206,46 @@ describe('When rendering the bundle detail actions', () => {
         expect(screen.getByTestId("button-restake")).toBeEnabled();
     })
 
+    it('the Restake button is not shown if feature toggle for restaking is not active', async () => {
+        process.env.NEXT_PUBLIC_FEATURE_RESTAKING = 'false';
+
+        const bundle = {
+            id: "0x1234-1",
+            nftId: "76594322",
+            unclaimedReward: parseEther("3.71").toString(),
+            state: 2,
+            expiryAt: dayjs().add(1, 'day').unix(),
+            myStakedNfsIds: ['1234'],
+            stakingSupported: false,
+        } as BundleInfo;
+
+        const ownedNfts = [
+            {
+                nftId: '1234',
+                stakedAmount: parseEther("17543").toString(),
+                targetNftId: '76594322',
+                unstakingAvailable: true,
+            } as NftInfo
+        ];
+
+        const baseDom = renderWithProviders(
+            <SnackbarProvider>
+                <BundleActions
+                    bundle={bundle}
+                    ownedNfts={ownedNfts}
+                    claimRewards={jest.fn()}
+                    />
+            </SnackbarProvider>,
+            {}
+        );
+
+        expect(screen.getByTestId("button-unstake")).toBeEnabled();
+        expect(screen.queryByTestId("button-restake")).toBeNull();
+    })
+
     it('the Unstake and Restake button is disabled for a empty unstakeable bundle', async () => {
+        process.env.NEXT_PUBLIC_FEATURE_RESTAKING = 'true';
+
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -230,6 +281,8 @@ describe('When rendering the bundle detail actions', () => {
     })
 
     it('the Unstake and Restake button is disabled for a unstakeable bundle witout nft', async () => {
+        process.env.NEXT_PUBLIC_FEATURE_RESTAKING = 'true';
+
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -265,6 +318,8 @@ describe('When rendering the bundle detail actions', () => {
     })
 
     it('the Unstake and Restake button is disabled for a bundle with unstaking disabled', async () => {
+        process.env.NEXT_PUBLIC_FEATURE_RESTAKING = 'true';
+
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",

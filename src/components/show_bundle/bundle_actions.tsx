@@ -81,14 +81,16 @@ export default function BundleActions(props: BundleActionsProps) {
                 data-testid="button-claim-rewards"
                 >{t('action.claim_rewards')}</Button>
         </Grid>
-        <Grid item xs={12}>
-            <Button 
-                onClick={restake}
-                variant="contained" 
-                sx={{ minWidth: '12rem' }}
-                disabled={!isUnstakingAllowed} // restaking is possible when unstaking is allowed
-                data-testid="button-restake"
-                >{t('action.restake')}</Button>
-        </Grid>
+        { process.env.NEXT_PUBLIC_FEATURE_RESTAKING === 'true' &&
+            <Grid item xs={12}>
+                <Button 
+                    onClick={restake}
+                    variant="contained" 
+                    sx={{ minWidth: '12rem' }}
+                    disabled={!isUnstakingAllowed} // restaking is possible when unstaking is allowed
+                    data-testid="button-restake"
+                    >{t('action.restake')}</Button>
+            </Grid>
+        }
     </Grid>);
 }
