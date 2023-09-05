@@ -13,7 +13,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION !== 'true') {
+    if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION !== 'true' || process.env.NEXT_PUBLIC_FEATURE_RESTAKING !== 'true') {
         res.status(404).send('Unsupported feature');
     } else if (req.method === 'POST') {
         await handlePost(req, res);
