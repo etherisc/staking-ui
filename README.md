@@ -68,7 +68,7 @@ NEXT_FAUCET_SEND_TESTCOIN=true
 
 ```
 docker build -t staking-ui --build-arg INSTANCE=mumbai .
-docker run --rm -p 3003:3000 staking-ui
+docker run --rm -p 3003:3000 -e HOSTNAME=0.0.0.0 staking-ui
 ```
 
 open browser at http://localhost:3003
@@ -138,6 +138,7 @@ dokku letsencrypt:enable goerli-staking
 
 # configure backend chain rpc url
 dokku config:set goerli-depeg BACKEND_CHAIN_RPC_URL=<chain rpc url>
+dokku config:set goerli-depeg HOSTNAME=0.0.0.0
 
 # app should be ready now - open in browser
 ```
