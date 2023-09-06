@@ -15,8 +15,8 @@ export default async function handler(
 ) {
     if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION !== 'true') {
         res.status(200).send({
-            pendingRestake: 0,
-            pendingStake: 0,
+            pendingRestake: false,
+            pendingStake: false,
         });
     } else if (req.method === 'GET') {
         await handleGet(req, res);
