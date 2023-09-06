@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import useNotifications from "../../hooks/notifications";
-import { BundleAction, selectBundle, setBundleAction } from "../../redux/slices/stakes";
+import { BundleAction, setBundleAction } from "../../redux/slices/stakes";
 import { bundleSelected, resetForm, setStep } from "../../redux/slices/staking";
 import { RootState } from "../../redux/store";
 import { updateAccountBalance } from "../../utils/chain";

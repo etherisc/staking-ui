@@ -1,19 +1,18 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { fetchStakeInfoData } from "./dashboard_data_fetch";
-import { useEffect } from "react";
 import { Box, Card, CardContent, Grid, LinearProgress, Typography } from "@mui/material";
-import { DataGrid, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
-import { formatAmount } from "../../utils/format";
-import { formatEther, formatUnits } from "ethers/lib/utils";
-import { formatCurrency } from "../../utils/numbers";
+import { DataGrid, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import moment from "moment";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 import { bigNumberComparator } from "../../utils/bignumber";
+import { formatAmount } from "../../utils/format";
+import { fetchStakeInfoData } from "./dashboard_data_fetch";
 
 export default function StakingData() {
     const signer = useSelector((state: RootState) => state.chain.signer);
     const numStakes = useSelector((state: RootState) => state.dashboard.numStakes);
+    const numStakesWithStake = useSelector((state: RootState) => state.dashboard.stakes).filter((s) => BigNumber.from(s.stakeBalance).gt(0)).length;
     const stakes = useSelector((state: RootState) => state.dashboard.stakes);
     const isLoading = useSelector((state: RootState) => state.dashboard.isLoadingStakes);
     const totalStaked = useSelector((state: RootState) => state.dashboard.totalStaked);
@@ -95,10 +94,10 @@ export default function StakingData() {
                 <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Total stakes
+                        Number of stakes (Total / With stake amount &gt; DIP 0)
                         </Typography>
                         <Typography variant="h5" component="div">
-                        {numStakes}
+                        {numStakes} / {numStakesWithStake}
                         </Typography>
                     </CardContent>
                 </Card>
