@@ -4,6 +4,8 @@ import { parseEther, parseUnits } from 'ethers/lib/utils';
 import { SnackbarProvider } from 'notistack';
 import { BundleInfo } from '../../../src/backend/bundle_info';
 import BundleDetails from '../../../src/components/show_bundle/bundle_details';
+import dayjs, { unix } from 'dayjs';
+import { timeStamp } from 'console';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -20,6 +22,7 @@ jest.mock('react-i18next', () => ({
 
 describe('When displaying the bundle detail component', () => {
     it('all bundle data is correctly formatted', async () => {
+        const expirationDate = dayjs().add(1, 'day').unix();
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -37,7 +40,7 @@ describe('When displaying the bundle detail component', () => {
             supportingToken: "USDT",
             supportingTokenDecimals: 6,
             state: 0,
-            expiryAt: 1694349476,
+            expiryAt: expirationDate,
             rewardRate: 0.1234,
         } as BundleInfo;
 
@@ -63,7 +66,7 @@ describe('When displaying the bundle detail component', () => {
         expect(screen.getByText('USDT 2,345.00')).toBeInTheDocument();
         expect(screen.getByText('USDT 1,754.30')).toBeInTheDocument();
         expect(screen.getByText('USDT 2,365.40')).toBeInTheDocument();
-        expect(screen.getByTestId("bundle-details")).toHaveTextContent('2023-09-10 12:37 UTC'); // valid until
+        expect(screen.getByTestId("bundle-details")).toHaveTextContent(unix(expirationDate).format('YYYY-MM-DD HH:mm UTC')); // valid until
     })
 
     it('the unclaimed reward is displayed as < 0.01 if its very small', async () => {
