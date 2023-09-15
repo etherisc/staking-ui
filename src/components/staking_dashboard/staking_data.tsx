@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, FormControlLabel, Grid, LinearProgress, Switch, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, FormControlLabel, Grid, LinearProgress, Switch, Typography } from "@mui/material";
 import { DataGrid, GridToolbarContainer, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import moment from "moment";
@@ -10,6 +10,7 @@ import { formatAmount } from "../../utils/format";
 import { fetchStakeInfoData } from "./dashboard_data_fetch";
 import React from "react";
 import { StakeData } from "../../backend/stake_data";
+import Link from "next/link";
 
 
 export default function StakingData() {
@@ -93,6 +94,7 @@ export default function StakingData() {
     ];
 
     function GridToolbar() {
+        const stakingContractUrl = process.env.NEXT_PUBLIC_CHAIN_TOKEN_BLOCKEXPLORER_URL + "/address/" + process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS;
         return (
             <GridToolbarContainer >
                 <Box sx={{ flexGrow: 1 }}>
@@ -108,6 +110,13 @@ export default function StakingData() {
                         label={'Show all (including empty)'} />
                 </Box>
                 {/* aligned right beyond here */}
+                <Box sx={{ px: 1 }}>
+                    <Button variant="text" sx={{ p: 0, ml: 1 }} href={stakingContractUrl!} target="_blank" rel="noreferrer">
+                        <Typography variant="body2" >
+                            Staking contract on Etherscan
+                        </Typography>
+                    </Button>
+                </Box>
             </GridToolbarContainer>
         );
     }
