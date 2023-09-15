@@ -1,5 +1,5 @@
-import { Box, Card, CardContent, Grid, LinearProgress, Typography } from "@mui/material";
-import { DataGrid, GridValueGetterParams } from "@mui/x-data-grid";
+import { Box, Card, CardContent, FormControlLabel, Grid, LinearProgress, Switch, Typography } from "@mui/material";
+import { DataGrid, GridToolbarContainer, GridValueGetterParams } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import moment from "moment";
 import { useEffect } from "react";
@@ -8,6 +8,9 @@ import { RootState } from "../../redux/store";
 import { bigNumberComparator } from "../../utils/bignumber";
 import { formatAmount } from "../../utils/format";
 import { fetchStakeInfoData } from "./dashboard_data_fetch";
+import React from "react";
+import { StakeData } from "../../backend/stake_data";
+
 
 export default function StakingData() {
     const signer = useSelector((state: RootState) => state.chain.signer);
@@ -21,6 +24,11 @@ export default function StakingData() {
     const stakingAllowance = useSelector((state: RootState) => state.dashboard.stakingAllowance);
     const currency = 'DIP';
     const decimals = 18;
+
+    const [showAllStakes, setShowAllStakes] = React.useState(false);
+    function handleShowAllStakesChanged(event: React.ChangeEvent<HTMLInputElement>) {
+        setShowAllStakes(!showAllStakes);
+    }
 
     useEffect(() => {
         if (signer && numStakes === 0) {
@@ -83,6 +91,26 @@ export default function StakingData() {
             flex: 0.7,
         }
     ];
+
+    function GridToolbar() {
+        return (
+            <GridToolbarContainer >
+                <Box sx={{ flexGrow: 1 }}>
+                    <FormControlLabel 
+                        control={
+                            <Switch
+                                defaultChecked={showAllStakes}
+                                value={showAllStakes} 
+                                onChange={handleShowAllStakesChanged}
+                                sx={{ ml: 1 }}
+                                data-testid="show-my-stakes-switch"
+                                />} 
+                        label={'Show all (including empty)'} />
+                </Box>
+                {/* aligned right beyond here */}
+            </GridToolbarContainer>
+        );
+    }
 
     const loadingBar = isLoading ? <LinearProgress /> : null
 
@@ -154,7 +182,7 @@ export default function StakingData() {
 
         <DataGrid 
             autoHeight
-            rows={stakes} 
+            rows={stakes.filter((s: StakeData) => showAllStakes ? true : BigNumber.from(s.stakeBalance).gt(0))} 
             columns={columns} 
             getRowId={(row) => row.id}
             // initialState={{
@@ -168,10 +196,9 @@ export default function StakingData() {
             disableRowSelectionOnClick={true}
             disableColumnMenu={true}
             columnBuffer={20}
-            // slots={{
-            //     noRowsOverlay: NoRowsOverlay,
-            //     toolbar: GridToolbar,
-            // }}
+            slots={{
+                toolbar: GridToolbar,
+            }}
             />
     </>);
 }

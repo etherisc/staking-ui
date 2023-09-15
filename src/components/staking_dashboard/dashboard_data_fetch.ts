@@ -1,9 +1,8 @@
-import { BigNumber, Signer } from "ethers";
-import { IChainRegistry__factory, IERC20__factory, IStaking__factory } from "../../contracts/registry-contracts";
-import { store } from "../../redux/store";
-import { addStakeData, finishLoading, setNumber, setRewardReserves, setStakingAllowance, startLoading } from "../../redux/slices/dashboard";
+import { Signer } from "ethers";
 import { StakeData } from "../../backend/stake_data";
-import { Duplex } from "stream";
+import { IChainRegistry__factory, IERC20__factory, IStaking__factory } from "../../contracts/registry-contracts";
+import { addStakeData, finishLoading, setNumber, setRewardReserves, setStakingAllowance, startLoading } from "../../redux/slices/dashboard";
+import { store } from "../../redux/store";
 
 const OBJECT_STAKE = 10
 
