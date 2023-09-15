@@ -38,8 +38,8 @@ export const dashboardSlice = createSlice({
                 state.totalRewards = BigNumber.from(state.totalRewards).add(action.payload.rewardTotalNow).toString();
             } else {
                 // replace bundle
-                state.totalStaked = BigNumber.from(state.totalStaked).sub(state.stakes[idx].stakeBalance).add(action.payload.stakeBalance).toString();
-                state.totalRewards = BigNumber.from(state.totalRewards).sub(state.stakes[idx].rewardTotalNow).add(action.payload.rewardTotalNow).toString();
+                state.totalStaked = BigNumber.from(state.totalStaked).sub(state.stakes[idx].stakeBalance).toString();
+                state.totalRewards = BigNumber.from(state.totalRewards).sub(state.stakes[idx].rewardTotalNow).toString();
                 state.stakes[idx] = action.payload;
                 state.totalStaked = BigNumber.from(state.totalStaked).add(action.payload.stakeBalance).toString();
                 state.totalRewards = BigNumber.from(state.totalRewards).add(action.payload.rewardTotalNow).toString();
