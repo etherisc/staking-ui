@@ -13,6 +13,15 @@ The repository includes a vscode _devcontainer_ that installs all the necessary 
 Create a `.env.local` file in the root directory of the project. Have a look a the `.env.example_local` file for the required environment variables of a setup running again a local ganache chain. The minimum required variables are described below
 Then run the application in dev mode with `npm run dev`.
 
+## API services
+
+### Monitor
+
+The API `/api/monitor` can be used to check if the balance of the reward reserved and staking allowance are below the configured thresholds. If they are, the API will return a 500 error code. 
+
+The threasholds can be changed using the environment variables `NEXT_PUBLIC_STAKING_ALLOWANCE_ALERT_BALANCE` and `NEXT_PUBLIC_REWARD_RESERVES_ALERT_BALANCE`. The values are expected to be in DIP. 
+
+
 ## Dependencies
 
 ### Redis

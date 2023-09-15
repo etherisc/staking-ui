@@ -1,6 +1,6 @@
 import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
-import { providers, Signer } from "ethers";
+import { ethers, providers, Signer } from "ethers";
 import { resetAccount, setAccount, updateBalance } from "../redux/slices/account";
 import { ChainState, connectChain, disconnectChain, setBlock, updateSigner as updateSignerSlice } from "../redux/slices/chain";
 import { expectedChain } from "./const";
@@ -67,3 +67,9 @@ export async function updateAccountBalance(signer: Signer, dispatch: Dispatch<An
     const decimals = process.env.NEXT_PUBLIC_CHAIN_TOKEN_DECIMALS ?? "18";
     dispatch(updateBalance([balance.toString(), tokenSymbol, parseInt(decimals)]));
 }
+
+export async function getBackendVoidSigner(): Promise<Signer> {
+    const provider = new JsonRpcProvider(process.env.BACKEND_CHAIN_RPC_URL || process.env.NEXT_PUBLIC_CHAIN_RPC_URL);
+    return new ethers.VoidSigner("0x0000000000000000000000000000000000000000", provider);
+}
+
