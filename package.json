@@ -50,7 +50,7 @@
     "react-redux": "^8.1.2",
     "redis": "^4.6.8",
     "redis-om": "^0.4.2",
-    "viem": "^1.10.3",
+    "viem": "^1.10.14",
     "wagmi": "^1.4.1"
   },
   "devDependencies": {
