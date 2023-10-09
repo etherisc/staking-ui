@@ -64,7 +64,7 @@
     "@types/canvas-confetti": "^1.6.1",
     "@types/jest": "^29.5.4",
     "@types/node": "^18.17.14",
-    "@types/react": "^18.2.21",
+    "@types/react": "^18.2.27",
     "@types/react-blockies": "^1.4.1",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
