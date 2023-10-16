@@ -100,7 +100,7 @@
   "staked_amount": "Total Staked Amount",
   "my_staked_amount": "My Staked Amount",
   "locked_amount": "Locked Amount",
-  "locked_until": "Locked until",
+  "locked_until": "Stakes locked until",
   "active_until": "Active until",
   "unclaimed_reward": "Accumulated Rewards",
   "unclaimed_reward_tooltip": "All unclaimed DIP rewards that have accumulated for stakes on this risk bundle since staking started or the last claim.",
