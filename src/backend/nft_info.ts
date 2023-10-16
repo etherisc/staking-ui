@@ -4,6 +4,7 @@ export interface NftInfo {
     targetNftId: string;
     type: NftType;
     unstakingAvailable: boolean;
+    lockedUntil: number;
 }
 
 export enum NftType {

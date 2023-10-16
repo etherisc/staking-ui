@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { BigNumber } from 'ethers';
 import { BundleInfo } from '../../backend/bundle_info';
 import { NftInfo } from '../../backend/nft_info';
+import { NoBundleFoundError } from '../../utils/error';
 
 export interface StakesState {
     bundles: BundleInfo[];
@@ -44,7 +45,7 @@ export const stakesSlice = createSlice({
                 state.bundles[idx] = action.payload;
             }
         },
-        addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amount: string, supportingAmount: string}>) => {
+        addAmountToMyStakes: (state, action: PayloadAction<{stakeNftId: string, target: string, amount: string, supportingAmount: string, lockedUntil: number}>) => {
             const bundle = state.bundles.find((bundle) => bundle.nftId === action.payload.target);
             if (bundle && bundle.myStakedNfsIds.indexOf(action.payload.stakeNftId) === -1) {
                 const myStakedAmount = BigNumber.from(bundle.myStakedAmount);
@@ -53,6 +54,7 @@ export const stakesSlice = createSlice({
                 const supportingAmountToAdd = BigNumber.from(action.payload.supportingAmount);
                 bundle.myStakedAmount = myStakedAmount.add(amountToAdd).toString();
                 bundle.mySupportingAmount = mySupportingAmount.add(supportingAmountToAdd).toString();
+                bundle.lockedUntil = action.payload.lockedUntil;
                 bundle.myStakedNfsIds.push(action.payload.stakeNftId);
             }
         },

@@ -125,6 +125,7 @@ export default class StakingContract {
             token: token,
             myStakedAmount: myStakedAmount.toString(),
             myStakedNfsIds: [],
+            lockedUntil: -1,
             stakedAmount: stakedAmount.toString(),
             unclaimedReward: BigNumber.from(0).toString(),
             mySupportingAmount: mySupportingAmount.toString(),
@@ -199,6 +200,7 @@ export default class StakingContract {
             stakeNftId: bundleNftInfo.nftId, 
             target: bundleNftInfo.targetNftId, 
             amount: bundleNftInfo.stakedAmount, 
+            lockedUntil: bundleNftInfo.lockedUntil,
             supportingAmount: supportingAmount.toString()
         }));
         dispatch(addNftId(bundleNftInfo));
@@ -208,7 +210,7 @@ export default class StakingContract {
      * Fetches all bundle stake related data from the blockchain 
      */
     async getBundleNftInfo(bundleNftId: BigNumber): Promise<NftInfo> {
-        const { target, stakeBalance } = await this.staking!.getInfo(bundleNftId);
+        const { target, stakeBalance, lockedUntil } = await this.staking!.getInfo(bundleNftId);
         const unstakingAvailable = await this.staking!.isUnstakingAvailable(bundleNftId);
         return { 
             nftId: bundleNftId.toString(), 
@@ -216,6 +218,7 @@ export default class StakingContract {
             targetNftId: target.toString(),
             type: NftType.OBJECT_TYPE_BUNDLE,
             unstakingAvailable,
+            lockedUntil,
         } as NftInfo;
     }
 

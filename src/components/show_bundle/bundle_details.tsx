@@ -39,6 +39,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
     const mySupportedCapital = BigNumber.from(props.bundle.mySupportingAmount);
     const expiryAt = props.bundle.expiryAt;
     const rewardRate = props.bundle.rewardRate;
+    const lockedUntil = props.bundle.lockedUntil > 1 ? <Timestamp at={props.bundle.lockedUntil}/> : <>-</>;
 
     let unclaimedRewardStr = formatCurrency(unclaimedReward, decimals);
     if (unclaimedReward.gt(0) && unclaimedReward.lt(parseUnits("0.01", decimals))) {
@@ -64,6 +65,7 @@ export default function BundleDetails(props: BundleDetailsProps) {
                 <WithTooltip tooltipText={t('unclaimed_reward_tooltip')}><Typography color={grey[500]} component="span"><FontAwesomeIcon icon={faCircleInfo} className="fa" /></Typography></WithTooltip></>}/>
             <NameValue name={t('reward_rate')} value={<>{(rewardRate * 100).toFixed(2)} %</>}/>
             <NameValue name={t('my_staked_amount')} value={<>{symbol} {formatCurrency(myStakedAmount, decimals)}</>}/>
+            <NameValue name={t('locked_until')} value={lockedUntil}/>
             <NameValue name={t('locked_amount')} value={<>{supportingToken} {formatCurrency(lockedAmount, supportingTokenDecimals)}</>}/>
             <NameValue name={t('supported_capital')} value={<>{supportingToken} {formatCurrency(supportedCapital, supportingTokenDecimals)}</>}/>
             <NameValue name={t('my_supported_capital')} value={<>{supportingToken} {formatCurrency(mySupportedCapital, supportingTokenDecimals)}</>}/>

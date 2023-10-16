@@ -22,7 +22,8 @@ jest.mock('react-i18next', () => ({
 
 describe('When displaying the bundle detail component', () => {
     it('all bundle data is correctly formatted', async () => {
-        const expirationDate = dayjs().add(1, 'day').unix();
+        const expirationDate = dayjs().add(2, 'day').unix();
+        const lockedUntilDate = dayjs().add(1, 'day').unix();
         const bundle = {
             id: "0x1234-1",
             nftId: "76594322",
@@ -41,6 +42,7 @@ describe('When displaying the bundle detail component', () => {
             supportingTokenDecimals: 6,
             state: 0,
             expiryAt: expirationDate,
+            lockedUntil: lockedUntilDate,
             rewardRate: 0.1234,
         } as BundleInfo;
 
@@ -66,7 +68,8 @@ describe('When displaying the bundle detail component', () => {
         expect(screen.getByText('USDT 2,345.00')).toBeInTheDocument();
         expect(screen.getByText('USDT 1,754.30')).toBeInTheDocument();
         expect(screen.getByText('USDT 2,365.40')).toBeInTheDocument();
-        expect(screen.getByTestId("bundle-details")).toHaveTextContent(unix(expirationDate).format('YYYY-MM-DD HH:mm UTC')); // valid until
+        expect(screen.getByTestId("bundle-details")).toHaveTextContent(unix(expirationDate).format('YYYY-MM-DD HH:mm UTC')); // expiration date
+        expect(screen.getByTestId("bundle-details")).toHaveTextContent(unix(lockedUntilDate).format('YYYY-MM-DD HH:mm UTC')); // locked until
     })
 
     it('the unclaimed reward is displayed as < 0.01 if its very small', async () => {
