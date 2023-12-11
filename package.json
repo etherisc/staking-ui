@@ -51,7 +51,7 @@
     "redis": "^4.6.11",
     "redis-om": "^0.4.2",
     "viem": "^1.19.11",
-    "wagmi": "^1.4.3"
+    "wagmi": "^1.4.10"
   },
   "devDependencies": {
     "@etherisc/gif-interface": "2.0.0-rc.1-0",
