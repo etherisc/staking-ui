@@ -21,7 +21,7 @@ export default function Account() {
     const signer = useSelector((state: RootState) => state.chain.signer);
     const { isConnected, isWalletConnect } = useSelector((state: RootState) => state.chain);
     const address = useSelector((state: RootState) => state.account.address);
-    const { data: walletClient } = useWalletClient();
+    // const { data: walletClient } = useWalletClient();
 
     const [ loggedIn, setLoggedIn ] = useState(false);
 
@@ -41,30 +41,30 @@ export default function Account() {
 
 
     // handle wallet connect connection state (login/logout)
-    useEffect(() => {
-        console.log("walletClient changed", walletClient);
-        async function login() {
-            console.log("wallet connect login");
-            const signer = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
-            if (signer === undefined) {
-                return;
-            }
-            const provider = signer.provider;
-            dispatch(connectChain(await getChainState(provider, true)));
-            setAccountRedux(signer, dispatch);
+    // useEffect(() => {
+    //     console.log("walletClient changed", walletClient);
+    //     async function login() {
+    //         console.log("wallet connect login");
+    //         // const signer = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
+    //         // if (signer === undefined) {
+    //         //     return;
+    //         // }
+    //         // const provider = signer.provider;
+    //         // dispatch(connectChain(await getChainState(provider, true)));
+    //         // setAccountRedux(signer, dispatch);
 
-            provider.on("block", (blockNumber: number) => {
-                getAndUpdateBlock(dispatch, provider, blockNumber);
-            });
-        }
+    //         // provider.on("block", (blockNumber: number) => {
+    //         //     getAndUpdateBlock(dispatch, provider, blockNumber);
+    //         // });
+    //     }
 
-        if (walletClient !== undefined && ! loggedIn) {
-            login();
-        } else if (walletClient === undefined && loggedIn && isWalletConnect) {
-            console.log("wallet connect logout")
-            dispatch(disconnectChain());
-        }
-    }, [walletClient, loggedIn, dispatch, isWalletConnect]);
+    //     if (walletClient !== undefined && ! loggedIn) {
+    //         login();
+    //     } else if (walletClient === undefined && loggedIn && isWalletConnect) {
+    //         console.log("wallet connect logout")
+    //         dispatch(disconnectChain());
+    //     }
+    // }, [walletClient, loggedIn, dispatch, isWalletConnect]);
     
 
     if (! loggedIn) {
