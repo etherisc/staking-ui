@@ -9,19 +9,19 @@ import { store } from "../redux/store";
 
 export async function reconnectWallets(dispatch: Dispatch<AnyAction>) {
     // try to reconnect walletconnect connection first
-    // const wcSigner = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
-    // if (wcSigner !== undefined) {
-    //     console.log("reconnect walletconnect");
-    //     const provider = wcSigner.provider;
-    //     dispatch(connectChain(await getChainState(provider, true)));
-    //     setAccountRedux(wcSigner, dispatch);
+    const wcSigner = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
+    if (wcSigner !== undefined) {
+        console.log("reconnect walletconnect");
+        const provider = wcSigner.provider;
+        dispatch(connectChain(await getChainState(provider, true)));
+        setAccountRedux(wcSigner, dispatch);
 
-    //     provider.on("block", (blockNumber: number) => {
-    //         getAndUpdateBlock(dispatch, provider, blockNumber);
-    //     });
+        provider.on("block", (blockNumber: number) => {
+            getAndUpdateBlock(dispatch, provider, blockNumber);
+        });
 
-    //     return;
-    // }
+        return;
+    }
 
     // @ts-ignore
     if (window.ethereum !== undefined) {
