@@ -26,13 +26,13 @@
 				"csstools.postcss",
 				"vscodeshift.mui-snippets",
 				"mikestead.dotenv",
-				"vscode-icons-team.vscode-icons",
+				"vscode-icons-team.vscode-icons"
 			]
 		}
 	},
 
 	"containerEnv": {
-		"PORT": "3100",
+		"PORT": "3100"
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -44,8 +44,8 @@
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "node",
 	"features": {
-		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-	},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+	}
 
 	// "mounts": [
 	// 	"source=staking-ui-node_modules,target=/workspaces/staking-ui/node_modules,type=volume"

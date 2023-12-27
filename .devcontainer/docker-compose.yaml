@@ -12,7 +12,7 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
       args:
-        VARIANT: 18-bookworm
+        VARIANT: 20-bookworm
     volumes:
       - ..:/workspaces/staking-ui:cached
       - staking-ui-node_modules:/workspaces/staking-ui/node_modules
