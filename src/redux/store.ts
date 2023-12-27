@@ -1,9 +1,9 @@
-import { combineReducers, configureStore, PreloadedState } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import accountReducer from './slices/account';
 import chainReducer from './slices/chain';
+import dashboardReducer from './slices/dashboard';
 import stakesReducer from './slices/stakes';
 import stakingReducer from './slices/staking';
-import dashboardReducer from './slices/dashboard';
 
 
 // Create the root reducer separately so we can extract the RootState type
@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
     dashboard: dashboardReducer,
 })
 
-export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
+export const setupStore = (preloadedState?: RootState) => {
     return configureStore({
         reducer: rootReducer,
         preloadedState
