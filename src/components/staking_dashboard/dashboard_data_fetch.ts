@@ -53,12 +53,12 @@ async function fetchStakeInfoForIndex(idx: number, bundles: Map<number, any>, re
     if (bundle_nft.toNumber() in bundles) {
         bundleId = bundles.get(bundle_nft.toNumber())?.bundleId;
         displayName = bundles.get(bundle_nft.toNumber())?.displayName;
-        expiryAt = bundles.get(bundle_nft.toNumber())?.expiryAt;
+        expiryAt = infoRaw.lockedUntil;
     } else {
         const bundleInfo = await registryContract.decodeBundleData(bundle_nft);
         bundleId = bundleInfo.bundleId;
         displayName = bundleInfo.displayName;
-        expiryAt = bundleInfo.expiryAt;
+        expiryAt = infoRaw.lockedUntil;
         bundles.set(bundle_nft.toNumber(), bundleInfo);
     }
 
