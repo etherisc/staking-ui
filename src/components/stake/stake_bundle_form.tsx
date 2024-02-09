@@ -31,6 +31,7 @@ type IStakeFormValues = {
     rewardRate: string;
     expectedReward: string;
     gasless: boolean;
+    gaslessAck: boolean;
     termsAndConditions: boolean;
 };
 
@@ -48,7 +49,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
     const [ stakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.maxStakedAmount())));
 
-    const { handleSubmit, control, formState, getValues, setValue } = useForm<IStakeFormValues>({ 
+    const { handleSubmit, control, formState, getValues, setValue, watch } = useForm<IStakeFormValues>({ 
         mode: "onChange",
         reValidateMode: "onChange",
         defaultValues: {
@@ -57,10 +58,13 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             rewardRate: (props.bundle.rewardRate * 100).toFixed(2),
             expectedReward: "",
             gasless: false,
+            gaslessAck: false,
             termsAndConditions: false,
         }
     });
     const errors = useMemo(() => formState.errors, [formState]);
+
+    const isGasless = watch('gasless');
 
     const [ calculationInProgress, setCalculationInProgress ] = useState(false);
 
@@ -109,6 +113,18 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     }
 
     const loadingBar = calculationInProgress ? <LinearProgress /> : null;
+    let gaslessHelperText = <>{t('gasless_checkbox_label')}</>;
+
+    if (isGasless) { 
+        gaslessHelperText = <>
+            {t('gasless_checkbox_label')}
+            <br/>
+            <Typography variant="body2" component="span">
+                <b>{t('gasless_checkbox_important')}:</b>&nbsp;
+                {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
+            </Typography>
+        </>
+    }
 
     return (<>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -212,7 +228,11 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             control={control}
                             render={({ field }) => 
                                 <FormControlLabel 
-                                    sx={{ mb: 0.5 }}
+                                    sx={{ 
+                                        mb: 0.5,
+                                        flexDirection: 'row',
+                                        alignItems: 'flex-start',
+                                    }}
                                     control={
                                         <Checkbox 
                                             defaultChecked={false}
@@ -220,10 +240,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                             />
                                     } 
                                     disabled={props.formDisabled || disableGaslessOption}
-                                    label={<>
-                                            {t('gasless_checkbox_label')}
-                                            <WithTooltip tooltipText={t('gasless_checkbox_label_hint', {maxGasPrice: maxGasPrice })}><Typography color={grey[500]} component="span"><FontAwesomeIcon icon={faCircleInfo} className="fa" /></Typography></WithTooltip>
-                                        </>}
+                                    label={gaslessHelperText}
                                     />} 
                             />
                     }
