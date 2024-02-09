@@ -17,6 +17,7 @@
   "stake_info": "Second - please confirm staking on contract {{address}}",
   "stake_wait": "Transaction created, waiting for onchain confirmation",
   "staking_success": "Staking of DIPs successful. It can take up to 5 minutes for the applications to refresh and your stakes to be accurately reflected.",
+  "staking_success_gasless": "Gasless staking request submitted. The transaction will be send when market conditions are favorable. While the transaction is pending, a blue information banner will be shown on top of the page.",
   "reward_rate" : "Reward Rate (%)",
   "expected_reward": "Expected Reward (at the end risk bundle lifetime)",
   "expected_reward_notice": "Please note, the expected reward is an approximation and the reward rate may change at any time.",
