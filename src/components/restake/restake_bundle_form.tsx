@@ -43,7 +43,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
 
     const maxGasPrice = process.env.NEXT_PUBLIC_MAX_GAS_PRICE_LIMIT ? parseInt(process.env.NEXT_PUBLIC_MAX_GAS_PRICE_LIMIT) : 30;
 
-    const { handleSubmit, control, formState, getValues, setValue } = useForm<IRestakeFormValues>({ 
+    const { handleSubmit, control, formState, getValues, watch } = useForm<IRestakeFormValues>({ 
         mode: "onChange",
         reValidateMode: "onChange",
         defaultValues: {
@@ -54,6 +54,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
         }
     });
     const errors = useMemo(() => formState.errors, [formState]);
+    const isGasless = watch('gasless');
 
     useEffect(() => {
         if (formState.isValid) {
@@ -76,6 +77,19 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
             const gasless = values.gasless;
             props.restake( BigNumber.from(stakeNftId), BigNumber.from(props.bundle.nftId), BigNumber.from(newBundleNftId), gasless);
         }
+    }
+
+    let gaslessHelperText = <>{t('gasless_checkbox_label')}</>;
+
+    if (isGasless) { 
+        gaslessHelperText = <>
+            {t('gasless_checkbox_label')}
+            <br/>
+            <Typography variant="body2" component="span">
+                <b>{t('gasless_checkbox_important')}:</b>&nbsp;
+                {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
+            </Typography>
+        </>
     }
 
     return (<>
@@ -131,7 +145,11 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                             control={control}
                             render={({ field }) => 
                                 <FormControlLabel 
-                                    sx={{ mb: 0.5 }}
+                                    sx={{ 
+                                        mb: 0.5,
+                                        flexDirection: 'row',
+                                        alignItems: 'flex-start',
+                                    }}
                                     control={
                                         <Checkbox 
                                             defaultChecked={false}
@@ -139,14 +157,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                                             />
                                     } 
                                     disabled={props.formDisabled}
-                                    label={<>
-                                            {t('gasless_checkbox_label')}
-                                            <WithTooltip tooltipText={t('gasless_checkbox_label_hint', {maxGasPrice: maxGasPrice })}>
-                                                <Typography color={grey[500]} component="span">
-                                                    <FontAwesomeIcon icon={faCircleInfo} className="fa" />
-                                                </Typography>
-                                            </WithTooltip>
-                                        </>}
+                                    label={gaslessHelperText}
                                     />} 
                             />
                     }

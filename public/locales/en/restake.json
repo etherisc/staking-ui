@@ -18,6 +18,7 @@
   "expected_reward": "Expected Reward (at the end risk bundle lifetime)",
   "expected_reward_notice": "Please note, the expected reward is an approximation and the reward rate may change at any time.",
   "gasless_checkbox_label": "I would like Etherisc to submit the transaction and pay fees on my behalf.",
-  "gasless_checkbox_label_hint": "This service is provided on a best effort basis with a maximum gas price of {{maxGasPrice}} Gwei. Etherisc does not guarantee that the transaction will be submitted and mined in a timely and successful manner."
+  "gasless_checkbox_important": "Important",
+  "gasless_checkbox_label_gasless_conditions": "Gasless restaking is provided on a best effort basis with a maximum gas price of {{maxGasPrice}} Gwei. Etherisc does not guarantee that the transaction will be submitted and mined in a timely and successful manner. A pending gasless transaction is indicated by a blue information banner on top of the page."
 }
 
