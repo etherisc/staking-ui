@@ -17,6 +17,7 @@ import WithTooltip from "../with_tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { grey } from "@mui/material/colors";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { setGasPrice } from "../../redux/slices/chain";
 
 interface StakeBundleFormProps {
     stakingApi: StakingApi;
@@ -39,7 +40,6 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const { t } = useTranslation(['stake', 'common']);
     const currency = props.stakingApi.currency();
     const dispatch = useDispatch();
-    const isConnected = useSelector((state: RootState) => state.chain.isConnected);
     const router = useRouter();
 
     const maxGasPrice = process.env.NEXT_PUBLIC_MAX_GAS_PRICE_LIMIT ? parseInt(process.env.NEXT_PUBLIC_MAX_GAS_PRICE_LIMIT) : 30;
@@ -48,6 +48,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
 
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
     const [ stakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.maxStakedAmount())));
+    const currentGasPrice = useSelector((state: RootState) => state.chain.gasPrice);
 
     const { handleSubmit, control, formState, getValues, setValue, watch } = useForm<IStakeFormValues>({ 
         mode: "onChange",
@@ -67,6 +68,18 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     const isGasless = watch('gasless');
 
     const [ calculationInProgress, setCalculationInProgress ] = useState(false);
+
+    useEffect(() => {
+        async function fetchGasPrice() {
+            if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION === 'true') {
+                const response = await fetch("/api/feeless/gas_price");
+                const gasPrice = (await response.json()).gasPrice;
+                dispatch(setGasPrice(gasPrice));
+                console.log("currentGasPrice", gasPrice);
+            }
+        }
+        fetchGasPrice();
+    }, []);
 
     useEffect(() => {
         if (formState.isValid) {
@@ -116,14 +129,23 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
     let gaslessHelperText = <>{t('gasless_checkbox_label')}</>;
 
     if (isGasless) { 
+        let gasPriceIndication = <></>;
+        if (currentGasPrice > 0) {
+            const isTxLikelyToBeImmediate = currentGasPrice <= maxGasPrice;
+            gasPriceIndication = <><br/>
+                {isTxLikelyToBeImmediate ? t('gasless_tx_immediate_likely') : t('gasless_tx_immediate_unlikely')}
+            </>;
+        }
+
         gaslessHelperText = <>
-            {t('gasless_checkbox_label')}
-            <br/>
-            <Typography variant="body2" component="span">
-                <b>{t('gasless_checkbox_important')}:</b>&nbsp;
-                {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
-            </Typography>
-        </>
+        {t('gasless_checkbox_label')}
+        <br/>
+        <Typography variant="body2" component="span">
+            <b>{t('gasless_checkbox_important')}:</b>&nbsp;
+            {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
+            {gasPriceIndication}
+        </Typography>
+    </>
     }
 
     return (<>
