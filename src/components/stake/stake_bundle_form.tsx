@@ -79,6 +79,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             }
         }
         fetchGasPrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -138,14 +139,14 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         }
 
         gaslessHelperText = <>
-        {t('gasless_checkbox_label')}
-        <br/>
-        <Typography variant="body2" component="span">
-            <b>{t('gasless_checkbox_important')}:</b>&nbsp;
-            {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
-            {gasPriceIndication}
-        </Typography>
-    </>
+            {t('gasless_checkbox_label')}
+            <br/>
+            <Typography variant="body2" component="span">
+                <b>{t('gasless_checkbox_important')}:</b>&nbsp;
+                {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
+                {gasPriceIndication}
+            </Typography>
+        </>
     }
 
     return (<>
