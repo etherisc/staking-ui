@@ -12,6 +12,7 @@ export interface ChainState {
     isWalletConnect: boolean,
     blockNumber: number,
     blockTime: number,
+    gasPrice: number,
 }
 
 const initialState: ChainState = {
@@ -23,6 +24,7 @@ const initialState: ChainState = {
     isWalletConnect: false,
     blockNumber: 0,
     blockTime: 0,
+    gasPrice: 0,
 }
 
 export const chainSlice = createSlice({
@@ -47,6 +49,9 @@ export const chainSlice = createSlice({
             state.blockNumber = action.payload[0]
             state.blockTime = action.payload[1]
         },
+        setGasPrice: (state, action: PayloadAction<number>) => {
+            state.gasPrice = action.payload;
+        },
     },
 });
 
@@ -54,7 +59,8 @@ export const chainSlice = createSlice({
 export const { 
     connectChain, disconnectChain, 
     updateSigner, 
-    setBlock 
+    setBlock,
+    setGasPrice,
 } = chainSlice.actions;
 
 export default chainSlice.reducer;

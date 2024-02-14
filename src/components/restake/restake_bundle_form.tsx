@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
 import { StakingApi } from "../../backend/staking_api";
 import { INPUT_VARIANT } from "../../config/theme";
@@ -16,6 +16,8 @@ import WithTooltip from "../with_tooltip";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { RootState } from "../../redux/store";
+import { setGasPrice } from "../../redux/slices/chain";
 
 interface RestakeBundleFormProps {
     stakingApi: StakingApi;
@@ -40,10 +42,11 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
 
     const [ stakedAmountMin ] = useState(parseInt(formatEther(props.stakingApi.minStakedAmount())));
     const [ stakedAmountMax ] = useState(parseInt(formatEther(props.stakingApi.maxStakedAmount())));
+    const currentGasPrice = useSelector((state: RootState) => state.chain.gasPrice);
 
     const maxGasPrice = process.env.NEXT_PUBLIC_MAX_GAS_PRICE_LIMIT ? parseInt(process.env.NEXT_PUBLIC_MAX_GAS_PRICE_LIMIT) : 30;
 
-    const { handleSubmit, control, formState, getValues, setValue } = useForm<IRestakeFormValues>({ 
+    const { handleSubmit, control, formState, getValues, watch } = useForm<IRestakeFormValues>({ 
         mode: "onChange",
         reValidateMode: "onChange",
         defaultValues: {
@@ -54,6 +57,20 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
         }
     });
     const errors = useMemo(() => formState.errors, [formState]);
+    const isGasless = watch('gasless');
+
+    useEffect(() => {
+        async function fetchGasPrice() {
+            if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION === 'true') {
+                const response = await fetch("/api/feeless/gas_price");
+                const gasPrice = (await response.json()).gasPrice;
+                dispatch(setGasPrice(gasPrice));
+                console.log("currentGasPrice", gasPrice);
+            }
+        }
+        fetchGasPrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (formState.isValid) {
@@ -76,6 +93,28 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
             const gasless = values.gasless;
             props.restake( BigNumber.from(stakeNftId), BigNumber.from(props.bundle.nftId), BigNumber.from(newBundleNftId), gasless);
         }
+    }
+
+    let gaslessHelperText = <>{t('gasless_checkbox_label')}</>;
+
+    if (isGasless) { 
+        let gasPriceIndication = <></>;
+        if (currentGasPrice > 0) {
+            const isTxLikelyToBeImmediate = currentGasPrice <= maxGasPrice;
+            gasPriceIndication = <><br/>
+                {isTxLikelyToBeImmediate ? t('gasless_tx_immediate_likely') : t('gasless_tx_immediate_unlikely')}
+            </>;
+        }
+
+        gaslessHelperText = <>
+            {t('gasless_checkbox_label')}
+            <br/>
+            <Typography variant="body2" component="span">
+                <b>{t('gasless_checkbox_important')}:</b>&nbsp;
+                {t('gasless_checkbox_label_gasless_conditions', {maxGasPrice: maxGasPrice })}
+                {gasPriceIndication}
+            </Typography>
+        </>
     }
 
     return (<>
@@ -131,7 +170,11 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                             control={control}
                             render={({ field }) => 
                                 <FormControlLabel 
-                                    sx={{ mb: 0.5 }}
+                                    sx={{ 
+                                        mb: 0.5,
+                                        flexDirection: 'row',
+                                        alignItems: 'flex-start',
+                                    }}
                                     control={
                                         <Checkbox 
                                             defaultChecked={false}
@@ -139,14 +182,7 @@ export default function RestakeBundleForm(props: RestakeBundleFormProps) {
                                             />
                                     } 
                                     disabled={props.formDisabled}
-                                    label={<>
-                                            {t('gasless_checkbox_label')}
-                                            <WithTooltip tooltipText={t('gasless_checkbox_label_hint', {maxGasPrice: maxGasPrice })}>
-                                                <Typography color={grey[500]} component="span">
-                                                    <FontAwesomeIcon icon={faCircleInfo} className="fa" />
-                                                </Typography>
-                                            </WithTooltip>
-                                        </>}
+                                    label={gaslessHelperText}
                                     />} 
                             />
                     }

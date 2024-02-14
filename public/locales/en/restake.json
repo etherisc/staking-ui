@@ -13,10 +13,14 @@
   "restake_info": "Please confirm restaking on contract {{address}}",
   "restake_wait": "Transaction created, waiting for onchain confirmation",
   "restaking_success": "Restaking of DIPs successful. It can take up to 5 minutes for the applications to refresh and your stakes to be accurately reflected.",
+  "restaking_success_gasless": "Gasless restaking request submitted. The transaction will be send when market conditions are favorable. While the transaction is pending, a blue information banner will be shown on top of the page.",
   "reward_rate" : "Reward Rate (%)",
   "expected_reward": "Expected Reward (at the end risk bundle lifetime)",
   "expected_reward_notice": "Please note, the expected reward is an approximation and the reward rate may change at any time.",
   "gasless_checkbox_label": "I would like Etherisc to submit the transaction and pay fees on my behalf.",
-  "gasless_checkbox_label_hint": "This service is provided on a best effort basis with a maximum gas price of {{maxGasPrice}} Gwei. Etherisc does not guarantee that the transaction will be submitted and mined in a timely and successful manner."
+  "gasless_checkbox_important": "Important",
+  "gasless_checkbox_label_gasless_conditions": "Gasless restaking is provided on a best effort basis with a maximum gas price of {{maxGasPrice}} Gwei. Etherisc does not guarantee that the transaction will be submitted and mined in a timely and successful manner. A pending gasless transaction is indicated by a blue information banner on top of the page.",
+  "gasless_tx_immediate_likely": "The current gas price is favorable. If you submit the request now, there is a likelihood (but not a guarantee) that the transaction will be promptly submitted.",
+  "gasless_tx_immediate_unlikely": "The gas price is above the limit at the moment. If you submit the request now, the transaction will be queued and submitted when the gas price drops below the limit."
 }
 

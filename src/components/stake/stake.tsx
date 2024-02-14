@@ -86,7 +86,7 @@ export default function Stake(props: StakeProps) {
             }
             ga_event("trx_success_stake", { category: 'chain_trx' });
             dispatch(setStep(6));
-            await stakingSuccessful(stakeingBundle!);
+            await stakingSuccessful(stakeingBundle!, gasless);
         } finally {
             enableUnloadWarning(false);
         }
@@ -201,9 +201,10 @@ export default function Stake(props: StakeProps) {
         );
     }
 
-    async function stakingSuccessful(stakingBundle: BundleInfo) {
+    async function stakingSuccessful(stakingBundle: BundleInfo, gasless: boolean) {
+        const successText = gasless ? t('staking_success_gasless') : t('staking_success');
         enqueueSnackbar(
-            t('staking_success'),
+            successText,
             { 
                 variant: 'success', 
                 autoHideDuration: 5000, 

@@ -63,7 +63,7 @@ export default function Restake(props: RestakeProps) {
             }
             ga_event("trx_success_restake", { category: 'chain_trx' });
             dispatch(setStep(5));
-            await restakingSuccessful(stakeingBundle!);
+            await restakingSuccessful(stakeingBundle!, gasless);
         } finally {
             enableUnloadWarning(false);
         }
@@ -116,9 +116,10 @@ export default function Restake(props: RestakeProps) {
         }
     }
 
-    async function restakingSuccessful(stakingBundle: BundleInfo) {
+    async function restakingSuccessful(stakingBundle: BundleInfo, gasless: boolean) {
+        const successText = gasless ? t('restaking_success_gasless') : t('restaking_success');
         enqueueSnackbar(
-            t('restaking_success'),
+            successText,
             { 
                 variant: 'success', 
                 autoHideDuration: 5000, 
