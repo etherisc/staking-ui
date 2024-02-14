@@ -12,6 +12,7 @@ export async function getChainState(provider: JsonRpcProvider, isWalletConnect?:
     const chainId = toHex(network.chainId);
     const blockNumber = await provider.getBlockNumber();
     const blockTime = (await provider.getBlock(blockNumber)).timestamp;
+    
 
     return {
         chainId: chainId,
@@ -22,6 +23,7 @@ export async function getChainState(provider: JsonRpcProvider, isWalletConnect?:
         isWalletConnect: isWalletConnect ?? false,
         blockNumber: blockNumber,
         blockTime: blockTime,
+        gasPrice: 0,
     } as ChainState;
 }
 
