@@ -53,6 +53,7 @@ export interface StakingApi {
     hasDipBalance: (
         amount: BigNumber,
     ) => Promise<boolean>;
+    getBalance: () => Promise<BigNumber>;
     /**
      * Get a number indicating if the locked capital is sufficiently covered by the staked amount. 
      * if between 0 and 1, the staked amount is too low. If > 1, the staked amount is sufficient.
