@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgress, TextField, Typography } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgress, Link, TextField, Typography } from "@mui/material";
 import { BigNumber } from "ethers";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
@@ -111,6 +111,16 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         }
     }, [errors, setValue, getValues, props.bundle, props.stakingApi]);
 
+    const setMaxAmount = useCallback( async () => {
+        if (errors.stakedAmount === undefined) {
+            const balance = await props.stakingApi.getBalance();
+            const balanceFloat = parseFloat(formatEther(balance));
+            // round down
+            setValue("stakedAmount", (Math.floor(balanceFloat * 100) / 100).toFixed(2));
+            await calculateSupportedAmount();
+        } 
+    }, [errors, setValue, props.stakingApi, calculateSupportedAmount]);
+
     function back() {
         dispatch(clearSelectedBundle());
         router.push("/", undefined, { shallow: true });
@@ -176,6 +186,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 onBlur={() => { field.onBlur(); calculateSupportedAmount(); }}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">{currency}</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end"><Link onClick={setMaxAmount} className="no_decoration cursor-pointer">Max</Link></InputAdornment>,
                                 }}
                                 error={errors.stakedAmount !== undefined}
                                 helperText={errors.stakedAmount !== undefined 
