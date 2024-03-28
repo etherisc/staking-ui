@@ -76,19 +76,19 @@ export default function StakingData() {
         { 
             field: 'stakingStarted',
             headerName: 'Started',
-            valueFormatter: (params: any) => (moment.unix(params.value)).format('DD/MMM/YYYY'),
+            valueFormatter: (value: any) => (moment.unix(value)).format('DD/MMM/YYYY'),
             flex: 0.7,
         },
         { 
             field: 'updatedAt',
             headerName: 'Updated',
-            valueFormatter: (params: any) => (moment.unix(params.value)).format('DD/MMM/YYYY'),
+            valueFormatter: (value: any) => (moment.unix(value)).format('DD/MMM/YYYY'),
             flex: 0.7,
         },
         {
             field: 'unstakingAfter',
             headerName: 'Locked until',
-            valueFormatter: (params: any) => (moment.unix(params.value)).format('DD/MMM/YYYY'),
+            valueFormatter: (value: any) => (moment.unix(value)).format('DD/MMM/YYYY'),
             flex: 0.7,
         }
     ];
