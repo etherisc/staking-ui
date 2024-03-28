@@ -1,12 +1,9 @@
-import { ContentCopy } from "@mui/icons-material";
-import { Signer } from "ethers";
-import { useState, useEffect } from "react";
-import { NBSP } from "../utils/chars";
-import { useSnackbar } from 'notistack';
-import { useTranslation } from "next-i18next";
-import { Box, Typography } from "@mui/material";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Box, Typography } from "@mui/material";
+import { useTranslation } from "next-i18next";
+import { useSnackbar } from 'notistack';
+import { NBSP } from "../utils/chars";
 import WithTooltip from "./with_tooltip";
 
 export interface AddressProps {
