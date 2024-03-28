@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, FormControlLabel, Grid, LinearProgress, Switch, Typography } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import moment from "moment";
 import { useEffect } from "react";
@@ -35,7 +35,7 @@ export default function StakingData() {
         if (signer && numStakes === 0) {
             fetchStakeInfoData(signer);
         }
-    }, [signer]);
+    }, [signer, numStakes]);
 
     if (!signer) {
         return <>No signer</>;
@@ -50,14 +50,14 @@ export default function StakingData() {
         { 
             field: 'stakeOwner', 
             headerName: 'Stake owner',
-            valueFormatter: (params: any) => params.value.substring(0, 6) + '...' + params.value.substring(params.value.length - 4),
+            valueFormatter: (value: any) => value.substring(0, 6) + '...' + value.substring(value.length - 4),
             flex: 0.7,
         },
         { 
             field: 'stakeBalance', 
             headerName: 'Stake balance',
             flex: 1,
-            valueGetter: (params: GridValueGetterParams<any, string>) => BigNumber.from(params.value),
+            valueGetter: (value: any) => BigNumber.from(value),
             renderCell: (params: any) => {
                 return <Box sx={{ textAlign: 'end', width: '100%', px: 1 }}>{formatAmount(params.value, currency, decimals)}</Box>;
             },
@@ -67,7 +67,7 @@ export default function StakingData() {
             field: 'rewardTotalNow', 
             headerName: 'Accumulated rewards',
             flex: 1,
-            valueGetter: (params: GridValueGetterParams<any, string>) => BigNumber.from(params.value),
+            valueGetter: (value: any) => BigNumber.from(value),
             renderCell: (params: any) => {
                 return <Box sx={{ textAlign: 'end', width: '100%', px: 1 }}>{formatAmount(params.value, currency, decimals)}</Box>;
             },
@@ -204,7 +204,6 @@ export default function StakingData() {
             // }}
             disableRowSelectionOnClick={true}
             disableColumnMenu={true}
-            columnBuffer={20}
             slots={{
                 toolbar: GridToolbar,
             }}
