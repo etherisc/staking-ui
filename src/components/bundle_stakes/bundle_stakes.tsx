@@ -1,7 +1,7 @@
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Box, Container, FormControlLabel, LinearProgress, Switch, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, GridValueFormatterParams, GridValueGetterParams, gridNumberComparator } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, GridValueFormatterParams, gridNumberComparator } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
 import { Trans, useTranslation } from "next-i18next";
@@ -84,7 +84,7 @@ export default function BundleStakes(props: BundleStakesProps) {
     const columns: Array<GridColDef> = [
         { 
             field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.55, 
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.instanceId, params.row.instanceName ],
+            valueGetter: (_value, row) => [ row.instanceId, row.instanceName ],
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
                     const tooltip = (<>{params.value![0]} &nbsp;
@@ -106,7 +106,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
         { 
             field: 'bundleId', headerName: t('table.header.bundleId'), flex: 0.5,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ params.row.bundleId, params.row.bundleName ],
+            valueGetter: (_value, row) => [ row.bundleId, row.bundleName ],
             renderCell: (params: GridRenderCellParams<[number, string]>) => {
                 if (params.value![1] === undefined || params.value![1] === null || params.value![1] === '') {
                     return (<>{params.value![0]}</>);
@@ -132,7 +132,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
         { 
             field: 'myStakedAmount', headerName: t('table.header.myStakedAmount'), flex: 0.6,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => [ BigNumber.from(params.row.myStakedAmount), BigNumber.from(params.row.stakedAmount) ],
+            valueGetter: (_value, row) => [ BigNumber.from(row.myStakedAmount), BigNumber.from(row.stakedAmount) ],
             renderCell: (params: GridRenderCellParams<[BigNumber, BigNumber]>) => (<>
                     <WithTooltip tooltipText={`${t('staked_amount_total')} ${formatAmount(params.value![1], currency, currencyDecimals)}`}>
                         {formatAmount(params.value![0], currency, currencyDecimals)}
@@ -142,18 +142,17 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
         { 
             field: 'supportingAmount', headerName: t('table.header.myAllSupportingAmount'), flex: 1,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
-                [ BigNumber.from(params.row.mySupportingAmount), BigNumber.from(params.row.supportingAmount), params.row.supportingToken, params.row.supportingTokenDecimals ],
-            valueFormatter: (params: GridValueFormatterParams<[BigNumber, BigNumber, string, number]>) => {
-                return formatAmountMineTotal(params.value[0], params.value[1], params.value[2], params.value[3]);
+            valueGetter: (_value, row) => 
+                [ BigNumber.from(row.mySupportingAmount), BigNumber.from(row.supportingAmount), row.supportingToken, row.supportingTokenDecimals ],
+            valueFormatter: (value: [BigNumber, BigNumber, string, number]) => {
+                return formatAmountMineTotal(value[0], value[1], value[2], value[3]);
             },
             sortComparator: (v1: [BigNumber], v2: [BigNumber]) => bigNumberComparator(v1[0], v2[0])
         },
         { 
             field: 'state', headerName: t('table.header.state'), flex: 0.35,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => params.row,
-            valueFormatter: (params: GridValueFormatterParams<BundleInfo>) => {
-                const bundle = params.value;
+            valueGetter: (_value, row) => row,
+            valueFormatter: (bundle: BundleInfo) => {
                 // active and locked bundles with expiration date in the past are considered expired
                 if ((bundle.state === 0 || bundle.state === 1)&& dayjs.unix(bundle.expiryAt).isBefore(dayjs())) {
                     return t(`bundle_state_expired`, { ns: 'common'});
@@ -164,7 +163,7 @@ export default function BundleStakes(props: BundleStakesProps) {
         },
         { 
             field: 'expiryAt', headerName: t('table.header.expiryAt'), flex: 0.7,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => params.row,
+            valueGetter: (_value, row) => row,
             renderCell: (params: GridRenderCellParams<BundleInfo>) => {
                 if (params.value!.state !== BundleState.ACTIVE && params.value!.state !== BundleState.LOCKED) {
                     return (<></>);
@@ -180,8 +179,7 @@ export default function BundleStakes(props: BundleStakesProps) {
             headerName: t('table.header.actions'), 
             flex: 0.45,
             sortable: false,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
-                params.row,
+            valueGetter: (_value, row) => row,
             renderCell: (params: GridRenderCellParams<BundleInfo>) => {
                 if (props.buildActions) {
                     return props.buildActions(params.value!);
@@ -196,8 +194,8 @@ export default function BundleStakes(props: BundleStakesProps) {
             field: 'stakeUsage', 
             headerName: t('table.header.stake_usage'), 
             flex: 0.3,
-            valueGetter: (params: GridValueGetterParams<any, BundleInfo>) => 
-                [ params.row.stakeUsage, params.row.supportingAmount, params.row.lockedAmount, params.row.supportingToken, params.row.supportingTokenDecimals, params.row ],
+            valueGetter: (_value, row) => 
+                [ row.stakeUsage, row.supportingAmount, row.lockedAmount, row.supportingToken, row.supportingTokenDecimals, row ],
             renderCell: (params: GridRenderCellParams<[StakeUsage, string, string|undefined, string, number]>) => {
                 const stakeUsage = params.value![0];
                 const supportingAmount = BigNumber.from(params.value![1]);
@@ -270,7 +268,6 @@ export default function BundleStakes(props: BundleStakesProps) {
                 sortingOrder={['desc', 'asc']}
                 disableRowSelectionOnClick={true}
                 disableColumnMenu={true}
-                columnBuffer={8}
                 slots={{
                     noRowsOverlay: NoRowsOverlay,
                     toolbar: !props.hideShowMyStakes ? GridToolbar : undefined,
