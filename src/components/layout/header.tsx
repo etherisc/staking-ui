@@ -1,21 +1,20 @@
+import { IconDefinition, faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
-import Account from '../account/account';
-import Image from 'next/image';
-import { useTranslation } from 'next-i18next';
-import { HeaderLink } from './header_link';
-import { useRouter } from 'next/router';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import { useState } from 'react';
-import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
-import { Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import Account from '../account/account';
 import FaucetListItem from './faucet_list_item';
+import { HeaderLink } from './header_link';
 
 interface HeaderProps {
     items: Array<[string, string, () => void | null, IconDefinition]>;
@@ -88,7 +87,7 @@ export default function Header(props: HeaderProps) {
                             onClick={handleDrawerToggle}
                             sx={{ mr: 2, display: { md: 'none' } }}
                         >
-                            <MenuIcon />
+                            <FontAwesomeIcon icon={faBars} className="fa cursor-pointer" />
                         </IconButton>
                         <Box sx={{ mt: 0.25, display: { xs: 'none', md: 'inherit'}}}>
                             <Image src="/etherisc_logo_white.svg" alt="Etherisc logo" width={100} height={22}  />
