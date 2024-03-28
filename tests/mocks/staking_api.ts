@@ -18,6 +18,7 @@ export function mockStakingApiSimple(): StakingApi {
         stakedAmount: jest.fn(),
         unstake: jest.fn(),
         hasDipBalance: jest.fn(),
+        getBalance: jest.fn(),
         getStakeUsage: jest.fn(),
         updateBundle: jest.fn(),
         claimRewards: jest.fn(),
