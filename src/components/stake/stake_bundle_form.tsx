@@ -94,7 +94,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         const values = getValues();
 
         if (values.stakedAmount && errors.stakedAmount === undefined) {
-            const stakedAmount = parseEther(values.stakedAmount);
+            const stakeNum = (parseFloat(values.stakedAmount) * Math.pow(10, 18)) / Math.pow(10, 18);
+            const stakedAmount = parseEther(stakeNum.toString());
             setCalculationInProgress(true);
             try {
                 console.log("Calculating supported amount for", stakedAmount);
@@ -173,7 +174,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             max: stakedAmountMax, 
                             pattern: /^[0-9.]+$/,
                             validate: {
-                                balance: async (value: string) => props.stakingApi.hasDipBalance(parseEther(value))
+                                balance: async (value: string) => props.stakingApi.hasDipBalance(parseEther(((parseFloat(value) * Math.pow(10, 18)) / Math.pow(10, 18)).toString()))
                             }
                         }}
                         render={({ field }) => 
