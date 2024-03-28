@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgress, TextField, Typography } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Grid, InputAdornment, LinearProgress, Link, TextField, Typography } from "@mui/material";
 import { BigNumber } from "ethers";
 import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
@@ -94,7 +94,8 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
         const values = getValues();
 
         if (values.stakedAmount && errors.stakedAmount === undefined) {
-            const stakedAmount = parseEther(values.stakedAmount);
+            const stakeNum = (parseFloat(values.stakedAmount) * Math.pow(10, 18)) / Math.pow(10, 18);
+            const stakedAmount = parseEther(stakeNum.toString());
             setCalculationInProgress(true);
             try {
                 console.log("Calculating supported amount for", stakedAmount);
@@ -110,6 +111,16 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
             setValue("expectedReward", "");
         }
     }, [errors, setValue, getValues, props.bundle, props.stakingApi]);
+
+    const setMaxAmount = useCallback( async () => {
+        if (errors.stakedAmount === undefined) {
+            const balance = await props.stakingApi.getBalance();
+            const balanceFloat = parseFloat(formatEther(balance));
+            // round down
+            setValue("stakedAmount", (Math.floor(balanceFloat * 100) / 100).toFixed(2));
+            await calculateSupportedAmount();
+        } 
+    }, [errors, setValue, props.stakingApi, calculateSupportedAmount]);
 
     function back() {
         dispatch(clearSelectedBundle());
@@ -163,7 +174,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                             max: stakedAmountMax, 
                             pattern: /^[0-9.]+$/,
                             validate: {
-                                balance: async (value: string) => props.stakingApi.hasDipBalance(parseEther(value))
+                                balance: async (value: string) => props.stakingApi.hasDipBalance(parseEther(((parseFloat(value) * Math.pow(10, 18)) / Math.pow(10, 18)).toString()))
                             }
                         }}
                         render={({ field }) => 
@@ -176,6 +187,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 onBlur={() => { field.onBlur(); calculateSupportedAmount(); }}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">{currency}</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end"><Link onClick={setMaxAmount} className="no_decoration cursor-pointer">Max</Link></InputAdornment>,
                                 }}
                                 error={errors.stakedAmount !== undefined}
                                 helperText={errors.stakedAmount !== undefined 

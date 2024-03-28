@@ -90,6 +90,9 @@ export default function stakingApiMock(
         async hasDipBalance(amount: BigNumber): Promise<boolean> {
             return true;
         },
+        async getBalance() {
+            return Promise.resolve(parseEther("10000"));
+        },
         async getStakeUsage(bundle: BundleInfo) {
             return Promise.resolve({ usage: 0.5, lockedCapital: BigNumber.from(1000)});
         },
