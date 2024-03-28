@@ -83,7 +83,10 @@ export default function BundleStakes(props: BundleStakesProps) {
 
     const columns: Array<GridColDef> = [
         { 
-            field: 'instanceId', headerName: t('table.header.instanceId'), flex: 0.55, 
+            field: 'instanceId', 
+            headerName: t('table.header.instanceId'), 
+            flex: 0.55, 
+            display: 'flex',
             valueGetter: (_value, row) => [ row.instanceId, row.instanceName ],
             renderCell: (params: GridRenderCellParams<[string, string]>) => {
                 if (params.value![1] !== undefined && params.value![1] !== null && params.value![1] !== '') {
@@ -105,7 +108,10 @@ export default function BundleStakes(props: BundleStakesProps) {
             sortComparator: (v1: [string, string], v2: [string, string]) => v1[0].localeCompare(v2[0]),
         },
         { 
-            field: 'bundleId', headerName: t('table.header.bundleId'), flex: 0.5,
+            field: 'bundleId', 
+            headerName: t('table.header.bundleId'), 
+            flex: 0.5,
+            display: 'flex',
             valueGetter: (_value, row) => [ row.bundleId, row.bundleName ],
             renderCell: (params: GridRenderCellParams<[number, string]>) => {
                 if (params.value![1] === undefined || params.value![1] === null || params.value![1] === '') {
