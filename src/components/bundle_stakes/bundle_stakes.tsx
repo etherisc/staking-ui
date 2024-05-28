@@ -1,7 +1,7 @@
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Box, Container, FormControlLabel, LinearProgress, Switch, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, GridValueFormatterParams, gridNumberComparator } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, gridNumberComparator } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
 import { Trans, useTranslation } from "next-i18next";
