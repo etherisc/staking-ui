@@ -2,24 +2,14 @@ import { ethers } from "ethers";
 import { connectChain } from "../redux/slices/chain";
 import { getAndUpdateBlock, getChainState, setAccountRedux, updateSigner } from "./chain";
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
-import { getEthersSigner } from "./walletconnect";
-import { CHAIN_ID } from "../config/walletconnect";
-import { store } from "../redux/store";
+import { setWalletConnectAccount } from "./walletconnect";
 
 
-export async function reconnectWallets(dispatch: Dispatch<AnyAction>) {
+export async function reconnectWallets(dispatch: Dispatch<AnyAction>, walletProvider?: any) {
     // try to reconnect walletconnect connection first
-    const wcSigner = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
-    if (wcSigner !== undefined) {
-        console.log("reconnect walletconnect");
-        const provider = wcSigner.provider;
-        dispatch(connectChain(await getChainState(provider, true)));
-        setAccountRedux(wcSigner, dispatch);
-
-        provider.on("block", (blockNumber: number) => {
-            getAndUpdateBlock(dispatch, provider, blockNumber);
-        });
-
+    if (walletProvider !== undefined) {
+        console.log("reconnect wallet provider");
+        setWalletConnectAccount(walletProvider, dispatch);
         return;
     }
 

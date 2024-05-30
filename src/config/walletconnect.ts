@@ -1,34 +1,47 @@
-import { EthereumClient, w3mConnectors } from "@web3modal/ethereum";
-import { configureChains, createConfig } from "wagmi";
-import { mainnet, polygonMumbai } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+
 
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID;
 console.log("wallet connect config", "chainid", CHAIN_ID);
 
 export const WALLET_CONNECT_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "";
 
-// configure walletconnect v2
-let chainsList;
-if (CHAIN_ID === "80001") {
-    // console.log("wallet connect config", "chainid", chainId, "polygonMumbai");
-    chainsList = [polygonMumbai];
-} else if (CHAIN_ID === "1") {
-    // console.log("wallet connect config", "chainid", chainId, "mainnet");
-    chainsList = [mainnet];
-} else {
-    // console.log("wallet connect config", "chainid", chainId, "mainnet");
-    chainsList = [mainnet];
+// 2. Set chains
+// TODO: from env
+const mainnet = {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
 }
 
-// console.log("wallet connect config", "chainsList", chainsList);
-// @ts-ignore testnet not set on mainnet chain - ignore complaint
-const { chains, publicClient } = configureChains(chainsList, [publicProvider()]);
-// console.log("wallet connect config", "chains", chains, "publicClient", publicClient);
-export const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: w3mConnectors({ projectId: WALLET_CONNECT_PROJECT_ID, chains }),
-    publicClient
+// 3. Create a metadata object
+const metadata = {
+    name: 'Etherisc Staking',
+    description: 'Etherisc GIF dapp for DIP staking',
+    url: 'https://staking.etherisc.com', // origin must match your domain & subdomain
+    icons: ['https://avatars.mywebsite.com/']
+}
+
+// 4. Create Ethers config
+const ethersConfig = defaultConfig({
+    /*Required*/
+    metadata,
+
+    /*Optional*/
+    enableEIP6963: true, // true by default
+    enableInjected: true, // true by default
+    enableCoinbase: true, // true by default
+    // rpcUrl: '...', // used for the Coinbase SDK
+    defaultChainId: 1 // used for the Coinbase SDK
+})
+
+// 5. Create a Web3Modal instance
+createWeb3Modal({
+    ethersConfig,
+    chains: [mainnet],
+    projectId: WALLET_CONNECT_PROJECT_ID,
+    enableAnalytics: true // Optional - defaults to your Cloud configuration
 });
-// console.log("wallet connect config", "wagmiConfig", wagmiConfig);
-export const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
