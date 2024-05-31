@@ -183,7 +183,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 fullWidth
                                 disabled={props.formDisabled}
                                 autoFocus
-                                variant={INPUT_VARIANT}
+                                variant="outlined"
                                 {...field} 
                                 onBlur={() => { field.onBlur(); calculateSupportedAmount(); }}
                                 InputProps={{
@@ -208,7 +208,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 label={t('supportedAmount')}
                                 fullWidth
                                 disabled={true}
-                                variant="outlined"
+                                variant="filled"
                                 {...field} 
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">{props.bundle.supportingToken}</InputAdornment>,
@@ -227,7 +227,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 label={t('reward_rate')}
                                 fullWidth
                                 disabled={true}
-                                variant="outlined"
+                                variant="filled"
                                 {...field} 
                                 InputProps={{
                                     endAdornment: <InputAdornment position="end">%</InputAdornment>,
@@ -246,7 +246,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 label={t('expected_reward')}
                                 fullWidth
                                 disabled={true}
-                                variant="outlined"
+                                variant="filled"
                                 {...field} 
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">{props.stakingApi.currency()}</InputAdornment>,
