@@ -7,12 +7,11 @@ console.log("wallet connect config", "chainid", CHAIN_ID);
 export const WALLET_CONNECT_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "0";
 
 // 2. Set chains
-// TODO: from env
 const mainnet = {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
+    chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || "1"),
+    name: process.env.NEXT_PUBLIC_CHAIN_NAME || 'Ethereum Mainnet',
+    currency: process.env.NEXT_PUBLIC_CHAIN_TOKEN_SYMBOL || 'ETH',
+    explorerUrl: process.env.NEXT_PUBLIC_CHAIN_TOKEN_BLOCKEXPLORER_URL || 'https://etherscan.io',
     rpcUrl: 'https://cloudflare-eth.com'
 }
 
