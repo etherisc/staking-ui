@@ -128,6 +128,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
                                 label={t('stakedAmount')}
                                 fullWidth
                                 disabled={props.formDisabled || watchUnstakeMaxAmount }
+                                autoFocus
                                 variant={INPUT_VARIANT}
                                 {...field} 
                                 InputProps={{
