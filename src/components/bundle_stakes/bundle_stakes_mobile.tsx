@@ -22,6 +22,7 @@ import StakeUsageIndicator from "./stake_usage_indicator";
 import { RootState } from "../../redux/store";
 import { ga_event } from "../../utils/google_analytics";
 import { formatDateUtc } from "../../utils/date";
+import exp from "constants";
 
 interface BundleStakesMobileProps {
     stakingApi: StakingApi;
@@ -257,9 +258,12 @@ export default function BundleStakesMobile(props: BundleStakesMobileProps) {
     function renderListItemTitle(bundle: BundleInfo) {
         // const lifetime = dayjs.unix(bundle.expiryAt).add(parseInt(bundle.lifetime), 'seconds').unix();
         let expiration = <></>;
-        if (bundle.state === BundleState.ACTIVE || bundle.state === BundleState.LOCKED) {
-            expiration = <>{formatDateUtc(bundle.expiryAt)}</>;
-        }
+        if (bundle.expiryAt < dayjs().unix() && (bundle.state === BundleState.ACTIVE || bundle.state === BundleState.LOCKED)) {
+            expiration = <>Expired on {formatDateUtc(bundle.expiryAt)}</>;
+        } else if (bundle.state === BundleState.ACTIVE || bundle.state === BundleState.LOCKED) {
+            expiration = <>{t('table.header.expiryAt')}: {formatDateUtc(bundle.expiryAt)}</>;
+        } 
+
         const myStakedAmount = formatAmount(BigNumber.from(bundle.myStakedAmount), currency, currencyDecimals);
         const totalAmount = formatAmount(
             BigNumber.from(bundle.stakedAmount), 
@@ -276,7 +280,7 @@ export default function BundleStakesMobile(props: BundleStakesMobileProps) {
                 <br/> 
                 {t('table.header.myStakedAmount')}: {myStakedAmount } | Total: {totalAmount} 
                 <br/>
-                {t('table.header.expiryAt')}: {expiration}
+                {expiration}
                 <br/>
                 {actions}
             </>
