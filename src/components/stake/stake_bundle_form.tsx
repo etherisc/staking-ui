@@ -182,6 +182,7 @@ export default function StakeBundleForm(props: StakeBundleFormProps) {
                                 label={t('stakedAmount')}
                                 fullWidth
                                 disabled={props.formDisabled}
+                                autoFocus
                                 variant={INPUT_VARIANT}
                                 {...field} 
                                 onBlur={() => { field.onBlur(); calculateSupportedAmount(); }}
