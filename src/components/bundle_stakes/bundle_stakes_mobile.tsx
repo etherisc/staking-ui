@@ -1,6 +1,6 @@
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Alert, Box, Container, FormControlLabel, LinearProgress, Switch, Typography } from "@mui/material";
+import { Alert, Box, Container, FormControlLabel, LinearProgress, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams, GridSortCellParams, GridToolbarContainer, gridNumberComparator } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { BigNumber } from "ethers";
@@ -20,6 +20,8 @@ import Timestamp from "../timestamp";
 import WithTooltip from "../with_tooltip";
 import StakeUsageIndicator from "./stake_usage_indicator";
 import { RootState } from "../../redux/store";
+import { ga_event } from "../../utils/google_analytics";
+import { formatDateUtc } from "../../utils/date";
 
 interface BundleStakesMobileProps {
     stakingApi: StakingApi;
@@ -252,33 +254,65 @@ export default function BundleStakesMobile(props: BundleStakesMobileProps) {
             </Container>);
     }
 
+    function renderListItemTitle(bundle: BundleInfo) {
+        // const lifetime = dayjs.unix(bundle.expiryAt).add(parseInt(bundle.lifetime), 'seconds').unix();
+        let expiration = <></>;
+        if (bundle.state === BundleState.ACTIVE || bundle.state === BundleState.LOCKED) {
+            expiration = <>{formatDateUtc(bundle.expiryAt)}</>;
+        }
+        const myStakedAmount = formatAmount(BigNumber.from(bundle.myStakedAmount), currency, currencyDecimals);
+        const totalAmount = formatAmount(
+            BigNumber.from(bundle.stakedAmount), 
+            currency, 
+            currencyDecimals);
+        let actions = <></>;
+        if (props.buildActions) {
+            actions = props.buildActions(bundle);
+        }
+
+        return (
+            <>
+                {bundle.bundleId} | {bundle.instanceName} | <b>{bundle.bundleName}</b>
+                <br/> 
+                {t('table.header.myStakedAmount')}: {myStakedAmount } | Total: {totalAmount} 
+                <br/>
+                {t('table.header.expiryAt')}: {expiration}
+                <br/>
+                {actions}
+            </>
+        );
+    }
+
+    // TODO:  we need this?
+    // function renderListIcon(bundle: BundleData) {
+    //     if (bundle.owner === address) {
+    //         return (<><FontAwesomeIcon icon={faUser} /></>)
+    //     }
+    //     return (<></>);
+    // }
+
     const loadingBar = props.isBundlesLoading ? <LinearProgress /> : null;
 
     return (
         <>
             {loadingBar}
 
-            <DataGrid 
-                autoHeight
-                rows={props.bundles.filter((bundle) => ! showMyStakes || bundle.myStakedNfsIds.length > 0)} 
-                columns={columns} 
-                getRowId={(row) => row.id}
-                initialState={{
-                    sorting: {
-                        sortModel: [{ field: 'expiryAt', sort: 'asc' }],
-                    },
-                    pagination: {
-                        paginationModel: { pageSize: 10, page: 0 },
-                    },
-                }}
-                sortingOrder={['desc', 'asc']}
-                disableRowSelectionOnClick={true}
-                disableColumnMenu={true}
-                slots={{
-                    noRowsOverlay: NoRowsOverlay,
-                    toolbar: !props.hideShowMyStakes ? GridToolbar : undefined,
-                }}
-                />
+            <List>
+                {props.bundles.map((bundle: BundleInfo) => (
+                    <ListItem key={bundle.id}>
+                        {/* <ListItemButton onClick={() => {
+                            ga_event("bundle_details", { category: 'navigation' });
+                            dispatch(showBundle(bundle));
+                        }}> */}
+                            {/* TODO: fix this * /}
+                            {/* <ListItemIcon>
+                                {renderListIcon(bundle)}
+                            </ListItemIcon> */}
+                            <ListItemText primary={renderListItemTitle(bundle)} />
+                        {/* </ListItemButton> */}
+                    </ListItem>
+                ))}
+            </List>
         </>
     );
 }
