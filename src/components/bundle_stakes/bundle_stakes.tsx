@@ -26,9 +26,6 @@ export default function BundleStakes(props: BundleStakesProps) {
                     stakingApi={props.stakingApi} 
                     bundles={props.bundles} 
                     isBundlesLoading={props.isBundlesLoading}
-                    onBundleSelected={props.onBundleSelected}
-                    hideShowMyStakes={props.hideShowMyStakes}
-                    showStakeUsage={props.showStakeUsage}
                     buildActions={props.buildActions}
                     />;
     } else {
