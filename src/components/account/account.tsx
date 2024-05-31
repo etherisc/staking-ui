@@ -1,27 +1,28 @@
+import { Avatar, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import Blockies from 'react-blockies';
-import { DOT, NBSP } from "../../utils/chars";
-import { Box, Avatar } from "@mui/material";
-import Balance from "../balance";
-import Address from "../address";
-import Logout from "./logout";
-import { reconnectWallets } from "../../utils/wallet";
-import Login from "./login";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, store } from "../../redux/store";
-import { useWalletClient } from "wagmi";
-import { getEthersSigner } from "../../utils/walletconnect";
-import { CHAIN_ID } from "../../config/walletconnect";
-import { getAndUpdateBlock, getChainState, setAccountRedux } from "../../utils/chain";
-import { connectChain, disconnectChain } from "../../redux/slices/chain";
-import { JsonRpcSigner } from "@ethersproject/providers";
+import { RootState } from "../../redux/store";
+import { DOT, NBSP } from "../../utils/chars";
+import { reconnectWallets } from "../../utils/wallet";
+import Address from "../address";
+import Balance from "../balance";
+import Login from "./login";
+import Logout from "./logout";
+import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/react";
+import { ethers, providers } from "ethers";
+import { connectChain } from "../../redux/slices/chain";
+import { getChainState, setAccountRedux } from "../../utils/chain";
+import { setWalletConnectAccount } from "../../utils/walletconnect";
 
 export default function Account() {
     const dispatch = useDispatch();
     const signer = useSelector((state: RootState) => state.chain.signer);
-    const { isConnected, isWalletConnect } = useSelector((state: RootState) => state.chain);
+    const { isConnected } = useSelector((state: RootState) => state.chain);
     const address = useSelector((state: RootState) => state.account.address);
-    const { data: walletClient } = useWalletClient();
+
+    const { address: wcAddress, isConnected: wcIsConnected } = useWeb3ModalAccount();
+    const { walletProvider } = useWeb3ModalProvider();  
 
     const [ loggedIn, setLoggedIn ] = useState(false);
 
@@ -35,37 +36,16 @@ export default function Account() {
     }, [signer, isConnected]);
 
     useEffect(() => {
-        reconnectWallets(dispatch);
+        reconnectWallets(dispatch, walletProvider);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-
-    // handle wallet connect connection state (login/logout)
+    // wallet connect login
     useEffect(() => {
-        console.log("walletClient changed", walletClient);
-        async function login() {
-            console.log("wallet connect login");
-            const signer = await getEthersSigner({ chainId: parseInt(CHAIN_ID || "1") });
-            if (signer === undefined) {
-                return;
-            }
-            const provider = signer.provider;
-            dispatch(connectChain(await getChainState(provider, true)));
-            setAccountRedux(signer, dispatch);
-
-            provider.on("block", (blockNumber: number) => {
-                getAndUpdateBlock(dispatch, provider, blockNumber);
-            });
-        }
-
-        if (walletClient !== undefined && ! loggedIn) {
-            login();
-        } else if (walletClient === undefined && loggedIn && isWalletConnect) {
-            console.log("wallet connect logout")
-            dispatch(disconnectChain());
-        }
-    }, [walletClient, loggedIn, dispatch, isWalletConnect]);
-    
+        console.log("wallet connect v2 button: address: ", wcAddress, " isConnected: ", wcIsConnected);
+        if (!wcIsConnected) return;
+        setWalletConnectAccount(walletProvider, dispatch);
+    }, [wcAddress, wcIsConnected, isConnected, walletProvider, dispatch]);
 
     if (! loggedIn) {
         return (
