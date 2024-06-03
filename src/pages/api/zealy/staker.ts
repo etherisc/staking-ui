@@ -24,6 +24,11 @@ export default async function handler(
 
     const wallet = accounts.wallet as string;
 
+    if (wallet === "0x0000000000000000000000000000000000000000") {
+        res.status(400).json({ "message": "No stakes found for 0x0000000000000000000000000000000000000000" });
+        return;
+    }
+
     const signer = await getBackendVoidSigner();
 
     const stakingContractAddress = process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS || "";
