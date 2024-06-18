@@ -105,49 +105,49 @@ git push dokku <branch-to-deploy>:main
 
 #### Initial instance setup
 
-Replace application name (`goerli-setup`) with whatever fits your need. DNS is expected to be prepared in advance.
+Replace application name (`amoy-setup`) with whatever fits your need. DNS is expected to be prepared in advance.
 
 ```
 # create dokku application 
-dokku apps:create goerli-staking
+dokku apps:create amoy-staking
 
 # add new domain and remove default domain
-dokku domains:add goerli-staking staking.goerli.etherisc.com
-dokku domains:remove goerli-staking goerli-staking.depeg-test.etherisc.com
+dokku domains:add amoy-staking staking.amoy.etherisc.com
+dokku domains:remove amoy-staking amoy-staking.depeg-test.etherisc.com
 
 # configure dokku docker build to load correct instance environment during build
-dokku docker-options:add goerli-staking build --build-arg INSTANCE=goerli
+dokku docker-options:add amoy-staking build --build-arg INSTANCE=amoy
 
 # set correct proxy ports for http and https
-dokku proxy:ports-add goerli-staking http:80:3000
-dokku proxy:ports-add goerli-staking https:443:3000
-dokku proxy:ports-remove goerli-staking http:80:5000
+dokku ports:add amoy-staking http:80:3000
+dokku ports:add amoy-staking https:443:3000
+dokku ports:remove amoy-staking http:80:5000
 
 # create redis service
-dokku redis:create staking-mumbai-redis -i redis/redis-stack-server -I 7.2.0-v0
+dokku redis:create staking-amoy-redis -i redis/redis-stack-server -I 7.2.0-v0
 
-# now you need to manually enable redissearch and redisjson modules in the redis config (replace 'sstaking-mumbai-redis' below with correct service name)
+# now you need to manually enable redissearch and redisjson modules in the redis config (replace 'staking-amoy-redis' below with correct service name)
 vi /var/lib/dokku/services/redis/staking-mumbai-redis/config/redis.conf
 # scroll down to the section 'MODULES' and paste the following two lines (remove the # in front of the lines)
 # loadmodule /opt/redis-stack/lib/redisearch.so
 # loadmodule /opt/redis-stack/lib/rejson.so
 
 # restart redis service
-dokku redis:restart staking-mumbai-redis
+dokku redis:restart staking-amoy-redis
 # link the redis service to the app
-dokku redis:link staking-mumbai-redis mumbai-staking
+dokku redis:link staking-amoy-redis amoy-staking
 
 
 # now push deployment via git 
-# 1. add new git remote 'git remote add dokku-goerli dokku@<host>:goerli-staking'
-# 2. 'git push dokku-goerli develop:main'
+# 1. add new git remote 'git remote add dokku-amoy dokku@<host>:amoy-staking'
+# 2. 'git push dokku-amoy develop:main'
 
 # enable let's encrypt for https certificates
-dokku letsencrypt:enable goerli-staking
+dokku letsencrypt:enable amoy-staking
 
 # configure backend chain rpc url
-dokku config:set goerli-depeg BACKEND_CHAIN_RPC_URL=<chain rpc url>
-dokku config:set goerli-depeg HOSTNAME=0.0.0.0
+dokku config:set amoy-staking BACKEND_CHAIN_RPC_URL=<chain rpc url>
+dokku config:set amoy-staking HOSTNAME=0.0.0.0
 
 # app should be ready now - open in browser
 ```

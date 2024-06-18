@@ -1,6 +1,6 @@
 {
   "name": "staking-ui",
-  "version": "1.1.13",
+  "version": "1.1.17",
   "private": true,
   "scripts": {
     "postinstall": "$npm_execpath run typechainRegistryTypes && $npm_execpath run typechainGifInterfaceTypes",
@@ -30,7 +30,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "@web3modal/core": "^4.2.3",
     "@web3modal/ethers5": "^4.2.3",
-    "@web3modal/ui": "^4.2.3",
+    "@web3modal/ui": "^5.0.2",
     "abi-coder": "^4.1.1",
     "canvas-confetti": "^1.9.3",
     "dayjs": "^1.11.11",
