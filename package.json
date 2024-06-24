@@ -29,7 +29,7 @@
     "@mui/x-data-grid": "^7.7.0",
     "@reduxjs/toolkit": "^2.2.5",
     "@web3modal/core": "^5.0.2",
-    "@web3modal/ethers5": "^5.0.2",
+    "@web3modal/ethers5": "^5.0.3",
     "@web3modal/ui": "^5.0.2",
     "abi-coder": "^4.1.1",
     "canvas-confetti": "^1.9.3",
