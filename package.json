@@ -33,7 +33,7 @@
     "@web3modal/ui": "^5.0.2",
     "abi-coder": "^4.1.1",
     "canvas-confetti": "^1.9.3",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.12",
     "ethers": "^5.7.2",
     "i18next": "^22.5.1",
     "moment": "^2.30.1",
