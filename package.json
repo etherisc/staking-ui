@@ -27,7 +27,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/material": "^5.16.0",
     "@mui/x-data-grid": "^7.9.0",
-    "@reduxjs/toolkit": "^2.2.6",
+    "@reduxjs/toolkit": "^2.2.7",
     "@web3modal/core": "^5.0.6",
     "@web3modal/ethers5": "^5.0.6",
     "@web3modal/ui": "^5.0.2",
