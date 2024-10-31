@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { redisClient } from "../../../utils/redis";
 import { getPendingStakeRepository } from "../../../utils/feeless/pending_stake";
 import { EntityId } from "redis-om";
+import { ulid } from "ulid";
 
 export const STREAM_KEY = process.env.REDIS_QUEUE_STREAM_KEY ?? "feeless:signatures";
 
@@ -13,12 +14,17 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION !== 'true') {
-        res.status(404).send('Unsupported feature');
-    } else if (req.method === 'POST') {
-        await handlePost(req, res);
-    } else {
-        res.status(405).send('Only POST requests allowed');
+    try {
+        if (process.env.NEXT_PUBLIC_FEATURE_GASLESS_TRANSACTION !== 'true') {
+            res.status(404).send('Unsupported feature');
+        } else if (req.method === 'POST') {
+            await handlePost(req, res);
+        } else {
+            res.status(405).send('Only POST requests allowed');
+        }
+    } catch (err) {
+        console.log(err);
+        throw err;
     }
 }
 
@@ -39,7 +45,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
     // store pending application in redis
     const repo = await getPendingStakeRepository();
-    const savedStake = await repo.save({
+    const entityId = ulid();
+    await repo.save(entityId, {
         owner: owner,
         targetNftId: targetNftId,
         dipAmount: dipAmount,
@@ -48,11 +55,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         transactionHash: null,
         timestamp: new Date(),
     });
-    const entityId = savedStake[EntityId];
-    if (! entityId) {
-        res.status(500).send("Failed to save pending stake");
-        return;
-    }
     console.log("created pending stake", signatureId, entityId);
 
     // push message to stream (queue)
