@@ -50,7 +50,7 @@
     "react-redux": "^9.2.0",
     "redis": "^4.7.0",
     "redis-om": "^0.4.7",
-    "ulid": "^2.3.0"
+    "ulid": "^2.4.0"
   },
   "devDependencies": {
     "@etherisc/gif-interface": "2.0.0-rc.1-0",
