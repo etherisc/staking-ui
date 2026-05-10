@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import { useTranslation } from "next-i18next";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,11 +10,20 @@ export default function Logout() {
     const { t } = useTranslation('common');
     const { isConnected, isWalletConnect } = useSelector((state: any) => state.chain);
     const dispatch = useDispatch();
-    
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
     const logout = async () => {
-        removeSigner(dispatch);
-        if (isWalletConnect) {
-            // wagmiDisconnect();
+        if (isLoggingOut) return;
+        setIsLoggingOut(true);
+        try {
+            removeSigner(dispatch);
+            if (isWalletConnect) {
+                // wagmiDisconnect();
+            }
+        } finally {
+            // Usually we redirect or the component unmounts, 
+            // but just in case:
+            setIsLoggingOut(false);
         }
     }
         
@@ -21,7 +31,7 @@ export default function Logout() {
 
     if (isConnected) {
         button = (
-            <Button variant="contained" color="secondary" onClick={logout}>
+            <Button variant="contained" color="secondary" onClick={logout} disabled={isLoggingOut}>
                 <FontAwesomeIcon icon={faRightFromBracket} className="fa" />
                 {t('action.disconnect')}
             </Button>
