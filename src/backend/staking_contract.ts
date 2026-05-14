@@ -5,7 +5,7 @@ import { IChainRegistry, IChainRegistry__factory, IERC20Metadata__factory, IERC7
 import { add, addAmountToMyStakes, addNftId, clearNftIds, setUnclaimedRewards } from "../redux/slices/stakes";
 import { store } from "../redux/store";
 import { TransactionFailedError } from "../utils/error";
-import { BundleInfo } from "./bundle_info";
+import { BundleInfo, BundleState } from "./bundle_info";
 import { InstanceInfo } from "./instance_info";
 import { NftInfo, NftType } from "./nft_info";
 import { ErrorReply } from "redis";
@@ -454,7 +454,13 @@ export default class StakingContract {
         const bundleStakeNftId = bundle.myStakedNfsIds.map(id => BigNumber.from(id));
         const unclaimedRewards = await bundleStakeNftId.map(async (id) => {
             const stakeInfo = await this.staking.getInfo(id);
-            const rewardIncrement = await this.staking.calculateRewardsIncrement(stakeInfo);
+            let rewardIncrement = BigNumber.from(0);
+            
+            // Do not calculate reward increment if bundle is burned
+            if (bundle.state !== BundleState.BURNED) {
+                rewardIncrement = await this.staking.calculateRewardsIncrement(stakeInfo);
+            }
+            
             const { rewardBalance } = stakeInfo;
             console.log("unclaimed rewards", formatEther(rewardBalance), formatEther(rewardIncrement), stakeInfo);
             return rewardBalance.add(rewardIncrement);
