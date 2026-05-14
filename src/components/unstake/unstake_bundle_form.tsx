@@ -2,7 +2,7 @@ import { Alert, Button, Checkbox, FormControlLabel, Grid, InputAdornment, TextFi
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
@@ -99,14 +99,19 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
         dispatch(setStep(1));
     }
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const onSubmit: SubmitHandler<IUnstakeFormValues> = async data => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
         const values = getValues();
 
         if ((values.unstakedAmount && errors.unstakedAmount === undefined) || values.unstakeMaxAmount) {
             const unstakedAmount = parseEther(values.unstakedAmount);
             const unstakeMaxAmount = values.unstakeMaxAmount;
-            props.unstake(unstakedAmount, selectedNft!.nftId, unstakeMaxAmount, props.bundle)
+            await props.unstake(unstakedAmount, selectedNft!.nftId, unstakeMaxAmount, props.bundle)
         }
+        setIsSubmitting(false);
     }
 
     return (<>
@@ -177,7 +182,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
                         type="submit" 
                         variant="contained" 
                         color="primary"
-                        disabled={! canSubmit}
+                        disabled={! canSubmit || isSubmitting}
                         >
                         {t('action.unstake')}
                     </Button>
