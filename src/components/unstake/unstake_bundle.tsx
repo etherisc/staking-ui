@@ -9,7 +9,7 @@ interface UnstakeBundleProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
     formDisabled: boolean;
-    unstake: (amount: BigNumber, nftId: string, max:boolean, bundle: BundleInfo) => void;
+    unstake: (amount: BigNumber, nftId: string, max:boolean, bundle: BundleInfo) => Promise<void> | void;
 }
 
 export default function UnstakeBundle(props: UnstakeBundleProps) {

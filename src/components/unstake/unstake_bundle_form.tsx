@@ -2,7 +2,7 @@ import { Alert, Button, Checkbox, FormControlLabel, Grid, InputAdornment, TextFi
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import { useTranslation } from "next-i18next";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { BundleInfo } from "../../backend/bundle_info";
@@ -19,7 +19,7 @@ interface UnstakeBundleFormProps {
     stakingApi: StakingApi;
     bundle: BundleInfo;
     formDisabled: boolean;
-    unstake: (amount: BigNumber, nftId: string, max: boolean, bundle: BundleInfo) => void;
+    unstake: (amount: BigNumber, nftId: string, max: boolean, bundle: BundleInfo) => Promise<void> | void;
 }
 
 type IUnstakeFormValues = {
@@ -60,6 +60,8 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
             unstakeMaxAmount: false,
         }
     });
+    const isSubmittingUnstakeRef = useRef(false);
+    const [isSubmittingUnstake, setIsSubmittingUnstake] = useState(false);
     const errors = useMemo(() => formState.errors, [formState]);
 
     const watchUnstakeMaxAmount = watch("unstakeMaxAmount");
@@ -78,7 +80,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
     }, [formState.isValid, dispatch]);
 
     const canSubmit = useMemo(() => {
-        if (props.formDisabled) {
+        if (props.formDisabled || isSubmittingUnstake) {
             return false;
         }
         if (! formState.isValid) {
@@ -92,7 +94,7 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
             return true;
         }
         return false;
-    }, [errors, getValues, props.formDisabled, formState.isValid]);
+    }, [errors, getValues, isSubmittingUnstake, props.formDisabled, formState.isValid]);
 
     function back() {
         dispatch(bundleSelected(null));
@@ -102,10 +104,21 @@ export default function UnstakeBundleForm(props: UnstakeBundleFormProps) {
     const onSubmit: SubmitHandler<IUnstakeFormValues> = async data => {
         const values = getValues();
 
+        if (isSubmittingUnstakeRef.current) {
+            return;
+        }
+
         if ((values.unstakedAmount && errors.unstakedAmount === undefined) || values.unstakeMaxAmount) {
-            const unstakedAmount = parseEther(values.unstakedAmount);
-            const unstakeMaxAmount = values.unstakeMaxAmount;
-            props.unstake(unstakedAmount, selectedNft!.nftId, unstakeMaxAmount, props.bundle)
+            isSubmittingUnstakeRef.current = true;
+            setIsSubmittingUnstake(true);
+            try {
+                const unstakedAmount = parseEther(values.unstakedAmount);
+                const unstakeMaxAmount = values.unstakeMaxAmount;
+                await props.unstake(unstakedAmount, selectedNft!.nftId, unstakeMaxAmount, props.bundle);
+            } finally {
+                isSubmittingUnstakeRef.current = false;
+                setIsSubmittingUnstake(false);
+            }
         }
     }
 
