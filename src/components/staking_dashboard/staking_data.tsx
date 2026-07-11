@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, FormControlLabel, Grid, LinearProgress, Switch, Typography } from "@mui/material";
-import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbarContainer } from "@mui/x-data-grid";
 import { BigNumber } from "ethers";
 import moment from "moment";
 import { useEffect } from "react";
@@ -41,22 +41,24 @@ export default function StakingData() {
         return <>No signer</>;
     }
 
-    const columns = [
+    const columns: GridColDef[] = [
         { 
-            field: 'id', headerName: 'NFT ID', flex: 0.6, 
+            field: 'id', headerName: 'NFT ID', flex: 0.6, minWidth: 90,
         },
-        { field: 'target', headerName: 'Bundle ID', flex: 0.6, },
-        { field: 'bundleName', headerName: 'Bundle name', flex: 0.8 },
+        { field: 'target', headerName: 'Bundle ID', flex: 0.6, minWidth: 100 },
+        { field: 'bundleName', headerName: 'Bundle name', flex: 0.8, minWidth: 150 },
         { 
             field: 'stakeOwner', 
             headerName: 'Stake owner',
             valueFormatter: (value: any) => value.substring(0, 6) + '...' + value.substring(value.length - 4),
             flex: 0.7,
+            minWidth: 125,
         },
         { 
             field: 'stakeBalance', 
             headerName: 'Stake balance',
             flex: 1,
+            minWidth: 150,
             valueGetter: (value: any) => BigNumber.from(value),
             renderCell: (params: any) => {
                 return <Box sx={{ textAlign: 'end', width: '100%', px: 1 }}>{formatAmount(params.value, currency, decimals)}</Box>;
@@ -67,6 +69,7 @@ export default function StakingData() {
             field: 'rewardTotalNow', 
             headerName: 'Accumulated rewards',
             flex: 1,
+            minWidth: 180,
             valueGetter: (value: any) => BigNumber.from(value),
             renderCell: (params: any) => {
                 return <Box sx={{ textAlign: 'end', width: '100%', px: 1 }}>{formatAmount(params.value, currency, decimals)}</Box>;
@@ -78,18 +81,21 @@ export default function StakingData() {
             headerName: 'Started',
             valueFormatter: (value: any) => (moment.unix(value)).format('DD/MMM/YYYY'),
             flex: 0.7,
+            minWidth: 125,
         },
         { 
             field: 'updatedAt',
             headerName: 'Updated',
             valueFormatter: (value: any) => (moment.unix(value)).format('DD/MMM/YYYY'),
             flex: 0.7,
+            minWidth: 125,
         },
         {
             field: 'unstakingAfter',
             headerName: 'Locked until',
             valueFormatter: (value: any) => (moment.unix(value)).format('DD/MMM/YYYY'),
             flex: 0.7,
+            minWidth: 125,
         }
     ];
 
@@ -189,24 +195,27 @@ export default function StakingData() {
             </Grid>
         </Grid>
 
-        <DataGrid 
-            autoHeight
-            rows={stakes.filter((s: StakeData) => showAllStakes ? true : BigNumber.from(s.stakeBalance).gt(0))} 
-            columns={columns} 
-            getRowId={(row) => row.id}
-            // initialState={{
-            //     sorting: {
-            //         sortModel: [{ field: 'expiryAt', sort: 'asc' }],
-            //     },
-            //     pagination: {
-            //         paginationModel: { pageSize: 10, page: 0 },
-            //     },
-            // }}
-            disableRowSelectionOnClick={true}
-            disableColumnMenu={true}
-            slots={{
-                toolbar: GridToolbar,
-            }}
-            />
+        <Box sx={{ width: '100%', overflowX: 'auto' }}>
+            <DataGrid 
+                autoHeight
+                rows={stakes.filter((s: StakeData) => showAllStakes ? true : BigNumber.from(s.stakeBalance).gt(0))} 
+                columns={columns} 
+                getRowId={(row) => row.id}
+                // initialState={{
+                //     sorting: {
+                //         sortModel: [{ field: 'expiryAt', sort: 'asc' }],
+                //     },
+                //     pagination: {
+                //         paginationModel: { pageSize: 10, page: 0 },
+                //     },
+                // }}
+                disableRowSelectionOnClick={true}
+                disableColumnMenu={true}
+                slots={{
+                    toolbar: GridToolbar,
+                }}
+                sx={{ minWidth: { xs: 1170, md: '100%' } }}
+                />
+        </Box>
     </>);
 }
